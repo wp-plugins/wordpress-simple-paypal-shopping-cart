@@ -176,7 +176,7 @@ function print_wp_shopping_cart()
     $output .= '<div class="shopping_cart" style=" padding: 5px;">';
     if (!get_option('wp_shopping_cart_image_hide'))    
     {
-    	$output .= "<input type='image' src='".WP_CART_URL."/images/shopping_cart_icon.png' value='Cart' title='Cart' />";
+    	$output .= "<input type='image' src='".WP_CART_URL."/images/shopping_cart_icon.gif' value='Cart' title='Cart' />";
     }
     if(!empty($title))
     {
@@ -218,7 +218,7 @@ function print_wp_shopping_cart()
         <td><form method=\"post\"  action=\"\">
         <input type='hidden' name='product' value='".$item['name']."' />
         <input type='hidden' name='delcart' value='1' />
-        <input type='image' src='".WP_CART_URL."/images/Shoppingcart_delete.png' value='Remove' title='Remove' /></form></td></tr>
+        <input type='image' src='".WP_CART_URL."/images/Shoppingcart_delete.gif' value='Remove' title='Remove' /></form></td></tr>
         
         ";
         
