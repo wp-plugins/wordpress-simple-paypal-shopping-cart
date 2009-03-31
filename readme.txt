@@ -4,7 +4,7 @@ Donate link: http://www.tipsandtricks-hq.com/development-center
 Tags: Paypal shopping cart, online shop, shopping cart, online checkout system, sell digital products
 Requires at least: 2.5
 Tested up to: 2.7.1
-Stable tag: 1.7
+Stable tag: 1.8
 
 Very easy to use Simple Paypal Shopping Cart Plugin. Great for selling digital products online in one click.
 
