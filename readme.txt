@@ -4,7 +4,7 @@ Donate link: http://www.tipsandtricks-hq.com/development-center
 Tags: Paypal shopping cart, online shop, shopping cart, online checkout system, sell digital products
 Requires at least: 2.5
 Tested up to: 2.7.1
-Stable tag: 1.1
+Stable tag: 1.6
 
 Very easy to use Simple Paypal Shopping Cart Plugin. Great for selling digital products online in one click.
 
@@ -17,7 +17,7 @@ http://www.tipsandtricks-hq.com/?p=768
 
 Usage:
 1. To add the 'Add to Cart' button simply add the trigger text [wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:end] to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.
-2. To add the shopping cart to a post or page or sidebar simply add the trigger text <!--show-wp-shopping-cart--> to a post or page or sidebar. The shopping cart will only be visible when a customer adds a product.
+2. To add the shopping cart to a post or page simply add the trigger text <!--show-wp-shopping-cart--> to a post or page. Use the sidebar widget to display the shopping cart on the sidebar. The shopping cart will only be visible in a post or page when a customer adds a product.
 
 == Installation ==
 
