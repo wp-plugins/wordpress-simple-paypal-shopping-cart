@@ -1,0 +1,15 @@
+.shopping_cart{
+font-size:12px;
+}
+.shopping_cart h2{
+font-size:14px;
+}
+
+.wp_cart_checkout_button:hover{
+	opacity:0.7;
+}
+
+.wp_cart_button:hover{
+	opacity:0.7;
+}
+
