@@ -1,23 +1,51 @@
 === WordPress Simple Paypal Shopping Cart ===
 Contributors: Ruhul Amin
-Donate link: http://www.tipsandtricks-hq.com/development-center
-Tags: Paypal shopping cart, online shop, shopping cart, online checkout system, sell digital products
+Donate link: http://www.tipsandtricks-hq.com
+Tags: WordPress shopping cart, Paypal shopping cart, online shop, shopping cart, wordperss ecommerce, sell digital products
 Requires at least: 2.5
-Tested up to: 2.7.1
-Stable tag: 1.8
+Tested up to: 2.8.2
+Stable tag:2.2
 
-Very easy to use Simple Paypal Shopping Cart Plugin. Great for selling digital products online in one click.
+Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
 
 == Description ==
 
-WordPress Simple Paypal Shopping Cart adds a 'Add to Cart' button on any post or page. It allows you to add the shopping cart to any post or page or sidebar easily. The shows the user what they currently have in the cart and allows them to remove the items.
+WordPress Simple Paypal Shopping Cart allows you to add an 'Add to Cart' button on any posts or pages. It also allows you to add/display the shopping cart on any post or page or sidebar easily. The shopping cart shows the user what they currently have in the cart and allows them to remove the items. It can be easily integrated with the NextGen Photo Gallery plugin too.
 
-For screenshots, more information and updates, please visit:
+For screenshots, detailed documentation, support and updates, please visit:
 http://www.tipsandtricks-hq.com/?p=768
+or
+http://www.tipsandtricks-hq.com/ecommerce/wp-shopping-cart
 
-Usage:
+== Usage ==
 1. To add the 'Add to Cart' button simply add the trigger text [wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:end] to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.
-2. To add the shopping cart to a post or page simply add the trigger text <!--show-wp-shopping-cart--> to a post or page. Use the sidebar widget to display the shopping cart on the sidebar. The shopping cart will only be visible in a post or page when a customer adds a product.
+2. To add the 'Add to Cart' button on the sidebar or from other template files use the following function:
+<?php echo print_wp_cart_button_for_product('PRODUCT-NAME', PRODUCT-PRICE); ?>
+Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.
+3. To add the shopping cart to a post or page simply add the trigger text <!--show-wp-shopping-cart--> to a post or page. Use the sidebar widget to display the shopping cart on the sidebar. The shopping cart will only be visible in a post or page when a customer adds a product.
+
+Using Shipping
+1. To use shipping cost use the following trigger text
+[wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:shipping:SHIPPING-COST:end]
+
+or use the following php function from your wordpress template files
+<?php echo print_wp_cart_button_for_product('product name',price,shipping cost); ?>
+
+Using Variation Control
+1. To use variation control use the following trigger text
+[wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:var1[VARIATION-NAME|VARIATION1|VARIATION2|VARIATION3]:end]
+
+eg. [wp_cart:Demo Product 1:price:15:var1[Size|Small|Medium|Large]:end]
+
+2. To use variation control with shipping use the following trigger text:
+[wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:shipping:SHIPPING-COST:var1[VARIATION-NAME|VARIATION1|VARIATION2|VARIATION3]:end]
+
+eg. [wp_cart:Demo Product 1:price:15:shipping:2:var1[Size|Small|Medium|Large]:end]
+
+3. To use multiple variation option use the following trigger text:
+[wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:var1[VARIATION-NAME|VARIATION1|VARIATION2|VARIATION3]:var2[VARIATION-NAME|VARIATION1|VARIATION2]:end]
+
+eg. [wp_cart:Demo Product 1:price:15:shipping:2:var1[Size|Small|Medium|Large]:var2[Color|Red|Green]:end]
 
 == Installation ==
 
@@ -38,5 +66,8 @@ Usage:
 == Screenshots ==
 Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
 
+== Changelog ==
+Changelog can be found at the following URL
+http://www.tipsandtricks-hq.com/ecommerce/?p=319
 
 

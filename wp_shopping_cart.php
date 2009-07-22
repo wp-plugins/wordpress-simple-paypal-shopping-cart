@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v1.6
+Version: v2.2
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
-Description: Simple Paypal Shopping Cart Plugin, very easy to use and great for selling digital products or service from your blog!
+Description: Simple WordPress Shopping Cart Plugin, very easy to use and great for selling products and services from your blog!
 */
 
 /*
@@ -66,6 +66,7 @@ function reset_wp_cart()
         unset($products[$key]);
     }
     $_SESSION['simpleCart'] = $products;
+    header('Location: ' . get_option('cart_return_from_paypal_url'));
 }
 
 if ($_POST['addcart'])
@@ -98,7 +99,7 @@ if ($_POST['addcart'])
         else
             $price = $_POST['price'];
         
-        $product = array('name' => stripslashes($_POST['product']), 'price' => $price, 'quantity' => $count, 'cartLink' => $_POST['cartLink'], 'item_number' => $_POST['item_number']);
+        $product = array('name' => stripslashes($_POST['product']), 'price' => $price, 'quantity' => $count, 'shipping' => $_POST['shipping'], 'cartLink' => $_POST['cartLink'], 'item_number' => $_POST['item_number']);
         array_push($products, $product);
     }
     
@@ -145,7 +146,7 @@ function print_wp_shopping_cart()
 		return $output;
 	}
     $email = get_bloginfo('admin_email');
-       
+    $use_affiliate_platform = get_option('wp_use_aff_platform');   
     $defaultCurrency = get_option('cart_payment_currency');
     $defaultSymbol = get_option('cart_currency_symbol');
     $defaultEmail = get_option('cart_paypal_email');
@@ -168,7 +169,15 @@ function print_wp_shopping_cart()
             
     if (!empty($return))
         $urls .= '<input type="hidden" name="return" value="'.$return.'" />';
-	  
+	
+	if ($use_affiliate_platform)  
+	{
+		if (function_exists('wp_aff_platform_install'))
+		{
+			$notify = WP_CART_URL.'/paypal.php';
+			$urls .= '<input type="hidden" name="notify_url" value="'.$notify.'" />';
+		}
+	}
 	$title = get_option('wp_cart_title');
 	//if (empty($title)) $title = 'Your Shopping Cart';
     
@@ -176,7 +185,7 @@ function print_wp_shopping_cart()
     $output .= '<div class="shopping_cart" style=" padding: 5px;">';
     if (!get_option('wp_shopping_cart_image_hide'))    
     {
-    	$output .= "<input type='image' src='".WP_CART_URL."/images/shopping_cart_icon.gif' value='Cart' title='Cart' />";
+    	$output .= "<input type='image' src='".WP_CART_URL."/images/shopping_cart_icon.png' value='Cart' title='Cart' />";
     }
     if(!empty($title))
     {
@@ -199,62 +208,76 @@ function print_wp_shopping_cart()
         <th>Item Name</th><th>Quantity</th><th>Price</th>
         </tr>';
     
-    foreach ($_SESSION['simpleCart'] as $item)
-    {
-        $total += $item['price'] * $item['quantity'];
-        
-        $total_items +=  $item['quantity'];
-    }
-    
-    foreach ($_SESSION['simpleCart'] as $item)
-    {
-        $output .= "                 
-        <tr><td style='overflow: hidden;'><a href='".$item['cartLink']."'>".$item['name']."</a></td>
-        <td style='text-align: center'><form method=\"post\"  action=\"\" name='pcquantity' style='display: inline'>
-        <input type='hidden' name='product' value='".$item['name']."' />
-        
-        <input type='hidden' name='cquantity' value='1' /><input type='text' name='quantity' value='".$item['quantity']."' size='1' onchange='document.pcquantity.submit();' onkeypress='document.getElementById(\"pinfo\").style.display = \"\";' /></form></td>
-        <td style='text-align: center'>".print_payment_currency(($item['price'] * $item['quantity']), $paypal_symbol, $decimal)."</td>
-        <td><form method=\"post\"  action=\"\">
-        <input type='hidden' name='product' value='".$item['name']."' />
-        <input type='hidden' name='delcart' value='1' />
-        <input type='image' src='".WP_CART_URL."/images/Shoppingcart_delete.gif' value='Remove' title='Remove' /></form></td></tr>
-        
-        ";
-        
-        $form .= "
-            <input type=\"hidden\" name=\"item_name_$count\" value=\"".$item['name']."\" />
-            <input type=\"hidden\" name=\"amount_$count\" value='".$item['price']."' />
-            <input type=\"hidden\" name=\"quantity_$count\" value=\"".$item['quantity']."\" />
-            <input type='hidden' name='item_number' value='".$item['item_number']."' />
-        ";
-        $form .= "<input type=\"hidden\" name=\"shipping_$count\" value=\"0\" />";
-        $count++;
-    }
+	    foreach ($_SESSION['simpleCart'] as $item)
+	    {
+	        $total += $item['price'] * $item['quantity'];
+	        $item_total_shipping += $item['shipping'] * $item['quantity'];
+	        $total_items +=  $item['quantity'];
+	    }
+	    $baseShipping = get_option('cart_base_shipping_cost');
+	    $postage_cost = $item_total_shipping + $baseShipping;
+	
+	    foreach ($_SESSION['simpleCart'] as $item)
+	    {
+	        $output .= "                 
+	        <tr><td style='overflow: hidden;'><a href='".$item['cartLink']."'>".$item['name']."</a></td>
+	        <td style='text-align: center'><form method=\"post\"  action=\"\" name='pcquantity' style='display: inline'>
+	        <input type='hidden' name='product' value='".$item['name']."' />
+	        
+	        <input type='hidden' name='cquantity' value='1' /><input type='text' name='quantity' value='".$item['quantity']."' size='1' onchange='document.pcquantity.submit();' onkeypress='document.getElementById(\"pinfo\").style.display = \"\";' /></form></td>
+	        <td style='text-align: center'>".print_payment_currency(($item['price'] * $item['quantity']), $paypal_symbol, $decimal)."</td>
+	        <td><form method=\"post\"  action=\"\">
+	        <input type='hidden' name='product' value='".$item['name']."' />
+	        <input type='hidden' name='delcart' value='1' />
+	        <input type='image' src='".WP_CART_URL."/images/Shoppingcart_delete.png' value='Remove' title='Remove' /></form></td></tr>
+	        
+	        ";
+	        
+	        $form .= "
+	            <input type=\"hidden\" name=\"item_name_$count\" value=\"".$item['name']."\" />
+	            <input type=\"hidden\" name=\"amount_$count\" value='".$item['price']."' />
+	            <input type=\"hidden\" name=\"quantity_$count\" value=\"".$item['quantity']."\" />
+	            <input type='hidden' name='item_number' value='".$item['item_number']."' />
+	        ";        
+	        $count++;
+	    }
+	    $form .= "<input type=\"hidden\" name=\"shipping_1\" value='".$postage_cost."' />";  
     }
     
        	$count--;
        	
        	if ($count)
        	{
-       		$output .= '<tr><td></td><td></td><td></td></tr>';       
-       		$output .= "
-       		<tr><td colspan='2' style='font-weight: bold; text-align: right;'>Total: </td><td style='text-align: center'>".print_payment_currency(($total), $paypal_symbol, $decimal)."</td><td></td></tr>
+       		$output .= '<tr><td></td><td></td><td></td></tr>';  
+
+            if ($postage_cost != 0)
+            {
+                $output .= "
+                <tr><td colspan='2' style='font-weight: bold; text-align: right;'>Subtotal: </td><td style='text-align: center'>".print_payment_currency($total, $paypal_symbol, $decimal)."</td><td></td></tr>
+                <tr><td colspan='2' style='font-weight: bold; text-align: right;'>Shipping: </td><td style='text-align: center'>".print_payment_currency($postage_cost, $paypal_symbol, $decimal)."</td><td></td></tr>";
+            }
+
+            $output .= "
+       		<tr><td colspan='2' style='font-weight: bold; text-align: right;'>Total: </td><td style='text-align: center'>".print_payment_currency(($total+$postage_cost), $paypal_symbol, $decimal)."</td><td></td></tr>
        		<tr><td colspan='4'>";
        
               	$output .= "<form action=\"https://www.paypal.com/us/cgi-bin/webscr\" method=\"post\">$form";
     			if ($count)
-            		$output .= '<input type="image" src="'.WP_CART_URL.'/images/paypal_checkout.png" name="submit" alt="Make payments with PayPal - it\'s fast, free and secure!" />';
+            		$output .= '<input type="image" src="'.WP_CART_URL.'/images/paypal_checkout.png" name="submit" class="wp_cart_checkout_button" alt="Make payments with PayPal - it\'s fast, free and secure!" />';
        
     			$output .= $urls.'
 			    <input type="hidden" name="business" value="'.$email.'" />
 			    <input type="hidden" name="currency_code" value="'.$paypal_currency.'" />
 			    <input type="hidden" name="cmd" value="_cart" />
 			    <input type="hidden" name="upload" value="1" />
-			    </form>';          
+			    <input type="hidden" name="mrb" value="3FWGC6LFTMTUG" />';
+			    if ($use_affiliate_platform)
+			    {
+			    	$output .= wp_cart_add_custom_field();
+			    }
+			    $output .= '</form>';          
        	}       
-       	$output .= "
-       
+       	$output .= "       
        	</td></tr>
     	</table></div>
     	";
@@ -264,56 +287,237 @@ function print_wp_shopping_cart()
 // https://www.sandbox.paypal.com/cgi-bin/webscr (paypal testing site)
 // https://www.paypal.com/us/cgi-bin/webscr (paypal live site )
 
-function print_wp_cart_button($content)
-{          
-        $addcart = get_option('addToCartButtonName');
-    
+function wp_cart_add_custom_field()
+{
+	if (function_exists('wp_aff_platform_install'))
+	{
+		$output = '';
+		if (!empty($_SESSION['ap_id']))
+		{
+			$output = '<input type="hidden" name="custom" value="'.$_SESSION['ap_id'].'" id="wp_affiliate" />';
+		}
+		else if (isset($_COOKIE['ap_id']))
+		{
+			$output = '<input type="hidden" name="custom" value="'.$_COOKIE['ap_id'].'" id="wp_affiliate" />';
+		}
+		return 	$output;
+	}
+}
+
+//function print_wp_cart_button($content)
+//{          
+//        $addcart = get_option('addToCartButtonName');
+//    
+//        if (!$addcart || ($addcart == '') )
+//            $addcart = 'Add to Cart';
+//        
+//        $pattern = '#\[wp_cart:.+:price:#';
+//        preg_match_all ($pattern, $content, $matches);
+//        
+//        foreach ($matches[0] as $match)
+//        {            
+//            $pattern = '[wp_cart:';
+//            $m = str_replace ($pattern, '', $match);
+//            $pattern = ':price:';
+//            $m = str_replace ($pattern, '', $m);
+//            
+//            $pieces = explode('|',$m);
+//            
+//            if (sizeof($pieces) == 1)
+//            {      
+//                $replacement = '<object><form method="post"  action=""  style="display:inline">';
+//				if (preg_match("/http:/", $addcart)) // Use the image as the 'add to cart' button
+//				{
+//				    $replacement .= '<input type="image" src="'.$addcart.'" class="wp_cart_button" alt="Add to Cart"/>';
+//				} 
+//				else 
+//				{
+//				    $replacement .= '<input type="submit" value="'.$addcart.'" />';
+//				}                
+//                
+//                $replacement .= '<input type="hidden" name="product" value="'.$pieces['0'].
+//                '" /><input type="hidden" name="price" value="';
+//                
+//                $content = str_replace ($match, $replacement, $content);
+//            }
+//            $forms = str_replace(':shipping:',
+//	        '" /><input type="hidden" name="shipping" value="',    
+//	        $content);  
+//
+//	        $forms = str_replace(':end]',    
+//	        '" /><input type="hidden" name="addcart" value="1" /><input type="hidden" name="cartLink" value="'.cart_current_page_url().'" />
+//	        </form></object>',    
+//	        $forms);
+//        } 
+//    
+//    if (empty($forms))
+//        $forms = $content;
+//       
+//    return $forms;
+//}
+
+function print_wp_cart_button_new($content)
+{
+	//wp_cart_add_read_form_javascript();
+        
+        $addcart = get_option('addToCartButtonName');    
         if (!$addcart || ($addcart == '') )
             $addcart = 'Add to Cart';
-        
-        $pattern = '#\[wp_cart:.+:price:#';
+            	
+        $pattern = '#\[wp_cart:.+:price:.+:end]#';
         preg_match_all ($pattern, $content, $matches);
-        
+
         foreach ($matches[0] as $match)
-        {            
+        {   
+        	$var_output = '';
+            $pos = strpos($match,":var1");
+			if ($pos)
+			{				
+				$match_tmp = $match;
+				// Variation control is used
+				$pos2 = strpos($match,":var2");
+				if ($pos2)
+				{
+					//echo '<br />'.$match_tmp.'<br />';
+					$pattern = '#var2\[.*]:#';
+				    preg_match_all ($pattern, $match_tmp, $matches3);
+				    $match3 = $matches3[0][0];
+				    //echo '<br />'.$match3.'<br />';
+				    $match_tmp = str_replace ($match3, '', $match_tmp);
+				    
+				    $pattern = 'var2[';
+				    $m3 = str_replace ($pattern, '', $match3);
+				    $pattern = ']:';
+				    $m3 = str_replace ($pattern, '', $m3);  
+				    $pieces3 = explode('|',$m3);
+			
+				    $variation2_name = $pieces3[0];
+				    $var_output .= $variation2_name." : ";
+				    $var_output .= '<select name="variation2" onchange="ReadForm (this.form, false);">';
+				    for ($i=1;$i<sizeof($pieces3); $i++)
+				    {
+				    	$var_output .= '<option value="'.$pieces3[$i].'">'.$pieces3[$i].'</option>';
+				    }
+				    $var_output .= '</select><br />';				    
+				}				
+			    
+			    $pattern = '#var1\[.*]:#';
+			    preg_match_all ($pattern, $match_tmp, $matches2);
+			    $match2 = $matches2[0][0];
+
+			    $match_tmp = str_replace ($match2, '', $match_tmp);
+
+				    $pattern = 'var1[';
+				    $m2 = str_replace ($pattern, '', $match2);
+				    $pattern = ']:';
+				    $m2 = str_replace ($pattern, '', $m2);  
+				    $pieces2 = explode('|',$m2);
+			
+				    $variation_name = $pieces2[0];
+				    $var_output .= $variation_name." : ";
+				    $var_output .= '<select name="variation1" onchange="ReadForm (this.form, false);">';
+				    for ($i=1;$i<sizeof($pieces2); $i++)
+				    {
+				    	$var_output .= '<option value="'.$pieces2[$i].'">'.$pieces2[$i].'</option>';
+				    }
+				    $var_output .= '</select><br />';				
+
+			}
+
             $pattern = '[wp_cart:';
             $m = str_replace ($pattern, '', $match);
-            $pattern = ':price:';
+            
+            $pattern = 'price:';
             $m = str_replace ($pattern, '', $m);
-            
-            $pieces = explode('|',$m);         
-            
-            if (sizeof($pieces) == 1)
-            {      
-                $replacement = '<object><form method="post"  action=""  style="display:inline">';
-				if (preg_match("/http:/", $addcart)) // Use the image as the 'add to cart' button
+            $pattern = 'shipping:';
+            $m = str_replace ($pattern, '', $m);
+            $pattern = ':end]';
+            $m = str_replace ($pattern, '', $m);
+
+            $pieces = explode(':',$m);
+    
+                $replacement = '<object><form method="post"  action=""  style="display:inline" onsubmit="return ReadForm(this, true);">';             
+                if (!empty($var_output))
+                {
+                	$replacement .= $var_output;
+                } 
+				                
+				if (preg_match("/http/", $addcart)) // Use the image as the 'add to cart' button
 				{
-				    $replacement .= '<input type="image" src="'.$addcart.'" alt="Add to Cart"/>';
+				    $replacement .= '<input type="image" src="'.$addcart.'" class="wp_cart_button" alt="Add to Cart"/>';
 				} 
 				else 
 				{
 				    $replacement .= '<input type="submit" value="'.$addcart.'" />';
-				}                
-                
-                $replacement .= '<input type="hidden" name="product" value="'.$pieces['0'].
-                '" /><input type="hidden" name="price" value="';
-                
-                $content = str_replace ($match, $replacement, $content);
-            }   
-            $forms = str_replace(':item_num:',    
-	        '" /><input type="hidden" name="shipping" value="',    
-	        $content);  
-	               
-	        $forms = str_replace(':end]',    
-	        '" /><input type="hidden" name="addcart" value="1" /><input type="hidden" name="cartLink" value="'.cart_current_page_url().'" />
-	        </form></object>',    
-	        $forms);
-        } 
+				} 
+
+                $replacement .= '<input type="hidden" name="product" value="'.$pieces['0'].'" /><input type="hidden" name="price" value="'.$pieces['1'].'" />';
+                $replacement .= '<input type="hidden" name="product_tmp" value="'.$pieces['0'].'" />';
+                if (sizeof($pieces) >2 )
+                {
+                	//we have shipping
+                	$replacement .= '<input type="hidden" name="shipping" value="'.$pieces['2'].'" />';
+                }
+                $replacement .= '<input type="hidden" name="addcart" value="1" /></form></object>';
+                $content = str_replace ($match, $replacement, $content);                
+        }
+        return $content;	
+}
+
+function wp_cart_add_read_form_javascript()
+{
+	echo '
+	<script type="text/javascript">
+	<!--
+	//
+	function ReadForm (obj1, tst) 
+	{ 
+	    // Read the user form
+	    var i,j,pos;
+	    val_total="";val_combo="";		
+	
+	    for (i=0; i<obj1.length; i++) 
+	    {     
+	        // run entire form
+	        obj = obj1.elements[i];           // a form element
+	
+	        if (obj.type == "select-one") 
+	        {   // just selects
+	            if (obj.name == "quantity" ||
+	                obj.name == "amount") continue;
+		        pos = obj.selectedIndex;        // which option selected
+		        val = obj.options[pos].value;   // selected value
+		        val_combo = val_combo + "(" + val + ")";
+	        }
+	    }
+		// Now summarize everything we have processed above
+		val_total = obj1.product_tmp.value + val_combo;
+		obj1.product.value = val_total;
+	}
+	//-->
+	</script>';	
+}
+function print_wp_cart_button_for_product($name, $price, $shipping=0)
+{
+        $addcart = get_option('addToCartButtonName');
     
-    if (empty($forms))
-        $forms = $content;
-       
-    return $forms;
+        if (!$addcart || ($addcart == '') )
+            $addcart = 'Add to Cart';
+                  
+
+        $replacement = '<object><form method="post"  action=""  style="display:inline">';
+		if (preg_match("/http:/", $addcart)) // Use the image as the 'add to cart' button
+		{
+			$replacement .= '<input type="image" src="'.$addcart.'" class="wp_cart_button" alt="Add to Cart"/>';
+		} 
+		else 
+		{
+		    $replacement .= '<input type="submit" value="'.$addcart.'" />';
+		}             	      
+
+        $replacement .= '<input type="hidden" name="product" value="'.$name.'" /><input type="hidden" name="price" value="'.$price.'" /><input type="hidden" name="shipping" value="'.$shipping.'" /><input type="hidden" name="addcart" value="1" /><input type="hidden" name="cartLink" value="'.cart_current_page_url().'" /></form></object>';
+                
+        return $replacement;
 }
 
 function cart_not_empty()
@@ -348,13 +552,16 @@ function cart_current_page_url() {
 
 function show_wp_cart_options_page () {
 	
-	$wp_simple_paypal_shopping_cart_version = 1.6;
+	$wp_simple_paypal_shopping_cart_version = 2.2;
 	
     $defaultCurrency = get_option('cart_payment_currency');    
     if (empty($defaultCurrency)) $defaultCurrency = 'USD';
     
     $defaultSymbol = get_option('cart_currency_symbol');
     if (empty($defaultSymbol)) $defaultSymbol = '$';
+
+    $baseShipping = get_option('cart_base_shipping_cost');
+    if (empty($baseShipping)) $baseShipping = 0;
 
     $defaultEmail = get_option('cart_paypal_email');
     if (empty($defaultEmail)) $defaultEmail = get_bloginfo('admin_email');
@@ -373,7 +580,12 @@ function show_wp_cart_options_page () {
         $wp_cart_image_hide = 'checked="checked"';
     else
         $wp_cart_image_hide = '';
-              
+
+    if (get_option('wp_use_aff_platform'))
+        $wp_use_aff_platform = 'checked="checked"';
+    else
+        $wp_use_aff_platform = '';
+                              
 	?>
  	<h2>Simple Paypal Shopping Cart Settings v <?php echo $wp_simple_paypal_shopping_cart_version; ?></h2>
  	
@@ -417,6 +629,11 @@ function show_wp_cart_options_page () {
 </tr>
 
 <tr valign="top">
+<th scope="row">Base Shipping Cost</th>
+<td><input type="text" name="cart_base_shipping_cost" value="'.$baseShipping.'" size="6" /> This is the base shipping cost that will be added to the total of individual products shipping cost. Put 0 if you do not want to charge shipping cost or use base shipping cost</td>
+</tr>
+
+<tr valign="top">
 <th scope="row">Add to Cart button text or Image</th>
 <td><input type="text" name="addToCartButtonName" value="'.$addcart.'" size="70" /><br />To use a cusomized image as the button simply enter the URL of the image file. eg. http://www.tipsandtricks-hq.com/wp-content/plugins/wordpress-paypal-shopping-cart/images/buy_now_button.png</td>
 </tr>
@@ -433,15 +650,23 @@ function show_wp_cart_options_page () {
 <td><input type="checkbox" name="wp_shopping_cart_image_hide" value="1" '.$wp_cart_image_hide.' /><br />If ticked the shopping cart image will no be shown.</td>
 </tr>
 </table>
-		
+
+<table class="form-table">
+<tr valign="top">
+<th scope="row">Use WP Affiliate Platform</th>
+<td><input type="checkbox" name="wp_use_aff_platform" value="1" '.$wp_use_aff_platform.' /><br />Check this if using with the <a href="http://tipsandtricks-hq.com/?p=1474" target="_blank">WP Affiliate Platform plugin</a>.</td>
+</tr>
+</table>
+				
 <p class="submit">
 <input type="submit" name="Submit" value="Update Options &raquo;" />
 <input type="hidden" name="action" value="update" />
-<input type="hidden" name="page_options" value="cart_payment_currency,cart_currency_symbol,cart_paypal_email,addToCartButtonName,wp_cart_title,wp_cart_empty_text,cart_return_from_paypal_url,wp_shopping_cart_image_hide" />
+<input type="hidden" name="page_options" value="cart_payment_currency,cart_currency_symbol,cart_base_shipping_cost,cart_paypal_email,addToCartButtonName,wp_cart_title,wp_cart_empty_text,cart_return_from_paypal_url,wp_shopping_cart_image_hide,wp_use_aff_platform" />
 </p>
 
  </form>
  ';
+    echo 'Like the Simple WordPress Shopping Cart Plugin? <a href="http://wordpress.org/extend/plugins/wordpress-simple-paypal-shopping-cart" target="_blank">Give it a good rating</a>'; 
 }
 
 function wp_cart_options()
@@ -486,13 +711,22 @@ function widget_wp_paypal_shopping_cart_init()
     wp_register_widget_control('wp_paypal_shopping_cart_widgets', __('WP Paypal Shopping Cart'), 'wp_paypal_shopping_cart_widget_control' );
 }
 
+function wp_cart_css()
+{
+    echo '<link type="text/css" rel="stylesheet" href="'.WP_CART_URL.'/wp_shopping_cart_style.css" />'."\n";
+}
+
 // Insert the options page to the admin menu
 add_action('admin_menu','wp_cart_options_page');
 
 add_action('init', 'widget_wp_paypal_shopping_cart_init');
 
-add_filter('the_content', 'print_wp_cart_button',11);
+//add_filter('the_content', 'print_wp_cart_button',11);
+
+add_filter('the_content', 'print_wp_cart_button_new',11);
 
 add_filter('the_content', 'shopping_cart_show');
 
+add_action('wp_head', 'wp_cart_css');
+add_action('wp_footer', 'wp_cart_add_read_form_javascript');
 ?>
