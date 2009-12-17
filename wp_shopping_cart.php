@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v2.2
+Version: v2.6
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -30,6 +30,15 @@ define('WP_CART_URL', get_option('siteurl').'/wp-content/plugins/' . WP_CART_FOL
 add_option('wp_cart_title', 'Your Shopping Cart');
 add_option('wp_cart_empty_text', 'Your cart is empty');
 add_option('cart_return_from_paypal_url', get_bloginfo('wpurl'));
+
+function show_wp_shopping_cart_handler()
+{
+    if (cart_not_empty())
+    {
+       	$output = print_wp_shopping_cart();
+    }
+    return $output;	
+}
 
 function shopping_cart_show($content)
 {
@@ -143,6 +152,11 @@ function print_wp_shopping_cart()
 		{
 			$output .= $empty_cart_text;
 		}
+		$cart_products_page_url = get_option('cart_products_page_url');
+		if (!empty($cart_products_page_url))
+		{
+			$output .= '<br /><a rel="nofollow" href="'.$cart_products_page_url.'">Visit The Shop</a>';
+		}		
 		return $output;
 	}
     $email = get_bloginfo('admin_email');
@@ -205,7 +219,7 @@ function print_wp_shopping_cart()
     {   
         $output .= '
         <tr>
-        <th>Item Name</th><th>Quantity</th><th>Price</th>
+        <th style="text-align: left">Item Name</th><th>Quantity</th><th>Price</th>
         </tr>';
     
 	    foreach ($_SESSION['simpleCart'] as $item)
@@ -216,9 +230,15 @@ function print_wp_shopping_cart()
 	    }
 	    $baseShipping = get_option('cart_base_shipping_cost');
 	    $postage_cost = $item_total_shipping + $baseShipping;
+	    
+	    $cart_free_shipping_threshold = get_option('cart_free_shipping_threshold');
+	    if (!empty($cart_free_shipping_threshold) && $total > $cart_free_shipping_threshold)
+	    {
+	    	$postage_cost = 0;
+	    }
 	
 	    foreach ($_SESSION['simpleCart'] as $item)
-	    {
+	    {    	
 	        $output .= "                 
 	        <tr><td style='overflow: hidden;'><a href='".$item['cartLink']."'>".$item['name']."</a></td>
 	        <td style='text-align: center'><form method=\"post\"  action=\"\" name='pcquantity' style='display: inline'>
@@ -227,7 +247,7 @@ function print_wp_shopping_cart()
 	        <input type='hidden' name='cquantity' value='1' /><input type='text' name='quantity' value='".$item['quantity']."' size='1' onchange='document.pcquantity.submit();' onkeypress='document.getElementById(\"pinfo\").style.display = \"\";' /></form></td>
 	        <td style='text-align: center'>".print_payment_currency(($item['price'] * $item['quantity']), $paypal_symbol, $decimal)."</td>
 	        <td><form method=\"post\"  action=\"\">
-	        <input type='hidden' name='product' value='".$item['name']."' />
+	        <input type=\"hidden\" name=\"product\" value=\"".$item['name']."\" />
 	        <input type='hidden' name='delcart' value='1' />
 	        <input type='image' src='".WP_CART_URL."/images/Shoppingcart_delete.png' value='Remove' title='Remove' /></form></td></tr>
 	        
@@ -248,7 +268,7 @@ function print_wp_shopping_cart()
        	
        	if ($count)
        	{
-       		$output .= '<tr><td></td><td></td><td></td></tr>';  
+       		//$output .= '<tr><td></td><td></td><td></td></tr>';  
 
             if ($postage_cost != 0)
             {
@@ -303,58 +323,6 @@ function wp_cart_add_custom_field()
 		return 	$output;
 	}
 }
-
-//function print_wp_cart_button($content)
-//{          
-//        $addcart = get_option('addToCartButtonName');
-//    
-//        if (!$addcart || ($addcart == '') )
-//            $addcart = 'Add to Cart';
-//        
-//        $pattern = '#\[wp_cart:.+:price:#';
-//        preg_match_all ($pattern, $content, $matches);
-//        
-//        foreach ($matches[0] as $match)
-//        {            
-//            $pattern = '[wp_cart:';
-//            $m = str_replace ($pattern, '', $match);
-//            $pattern = ':price:';
-//            $m = str_replace ($pattern, '', $m);
-//            
-//            $pieces = explode('|',$m);
-//            
-//            if (sizeof($pieces) == 1)
-//            {      
-//                $replacement = '<object><form method="post"  action=""  style="display:inline">';
-//				if (preg_match("/http:/", $addcart)) // Use the image as the 'add to cart' button
-//				{
-//				    $replacement .= '<input type="image" src="'.$addcart.'" class="wp_cart_button" alt="Add to Cart"/>';
-//				} 
-//				else 
-//				{
-//				    $replacement .= '<input type="submit" value="'.$addcart.'" />';
-//				}                
-//                
-//                $replacement .= '<input type="hidden" name="product" value="'.$pieces['0'].
-//                '" /><input type="hidden" name="price" value="';
-//                
-//                $content = str_replace ($match, $replacement, $content);
-//            }
-//            $forms = str_replace(':shipping:',
-//	        '" /><input type="hidden" name="shipping" value="',    
-//	        $content);  
-//
-//	        $forms = str_replace(':end]',    
-//	        '" /><input type="hidden" name="addcart" value="1" /><input type="hidden" name="cartLink" value="'.cart_current_page_url().'" />
-//	        </form></object>',    
-//	        $forms);
-//        } 
-//    
-//    if (empty($forms))
-//        $forms = $content;
-//       
-//    return $forms;
-//}
 
 function print_wp_cart_button_new($content)
 {
@@ -458,6 +426,7 @@ function print_wp_cart_button_new($content)
                 	//we have shipping
                 	$replacement .= '<input type="hidden" name="shipping" value="'.$pieces['2'].'" />';
                 }
+                $replacement .= '<input type="hidden" name="cartLink" value="'.cart_current_page_url().'" />';
                 $replacement .= '<input type="hidden" name="addcart" value="1" /></form></object>';
                 $content = str_replace ($match, $replacement, $content);                
         }
@@ -550,9 +519,26 @@ function cart_current_page_url() {
  return $pageURL;
 }
 
-function show_wp_cart_options_page () {
-	
-	$wp_simple_paypal_shopping_cart_version = 2.2;
+function show_wp_cart_options_page () {	
+	$wp_simple_paypal_shopping_cart_version = "2.6";
+    if (isset($_POST['info_update']))
+    {
+        update_option('cart_payment_currency', (string)$_POST["cart_payment_currency"]);
+        update_option('cart_currency_symbol', (string)$_POST["cart_currency_symbol"]);
+        update_option('cart_base_shipping_cost', (string)$_POST["cart_base_shipping_cost"]);
+        update_option('cart_free_shipping_threshold', (string)$_POST["cart_free_shipping_threshold"]);       
+        update_option('cart_paypal_email', (string)$_POST["cart_paypal_email"]);
+        update_option('addToCartButtonName', (string)$_POST["addToCartButtonName"]);
+        update_option('wp_cart_title', (string)$_POST["wp_cart_title"]);
+        update_option('wp_cart_empty_text', (string)$_POST["wp_cart_empty_text"]);
+        update_option('cart_return_from_paypal_url', (string)$_POST["cart_return_from_paypal_url"]);
+        update_option('cart_products_page_url', (string)$_POST["cart_products_page_url"]);
+        update_option('wp_shopping_cart_image_hide', ($_POST['wp_shopping_cart_image_hide']!='') ? 'checked="checked"':'' );
+        update_option('wp_use_aff_platform', ($_POST['wp_use_aff_platform']!='') ? 'checked="checked"':'' );
+        
+        echo '<div id="message" class="updated fade">';
+        echo '<p><strong>Options Updated!</strong></p></div>';
+    }	
 	
     $defaultCurrency = get_option('cart_payment_currency');    
     if (empty($defaultCurrency)) $defaultCurrency = 'USD';
@@ -562,6 +548,8 @@ function show_wp_cart_options_page () {
 
     $baseShipping = get_option('cart_base_shipping_cost');
     if (empty($baseShipping)) $baseShipping = 0;
+    
+    $cart_free_shipping_threshold = get_option('cart_free_shipping_threshold');
 
     $defaultEmail = get_option('cart_paypal_email');
     if (empty($defaultEmail)) $defaultEmail = get_bloginfo('admin_email');
@@ -575,7 +563,8 @@ function show_wp_cart_options_page () {
 	//if (empty($title)) $title = 'Your Shopping Cart';
 	
 	$emptyCartText = get_option('wp_cart_empty_text');
-
+	$cart_products_page_url = get_option('cart_products_page_url');
+	
     if (get_option('wp_shopping_cart_image_hide'))
         $wp_cart_image_hide = 'checked="checked"';
     else
@@ -589,34 +578,37 @@ function show_wp_cart_options_page () {
 	?>
  	<h2>Simple Paypal Shopping Cart Settings v <?php echo $wp_simple_paypal_shopping_cart_version; ?></h2>
  	
- 	<p>For information and updates, please visit:<br />
+ 	<p>For information, updates and detailed documentation, please visit:<br />
     <a href="http://www.tipsandtricks-hq.com/?p=768">http://www.tipsandtricks-hq.com/?p=768</a></p>
     
      <fieldset class="options">
     <legend>Usage:</legend>
 
-    <p>1. To add the 'Add to Cart' button simply add the trigger text <strong>[wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:end]</strong> to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.</p>
-	<p>2. To add the shopping cart to a post or checkout page or sidebar simply add the trigger text <strong>&lt;!--show-wp-shopping-cart--&gt;</strong> to a post or page or use the sidebar widget. The shopping cart will only be visible when a customer adds a product. 
+    <p>1. To add the 'Add to Cart' button simply add the trigger text <strong>[wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:end]</strong> to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price. For example: [wp_cart:Test Product:price:15.00:end]</p>
+	<p>2. To add the shopping cart to a post or page (eg. checkout page) simply add the shortcode <strong>[show_wp_shopping_cart]</strong> to a post or page or use the sidebar widget to add the shopping cart to the sidebar.</p> 
     </fieldset>
-    
+
+    <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
+    <input type="hidden" name="info_update" id="info_update" value="true" />    
  	<?php
- 
-    echo '
- <form method="post" action="options.php">';
- wp_nonce_field('update-options');
- echo '
+echo '
+	<div class="postbox">
+	<h3><label for="title">PayPal and Shopping Cart Settings</label></h3>
+	<div class="inside">';
+
+echo '
 <table class="form-table">
 <tr valign="top">
 <th scope="row">Paypal Email Address</th>
-<td><input type="text" name="cart_paypal_email" value="'.$defaultEmail.'" /></td>
+<td><input type="text" name="cart_paypal_email" value="'.$defaultEmail.'" size="40" /></td>
 </tr>
 <tr valign="top">
 <th scope="row">Shopping Cart title</th>
-<td><input type="text" name="wp_cart_title" value="'.$title.'"  /></td>
+<td><input type="text" name="wp_cart_title" value="'.$title.'" size="40" /></td>
 </tr>
 <tr valign="top">
 <th scope="row">Text to show when Cart empty</th>
-<td><input type="text" name="wp_cart_empty_text" value="'.$emptyCartText.'"  /></td>
+<td><input type="text" name="wp_cart_empty_text" value="'.$emptyCartText.'" size="40" /></td>
 </tr>
 <tr valign="top">
 <th scope="row">Currency</th>
@@ -630,19 +622,30 @@ function show_wp_cart_options_page () {
 
 <tr valign="top">
 <th scope="row">Base Shipping Cost</th>
-<td><input type="text" name="cart_base_shipping_cost" value="'.$baseShipping.'" size="6" /> This is the base shipping cost that will be added to the total of individual products shipping cost. Put 0 if you do not want to charge shipping cost or use base shipping cost</td>
+<td><input type="text" name="cart_base_shipping_cost" value="'.$baseShipping.'" size="5" /> <br />This is the base shipping cost that will be added to the total of individual products shipping cost. Put 0 if you do not want to charge shipping cost or use base shipping cost. <a href="http://www.tipsandtricks-hq.com/ecommerce/?p=297" target="_blank">Learn More on Shipping Calculation</a></td>
+</tr>
+
+<tr valign="top">
+<th scope="row">Free Shipping for Orders Over</th>
+<td><input type="text" name="cart_free_shipping_threshold" value="'.$cart_free_shipping_threshold.'" size="5" /> <br />When a customer orders more than this amount he/she will get free shipping. Leave empty if you do not want to use it.</td>
 </tr>
 
 <tr valign="top">
 <th scope="row">Add to Cart button text or Image</th>
-<td><input type="text" name="addToCartButtonName" value="'.$addcart.'" size="70" /><br />To use a cusomized image as the button simply enter the URL of the image file. eg. http://www.tipsandtricks-hq.com/wp-content/plugins/wordpress-paypal-shopping-cart/images/buy_now_button.png</td>
+<td><input type="text" name="addToCartButtonName" value="'.$addcart.'" size="100" /><br />To use a cusomized image as the button simply enter the URL of the image file. eg. http://www.tipsandtricks-hq.com/wp-content/plugins/wordpress-paypal-shopping-cart/images/buy_now_button.png</td>
 </tr>
 
 <tr valign="top">
 <th scope="row">Return URL</th>
-<td><input type="text" name="cart_return_from_paypal_url" value="'.$return_url.'" size="70" /><br />This is the URL the customer will be redirected to after a successful payment</td>
+<td><input type="text" name="cart_return_from_paypal_url" value="'.$return_url.'" size="100" /><br />This is the URL the customer will be redirected to after a successful payment</td>
+</tr>
+		
+<tr valign="top">
+<th scope="row">Products Page URL</th>
+<td><input type="text" name="cart_products_page_url" value="'.$cart_products_page_url.'" size="100" /><br />This is the URL of your products page if you have any. If used, the shopping cart widget will display a link to this page when cart is empty</td>
 </tr>
 </table>
+
 
 <table class="form-table">
 <tr valign="top">
@@ -657,13 +660,10 @@ function show_wp_cart_options_page () {
 <td><input type="checkbox" name="wp_use_aff_platform" value="1" '.$wp_use_aff_platform.' /><br />Check this if using with the <a href="http://tipsandtricks-hq.com/?p=1474" target="_blank">WP Affiliate Platform plugin</a>.</td>
 </tr>
 </table>
-				
-<p class="submit">
-<input type="submit" name="Submit" value="Update Options &raquo;" />
-<input type="hidden" name="action" value="update" />
-<input type="hidden" name="page_options" value="cart_payment_currency,cart_currency_symbol,cart_base_shipping_cost,cart_paypal_email,addToCartButtonName,wp_cart_title,wp_cart_empty_text,cart_return_from_paypal_url,wp_shopping_cart_image_hide,wp_use_aff_platform" />
-</p>
-
+</div></div>
+    <div class="submit">
+        <input type="submit" name="info_update" value="Update Options &raquo;" />
+    </div>						
  </form>
  ';
     echo 'Like the Simple WordPress Shopping Cart Plugin? <a href="http://wordpress.org/extend/plugins/wordpress-simple-paypal-shopping-cart" target="_blank">Give it a good rating</a>'; 
@@ -672,7 +672,9 @@ function show_wp_cart_options_page () {
 function wp_cart_options()
 {
      echo '<div class="wrap"><h2>WP Paypal Shopping Cart Options</h2>';
+     echo '<div id="poststuff"><div id="post-body">';
      show_wp_cart_options_page();
+     echo '</div></div>';
      echo '</div>';
 }
 
@@ -718,15 +720,14 @@ function wp_cart_css()
 
 // Insert the options page to the admin menu
 add_action('admin_menu','wp_cart_options_page');
-
 add_action('init', 'widget_wp_paypal_shopping_cart_init');
-
 //add_filter('the_content', 'print_wp_cart_button',11);
 
 add_filter('the_content', 'print_wp_cart_button_new',11);
-
 add_filter('the_content', 'shopping_cart_show');
 
+add_shortcode('show_wp_shopping_cart', 'show_wp_shopping_cart_handler');
+
 add_action('wp_head', 'wp_cart_css');
-add_action('wp_footer', 'wp_cart_add_read_form_javascript');
+add_action('wp_head', 'wp_cart_add_read_form_javascript');
 ?>
