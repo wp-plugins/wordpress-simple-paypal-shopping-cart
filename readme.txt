@@ -2,9 +2,9 @@
 Contributors: Ruhul Amin
 Donate link: http://www.tipsandtricks-hq.com
 Tags: WordPress shopping cart, Paypal shopping cart, online shop, shopping cart, wordperss ecommerce, sell digital products
-Requires at least: 2.5
-Tested up to: 2.8.2
-Stable tag:2.2
+Requires at least: 2.6
+Tested up to: 2.8.6
+Stable tag:2.6
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
 
@@ -22,7 +22,7 @@ http://www.tipsandtricks-hq.com/ecommerce/wp-shopping-cart
 2. To add the 'Add to Cart' button on the sidebar or from other template files use the following function:
 <?php echo print_wp_cart_button_for_product('PRODUCT-NAME', PRODUCT-PRICE); ?>
 Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.
-3. To add the shopping cart to a post or page simply add the trigger text <!--show-wp-shopping-cart--> to a post or page. Use the sidebar widget to display the shopping cart on the sidebar. The shopping cart will only be visible in a post or page when a customer adds a product.
+3. To add the shopping cart to a post or page (eg. checkout page) simply add the shortcode [show_wp_shopping_cart] to a post or page or use the sidebar widget to add the shopping cart to the sidebar. The shopping cart will only be visible in a post or page when a customer adds a product.
 
 Using Shipping
 1. To use shipping cost use the following trigger text
