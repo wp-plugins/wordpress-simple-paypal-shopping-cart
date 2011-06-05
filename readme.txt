@@ -3,8 +3,8 @@ Contributors: Ruhul Amin
 Donate link: http://www.tipsandtricks-hq.com
 Tags: WordPress shopping cart, Paypal shopping cart, online shop, shopping cart, wordperss ecommerce, sell digital products
 Requires at least: 2.6
-Tested up to: 2.9.2
-Stable tag:2.8
+Tested up to: 3.0
+Stable tag:2.8.4
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
 

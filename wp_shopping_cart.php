@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v2.8.1
+Version: v2.8.4
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -18,8 +18,10 @@ Description: Simple WordPress Shopping Cart Plugin, very easy to use and great f
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 */
-
-session_start();
+if(!isset($_SESSION)) 
+{
+	session_start();
+}	
 
 $siteurl = get_option('siteurl');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
@@ -290,7 +292,7 @@ function print_wp_shopping_cart()
        		<tr><td colspan='2' style='font-weight: bold; text-align: right;'>Total: </td><td style='text-align: center'>".print_payment_currency(($total+$postage_cost), $paypal_symbol, $decimal)."</td><td></td></tr>
        		<tr><td colspan='4'>";
        
-              	$output .= "<form action=\"https://www.paypal.com/us/cgi-bin/webscr\" method=\"post\">$form";
+              	$output .= "<form action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\">$form";
     			if ($count)
             		$output .= '<input type="image" src="'.WP_CART_URL.'/images/paypal_checkout.png" name="submit" class="wp_cart_checkout_button" alt="Make payments with PayPal - it\'s fast, free and secure!" />';
        
@@ -299,6 +301,7 @@ function print_wp_shopping_cart()
 			    <input type="hidden" name="currency_code" value="'.$paypal_currency.'" />
 			    <input type="hidden" name="cmd" value="_cart" />
 			    <input type="hidden" name="upload" value="1" />
+			    <input type="hidden" name="rm" value="2" />
 			    <input type="hidden" name="mrb" value="3FWGC6LFTMTUG" />';
 			    if ($use_affiliate_platform)
 			    {
@@ -529,7 +532,7 @@ function cart_current_page_url() {
 }
 
 function show_wp_cart_options_page () {	
-	$wp_simple_paypal_shopping_cart_version = "2.8.1";
+	$wp_simple_paypal_shopping_cart_version = "2.8.3";
     if (isset($_POST['info_update']))
     {
         update_option('cart_payment_currency', (string)$_POST["cart_payment_currency"]);
@@ -682,7 +685,7 @@ echo '
 <table class="form-table">
 <tr valign="top">
 <th scope="row">Hide Shopping Cart Image</th>
-<td><input type="checkbox" name="wp_shopping_cart_image_hide" value="1" '.$wp_cart_image_hide.' /><br />If ticked the shopping cart image will no be shown.</td>
+<td><input type="checkbox" name="wp_shopping_cart_image_hide" value="1" '.$wp_cart_image_hide.' /><br />If ticked the shopping cart image will not be shown.</td>
 </tr>
 </table>
 
@@ -739,7 +742,7 @@ function wp_paypal_shopping_cart_widget_control()
 }
 
 function widget_wp_paypal_shopping_cart_init()
-{
+{	
     $widget_options = array('classname' => 'widget_wp_paypal_shopping_cart', 'description' => __( "Display WP Paypal Shopping Cart.") );
     wp_register_sidebar_widget('wp_paypal_shopping_cart_widgets', __('WP Paypal Shopping Cart'), 'show_wp_paypal_shopping_cart_widget', $widget_options);
     wp_register_widget_control('wp_paypal_shopping_cart_widgets', __('WP Paypal Shopping Cart'), 'wp_paypal_shopping_cart_widget_control' );
