@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.1
+Version: v3.2.3
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -23,10 +23,8 @@ if(!isset($_SESSION))
 	session_start();
 }	
 
-$siteurl = get_option('siteurl');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_URL', plugins_url('',__FILE__));
-//define('WP_CART_URL', get_option('siteurl').'/wp-content/plugins/' . WP_CART_FOLDER);
 
 // loading language files
 load_plugin_textdomain('WSPSC', false, WP_CART_FOLDER . '/languages');
@@ -89,6 +87,11 @@ if (get_option('wp_shopping_cart_reset_after_redirection_to_return_page'))
 function reset_wp_cart()
 {
     $products = $_SESSION['simpleCart'];
+    if(empty($products))
+    {
+    	unset($_SESSION['simpleCart']);
+    	return;
+    }
     foreach ($products as $key => $item)
     {
         unset($products[$key]);
@@ -98,6 +101,9 @@ function reset_wp_cart()
 
 if ($_POST['addcart'])
 {
+	$domain_url = $_SERVER['SERVER_NAME'];
+	$cookie_domain = str_replace("www","",$domain_url);    	
+	setcookie("cart_in_use","true",time()+21600,"/",$cookie_domain);  //useful to not serve cached page when using with a caching plugin
     $count = 1;    
     $products = $_SESSION['simpleCart'];
     
@@ -239,8 +245,8 @@ function print_wp_shopping_cart()
     global $plugin_dir_name;
     $output .= '<div class="shopping_cart" style=" padding: 5px;">';
     if (!get_option('wp_shopping_cart_image_hide'))    
-    {
-    	$output .= "<input type='image' src='".WP_CART_URL."/images/shopping_cart_icon.png' value='".(__("Cart", "WSPSC"))."' title='".(__("Cart", "WSPSC"))."' />";
+    {    	
+    	$output .= "<img src='".WP_CART_URL."/images/shopping_cart_icon.png' value='".(__("Cart", "WSPSC"))."' title='".(__("Cart", "WSPSC"))."' />";
     }
     if(!empty($title))
     {
@@ -310,6 +316,7 @@ function print_wp_shopping_cart()
 	    }
 	    if (!get_option('wp_shopping_cart_use_profile_shipping'))
 	    {
+	    	$postage_cost = number_format($postage_cost,2);
 	    	$form .= "<input type=\"hidden\" name=\"shipping_1\" value='".$postage_cost."' />";  
 	    }
 	    if (get_option('wp_shopping_cart_collect_address'))//force address collection
@@ -459,7 +466,8 @@ function print_wp_cart_button_new($content)
 
             $pieces = explode(':',$m);
     
-                $replacement = '<object><form method="post"  action="" style="display:inline" onsubmit="return ReadForm(this, true);">';             
+                $replacement = '<object>';
+                $replacement .= '<form method="post" class="wp-cart-button-form" action="" style="display:inline" onsubmit="return ReadForm(this, true);">';             
                 if (!empty($var_output))
                 {
                 	$replacement .= $var_output;
@@ -482,7 +490,8 @@ function print_wp_cart_button_new($content)
                 	$replacement .= '<input type="hidden" name="shipping" value="'.$pieces['2'].'" />';
                 }
                 $replacement .= '<input type="hidden" name="cartLink" value="'.cart_current_page_url().'" />';
-                $replacement .= '<input type="hidden" name="addcart" value="1" /></form></object>';
+                $replacement .= '<input type="hidden" name="addcart" value="1" /></form>';
+                $replacement .= '</object>';
                 $content = str_replace ($match, $replacement, $content);                
         }
         return $content;	
@@ -529,7 +538,7 @@ function print_wp_cart_button_for_product($name, $price, $shipping=0)
             $addcart = __("Add to Cart", "WSPSC");
                   
 
-        $replacement = '<object><form method="post"  action="" style="display:inline">';
+        $replacement = '<object><form method="post" class="wp-cart-button-form" action="" style="display:inline">';
 		if (preg_match("/http:/", $addcart)) // Use the image as the 'add to cart' button
 		{
 			$replacement .= '<input type="image" src="'.$addcart.'" class="wp_cart_button" alt="'.(__("Add to Cart", "WSPSC")).'"/>';
@@ -575,7 +584,7 @@ function cart_current_page_url() {
 }
 
 function show_wp_cart_options_page () {	
-	$wp_simple_paypal_shopping_cart_version = "3.1";
+	$wp_simple_paypal_shopping_cart_version = "3.2.3";
     if (isset($_POST['info_update']))
     {
         update_option('cart_payment_currency', (string)$_POST["cart_payment_currency"]);
