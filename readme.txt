@@ -3,8 +3,8 @@ Contributors: Ruhul Amin
 Donate link: http://www.tipsandtricks-hq.com
 Tags: WordPress shopping cart, Paypal shopping cart, online shop, shopping cart, wordperss ecommerce, sell digital products
 Requires at least: 2.6
-Tested up to: 3.2.1
-Stable tag:3.2.3
+Tested up to: 3.3
+Stable tag:3.2.7
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
 
@@ -12,7 +12,7 @@ Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling
 
 WordPress Simple Paypal Shopping Cart allows you to add an 'Add to Cart' button on any posts or pages. It also allows you to add/display the shopping cart on any post or page or sidebar easily. The shopping cart shows the user what they currently have in the cart and allows them to remove the items. It can be easily integrated with the NextGen Photo Gallery plugin too.
 
-For screenshots, detailed documentation, support and updates, please visit:
+For video tutorial, screenshots, detailed documentation, support and updates, please visit:
 http://www.tipsandtricks-hq.com/?p=768
 or
 http://www.tipsandtricks-hq.com/ecommerce/wp-shopping-cart

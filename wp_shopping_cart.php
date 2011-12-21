@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.2.3
+Version: v3.2.7
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -99,7 +99,7 @@ function reset_wp_cart()
     $_SESSION['simpleCart'] = $products;    
 }
 
-if ($_POST['addcart'])
+if (isset($_POST['addcart']))
 {
 	$domain_url = $_SERVER['SERVER_NAME'];
 	$cookie_domain = str_replace("www","",$domain_url);    	
@@ -127,12 +127,20 @@ if ($_POST['addcart'])
         
     if ($count == 1)
     {
-        if (!empty($_POST[$_POST['product']]))
+        if (!empty($_POST[$_POST['product']])){
             $price = $_POST[$_POST['product']];
-        else
+        }
+        else{
             $price = $_POST['price'];
+        }
         
-        $product = array('name' => stripslashes($_POST['product']), 'price' => $price, 'quantity' => $count, 'shipping' => $_POST['shipping'], 'cartLink' => $_POST['cartLink'], 'item_number' => $_POST['item_number']);
+		$default_cur_symbol = get_option('cart_currency_symbol');
+		$price = str_replace($default_cur_symbol,"",$price);
+		
+		$shipping = $_POST['shipping'];
+		$shipping = str_replace($default_cur_symbol,"",$shipping);
+            
+        $product = array('name' => stripslashes($_POST['product']), 'price' => $price, 'quantity' => $count, 'shipping' => $shipping, 'cartLink' => $_POST['cartLink'], 'item_number' => $_POST['item_number']);
         array_push($products, $product);
     }
     
@@ -154,7 +162,7 @@ if ($_POST['addcart'])
     	}
     }    
 }
-else if ($_POST['cquantity'])
+else if (isset($_POST['cquantity']))
 {
     $products = $_SESSION['simpleCart'];
     foreach ($products as $key => $item)
@@ -171,7 +179,7 @@ else if ($_POST['cquantity'])
     sort($products);
     $_SESSION['simpleCart'] = $products;
 }
-else if ($_POST['delcart'])
+else if (isset($_POST['delcart']))
 {
     $products = $_SESSION['simpleCart'];
     foreach ($products as $key => $item)
@@ -266,7 +274,7 @@ function print_wp_shopping_cart()
     {   
         $output .= '
         <tr>
-        <th style="text-align: left">'.(__("Item Name", "WSPSC")).'</th><th>'.(__("Quantity", "WSPSC")).'</th><th>'.(__("Price", "WSPSC")).'</th>
+        <th style="text-align: left">'.(__("Item Name", "WSPSC")).'</th><th>'.(__("Quantity", "WSPSC")).'</th><th>'.(__("Price", "WSPSC")).'</th><th></th>
         </tr>';
     
 	    foreach ($_SESSION['simpleCart'] as $item)
@@ -317,7 +325,7 @@ function print_wp_shopping_cart()
 	    if (!get_option('wp_shopping_cart_use_profile_shipping'))
 	    {
 	    	$postage_cost = number_format($postage_cost,2);
-	    	$form .= "<input type=\"hidden\" name=\"shipping_1\" value='".$postage_cost."' />";  
+	    	$form .= "<input type=\"hidden\" name=\"shipping_1\" value='".$postage_cost."' />"; //You can also use "handling_cart" variable to use shipping and handling here 
 	    }
 	    if (get_option('wp_shopping_cart_collect_address'))//force address collection
 	    {
@@ -584,7 +592,7 @@ function cart_current_page_url() {
 }
 
 function show_wp_cart_options_page () {	
-	$wp_simple_paypal_shopping_cart_version = "3.2.3";
+	$wp_simple_paypal_shopping_cart_version = "3.2.7";
     if (isset($_POST['info_update']))
     {
         update_option('cart_payment_currency', (string)$_POST["cart_payment_currency"]);
@@ -784,6 +792,18 @@ echo '
  </form>
  ';
     echo (__("Like the Simple WordPress Shopping Cart Plugin?", "WSPSC")).' <a href="http://wordpress.org/extend/plugins/wordpress-simple-paypal-shopping-cart" target="_blank">'.(__("Give it a good rating", "WSPSC")).'</a>'; 
+}
+
+function simple_cart_total()
+{
+	$grand_total = 0;
+	foreach ((array) $_SESSION['simpleCart'] as $item)
+	{
+		$total += $item['price'] * $item['quantity'];
+		$item_total_shipping += $item['shipping'] * $item['quantity'];
+	}
+	$grand_total = $total + $item_total_shipping;
+	return number_format($grand_total,2);
 }
 
 function wp_cart_options()
