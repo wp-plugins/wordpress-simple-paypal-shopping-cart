@@ -1,21 +1,47 @@
 === WordPress Simple Paypal Shopping Cart ===
-Contributors: Ruhul Amin
+Contributors: Ruhul Amin, Tips and Tricks HQ
 Donate link: http://www.tipsandtricks-hq.com
-Tags: WordPress shopping cart, Paypal shopping cart, online shop, shopping cart, wordperss ecommerce, sell digital products
-Requires at least: 2.6
-Tested up to: 3.3
-Stable tag:3.2.7
+Tags: shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, PayPal cart widget, sell digital products
+Requires at least: 2.8
+Tested up to: 3.4.1
+Stable tag: 3.3.0
+License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
 
 == Description ==
 
-WordPress Simple Paypal Shopping Cart allows you to add an 'Add to Cart' button on any posts or pages. It also allows you to add/display the shopping cart on any post or page or sidebar easily. The shopping cart shows the user what they currently have in the cart and allows them to remove the items. It can be easily integrated with the NextGen Photo Gallery plugin too.
+WordPress Simple Paypal Shopping Cart allows you to add an 'Add to Cart' button for your product on any posts or pages. 
+
+It also allows you to add/display the shopping cart on any post or page or sidebar easily. The shopping cart shows the user what they currently have in the cart and allows them to remove the items. 
+
+It can be easily integrated with the NextGen Photo Gallery plugin to acomodate the selling of photographs from your gallery.
+
+WP simple Paypal Cart Plugin, interfaces with the Paypal sandbox to allow for testing.
+
+This plugin is a lightweight solution (with minimal number of lines of code and minimal options) so it doesn't slow down your site.
 
 For video tutorial, screenshots, detailed documentation, support and updates, please visit:
-http://www.tipsandtricks-hq.com/?p=768
+[WP Simple Cart Details Page](http://www.tipsandtricks-hq.com/?p=768)
 or
-http://www.tipsandtricks-hq.com/ecommerce/wp-shopping-cart
+[WP Simple Cart Documentation](http://www.tipsandtricks-hq.com/ecommerce/wp-shopping-cart)
+
+= Features =
+
+* Easily create "add to cart" button with options if needed (price, shipping, options variations). The cart's shortcode can be displayed on posts or pages.
+* Use a function to add dynamic "add to cart" button directly in your theme.
+* Minimal number of configuration items to keep the plugin lightweight.
+* You can use Paypal sandbox to do testing if needed.
+* and more...
+
+= Note =
+
+There are a few exact duplicate copies of this plugin that other people made. We have a few users who are getting confused as to which one is the original simple shopping cart plugin. This is the original simple PayPal shopping cart and you can verify it with the following information:
+
+* Check the stats tab of the plugin and you will be able to see a history of when this plugin was first added to WordPress.
+* Check the number of downloads on the sidebar. The original plugin always gets more downloads than the copycats.
+* Check the number of ratings. The original plugin should have more votes.
+* Check the developer's site.
 
 == Usage ==
 1. To add the 'Add to Cart' button simply add the trigger text [wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:end] to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.
@@ -35,17 +61,17 @@ Using Variation Control
 1. To use variation control use the following trigger text
 [wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:var1[VARIATION-NAME|VARIATION1|VARIATION2|VARIATION3]:end]
 
-eg. [wp_cart:Demo Product 1:price:15:var1[Size|Small|Medium|Large]:end]
+example, [wp_cart:Demo Product 1:price:15:var1[Size|Small|Medium|Large]:end]
 
 2. To use variation control with shipping use the following trigger text:
 [wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:shipping:SHIPPING-COST:var1[VARIATION-NAME|VARIATION1|VARIATION2|VARIATION3]:end]
 
-eg. [wp_cart:Demo Product 1:price:15:shipping:2:var1[Size|Small|Medium|Large]:end]
+example, [wp_cart:Demo Product 1:price:15:shipping:2:var1[Size|Small|Medium|Large]:end]
 
 3. To use multiple variation option use the following trigger text:
 [wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:var1[VARIATION-NAME|VARIATION1|VARIATION2|VARIATION3]:var2[VARIATION-NAME|VARIATION1|VARIATION2]:end]
 
-eg. [wp_cart:Demo Product 1:price:15:shipping:2:var1[Size|Small|Medium|Large]:var2[Color|Red|Green]:end]
+example, [wp_cart:Demo Product 1:price:15:shipping:2:var1[Size|Small|Medium|Large]:var2[Color|Red|Green]:end]
 
 == Installation ==
 
@@ -69,5 +95,3 @@ Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
 == Changelog ==
 Changelog can be found at the following URL
 http://www.tipsandtricks-hq.com/ecommerce/?p=319
-
-
