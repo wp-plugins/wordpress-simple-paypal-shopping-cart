@@ -1,7 +1,11 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
+<<<<<<< .mine
+Version: v3.3.0
+=======
 Version: v3.2.7
+>>>>>>> .r565913
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -18,13 +22,15 @@ Description: Simple WordPress Shopping Cart Plugin, very easy to use and great f
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 */
-if(!isset($_SESSION)) 
-{
+if(!isset($_SESSION)){
 	session_start();
 }	
 
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_URL', plugins_url('',__FILE__));
+
+define('WP_CART_LIVE_PAYPAL_URL', 'https://www.paypal.com/cgi-bin/webscr');
+define('WP_CART_SANDBOX_PAYPAL_URL', 'https://www.sandbox.paypal.com/cgi-bin/webscr');
 
 // loading language files
 load_plugin_textdomain('WSPSC', false, WP_CART_FOLDER . '/languages');
@@ -316,7 +322,7 @@ function print_wp_shopping_cart()
 	        
 	        $form .= "
 	            <input type=\"hidden\" name=\"item_name_$count\" value=\"".$item['name']."\" />
-	            <input type=\"hidden\" name=\"amount_$count\" value='".$item['price']."' />
+	            <input type=\"hidden\" name=\"amount_$count\" value='".number_format($item['price'],2)."' />
 	            <input type=\"hidden\" name=\"quantity_$count\" value=\"".$item['quantity']."\" />
 	            <input type='hidden' name='item_number' value='".$item['item_number']."' />
 	        ";        
@@ -350,7 +356,11 @@ function print_wp_shopping_cart()
        		<tr><td colspan='2' style='font-weight: bold; text-align: right;'>".(__("Total", "WSPSC")).": </td><td style='text-align: center'>".print_payment_currency(($total+$postage_cost), $paypal_symbol, $decimal)."</td><td></td></tr>
        		<tr><td colspan='4'>";
        
-              	$output .= "<form action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\">$form";
+            $paypal_checkout_url = WP_CART_LIVE_PAYPAL_URL;
+            if (get_option('wp_shopping_cart_enable_sandbox')){
+            	$paypal_checkout_url = WP_CART_SANDBOX_PAYPAL_URL;
+            }
+              	$output .= '<form action="'.$paypal_checkout_url.'" method="post">'.$form;
     			if ($count)
             		$output .= '<input type="image" src="'.WP_CART_URL.'/images/'.(__("paypal_checkout_EN.png", "WSPSC")).'" name="submit" class="wp_cart_checkout_button" alt="'.(__("Make payments with PayPal - it\'s fast, free and secure!", "WSPSC")).'" />';
        
@@ -374,8 +384,6 @@ function print_wp_shopping_cart()
     
     return $output;
 }
-// https://www.sandbox.paypal.com/cgi-bin/webscr (paypal testing site)
-// https://www.paypal.com/us/cgi-bin/webscr (paypal live site )
 
 function wp_cart_add_custom_field()
 {
@@ -396,8 +404,6 @@ function wp_cart_add_custom_field()
 
 function print_wp_cart_button_new($content)
 {
-	//wp_cart_add_read_form_javascript();
-        
         $addcart = get_option('addToCartButtonName');    
         if (!$addcart || ($addcart == '') )
             $addcart = __("Add to Cart", "WSPSC");
@@ -592,7 +598,11 @@ function cart_current_page_url() {
 }
 
 function show_wp_cart_options_page () {	
+<<<<<<< .mine
+	$wp_simple_paypal_shopping_cart_version = "3.3.0";
+=======
 	$wp_simple_paypal_shopping_cart_version = "3.2.7";
+>>>>>>> .r565913
     if (isset($_POST['info_update']))
     {
         update_option('cart_payment_currency', (string)$_POST["cart_payment_currency"]);
@@ -615,6 +625,8 @@ function show_wp_cart_options_page () {
                 
         update_option('wp_shopping_cart_image_hide', ($_POST['wp_shopping_cart_image_hide']!='') ? 'checked="checked"':'' );
         update_option('wp_use_aff_platform', ($_POST['wp_use_aff_platform']!='') ? 'checked="checked"':'' );
+        
+        update_option('wp_shopping_cart_enable_sandbox', ($_POST['wp_shopping_cart_enable_sandbox']!='') ? 'checked="checked"':'' );
         
         echo '<div id="message" class="updated fade">';
         echo '<p><strong>'.(__("Options Updated!", "WSPSC")).'</strong></p></div>';
@@ -676,19 +688,28 @@ function show_wp_cart_options_page () {
     else
         $wp_use_aff_platform = '';
                               
+	//$wp_shopping_cart_enable_sandbox = get_option('wp_shopping_cart_enable_sandbox');
+    if (get_option('wp_shopping_cart_enable_sandbox'))
+        $wp_shopping_cart_enable_sandbox = 'checked="checked"';
+    else
+        $wp_shopping_cart_enable_sandbox = '';	        
 	?>
- 	<h2><?php _e("Simple Paypal Shopping Cart Settings", "WSPSC"); ?> v <?php echo $wp_simple_paypal_shopping_cart_version; ?></h2>
+ 	<h2><?php _e("Simple PayPal Shopping Cart Settings", "WSPSC"); ?> v <?php echo $wp_simple_paypal_shopping_cart_version; ?></h2>
  	
- 	<p><?php _e("For information, updates and detailed documentation, please visit:", "WSPSC"); ?><br />
-    <a href="http://www.tipsandtricks-hq.com/?p=768">http://www.tipsandtricks-hq.com/?p=768</a></p>
+ 	<div style="background: none repeat scroll 0 0 #FFF6D5;border: 1px solid #D1B655;color: #3F2502;margin: 10px 0;padding: 5px 5px 5px 10px;text-shadow: 1px 1px #FFFFFF;">	
+ 	<p><?php _e("For more information, updates, detailed documentation and video tutorial, please visit:", "WSPSC"); ?><br />
+    <a href="http://www.tipsandtricks-hq.com/?p=768" target="_blank"><?php _e("WP simple cart homepage", "WSPSC"); ?></a></p>
+    </div>
     
-     <fieldset class="options">
-    <legend><?php _e("Usage:", "WSPSC"); ?></legend>
+    <div class="postbox">
+	<h3><label for="title"><?php _e("Quick Usage Guide", "WSPSC"); ?></label></h3>
+	<div class="inside">
+	
+    <p><?php _e("1. To add an 'Add to Cart' button for a product simply add the shortcode", "WSPSC"); ?> <strong>[wp_cart:<?php _e("PRODUCT-NAME", "WSPSC"); ?>:price:<?php _e("PRODUCT-PRICE", "WSPSC"); ?>:end]</strong> <?php _e("to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price. For example: [wp_cart:Test Product:price:15.00:end]", "WSPSC"); ?></p>
+	<p><?php _e("2. To add the shopping cart to a post or page (example, checkout page) simply add the shortcode", "WSPSC"); ?><strong>[show_wp_shopping_cart]</strong> <?php _e("to a post or page or use the sidebar widget to add the shopping cart to the sidebar.", "WSPSC"); ?></p> 
 
-    <p><?php _e("1. To add the 'Add to Cart' button simply add the trigger text", "WSPSC"); ?> <strong>[wp_cart:<?php _e("PRODUCT-NAME", "WSPSC"); ?>:price:<?php _e("PRODUCT-PRICE", "WSPSC"); ?>:end]</strong> <?php _e("to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price. For example: [wp_cart:Test Product:price:15.00:end]", "WSPSC"); ?></p>
-	<p><?php _e("2. To add the shopping cart to a post or page (eg. checkout page) simply add the shortcode", "WSPSC"); ?> <strong>[show_wp_shopping_cart]</strong> <?php _e("to a post or page or use the sidebar widget to add the shopping cart to the sidebar.", "WSPSC"); ?></p> 
-    </fieldset>
-
+	</div></div>
+	
     <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
     <input type="hidden" name="info_update" id="info_update" value="true" />    
  	<?php
@@ -702,6 +723,11 @@ echo '
 <tr valign="top">
 <th scope="row">'.(__("Paypal Email Address", "WSPSC")).'</th>
 <td><input type="text" name="cart_paypal_email" value="'.$defaultEmail.'" size="40" /></td>
+</tr>
+<tr valign="top">
+<th scope="row">'.(__("Enable Sandbox Testing", "WSPSC")).'</th>
+<td><input type="checkbox" name="wp_shopping_cart_enable_sandbox" value="1" '.$wp_shopping_cart_enable_sandbox.' />
+<br />'.(__("Check this option if you want to do PayPal sandbox testing. You will need to create a PayPal sandbox account from PayPal Developer site", "WSPSC")).'</td>
 </tr>
 <tr valign="top">
 <th scope="row">'.(__("Shopping Cart title", "WSPSC")).'</th>
@@ -782,7 +808,7 @@ echo '
 <tr valign="top">
 <th scope="row">'.(__("Use WP Affiliate Platform", "WSPSC")).'</th>
 <td><input type="checkbox" name="wp_use_aff_platform" value="1" '.$wp_use_aff_platform.' />
-<br />'.(__("Check this if using with the", "WSPSC")).' <a href="http://tipsandtricks-hq.com/?p=1474" target="_blank">WP Affiliate Platform plugin</a>. '.(__("This plugin lets you run your own affiliate campaign/program and allows you to reward (pay commission) your affiliates for referred sales", "WSPSC")).'</td>
+<br />'.(__("Check this if using with the", "WSPSC")).' <a href="http://www.tipsandtricks-hq.com/?p=1474" target="_blank">WP Affiliate Platform plugin</a>. '.(__("This plugin lets you run your own affiliate campaign/program and allows you to reward (pay commission) your affiliates for referred sales", "WSPSC")).'</td>
 </tr>
 </table>
 </div></div>
@@ -821,33 +847,33 @@ function wp_cart_options_page ()
      add_options_page(__("WP Paypal Shopping Cart", "WSPSC"), __("WP Shopping Cart", "WSPSC"), 'manage_options', __FILE__, 'wp_cart_options');  
 }
 
-function show_wp_paypal_shopping_cart_widget($args)
+function wp_paypal_shopping_cart_load_widgets()
 {
-	extract($args);
-	
-	$cart_title = get_option('wp_cart_title');
-	if (empty($cart_title)) $cart_title = __("Shopping Cart", "WSPSC");
-	
-	echo $before_widget;
-	echo $before_title . $cart_title . $after_title;
-    echo print_wp_shopping_cart();
-    echo $after_widget;
+	register_widget('WP_PayPal_Cart_Widget');
 }
 
-function wp_paypal_shopping_cart_widget_control()
-{
-    ?>
-    <p>
-    <?php _e("Set the Plugin Settings from the Settings menu", "WSPSC"); ?>
-    </p>
-    <?php
-}
-
-function widget_wp_paypal_shopping_cart_init()
-{	
-    $widget_options = array('classname' => 'widget_wp_paypal_shopping_cart', 'description' => __("Display WP Paypal Shopping Cart.", "WSPSC") );
-    wp_register_sidebar_widget('wp_paypal_shopping_cart_widgets', __("WP Paypal Shopping Cart", "WSPSC"), 'show_wp_paypal_shopping_cart_widget', $widget_options);
-    wp_register_widget_control('wp_paypal_shopping_cart_widgets', __("WP Paypal Shopping Cart", "WSPSC"), 'wp_paypal_shopping_cart_widget_control' );
+class WP_PayPal_Cart_Widget extends WP_Widget {
+	function WP_PayPal_Cart_Widget() {
+		parent::WP_Widget('wp_paypal_shopping_cart_widgets', 'WP Paypal Shopping Cart', array('description' => 'WP Paypal Shopping Cart Widget') );
+	}
+	function form($instance) {
+		// outputs the options form on admin
+	}
+	function update($new_instance, $old_instance) {
+		// processes widget options to be saved
+	}
+	function widget($args, $instance) {
+		// outputs the content of the widget
+		extract( $args );
+		
+		$cart_title = get_option('wp_cart_title');
+		if (empty($cart_title)) $cart_title = __("Shopping Cart", "WSPSC");
+		
+		echo $before_widget;
+		echo $before_title . $cart_title . $after_title;
+	    echo print_wp_shopping_cart();
+	    echo $after_widget;	
+	}
 }
 
 function wp_cart_css()
@@ -868,14 +894,16 @@ add_filter('plugin_action_links', 'wp_simple_cart_add_settings_link', 10, 2 );
 
 // Insert the options page to the admin menu
 add_action('admin_menu','wp_cart_options_page');
-add_action('init', 'widget_wp_paypal_shopping_cart_init');
-//add_filter('the_content', 'print_wp_cart_button',11);
+add_action('widgets_init','wp_paypal_shopping_cart_load_widgets');
 
+//add_filter('the_content', 'print_wp_cart_button',11);
 add_filter('the_content', 'print_wp_cart_button_new',11);
 add_filter('the_content', 'shopping_cart_show');
 
-add_shortcode('show_wp_shopping_cart', 'show_wp_shopping_cart_handler');
+if (!is_admin())
+{add_filter('widget_text', 'do_shortcode');}
 
+add_shortcode('show_wp_shopping_cart', 'show_wp_shopping_cart_handler');
 add_shortcode('always_show_wp_shopping_cart', 'always_show_cart_handler');
 
 add_action('wp_head', 'wp_cart_css');
