@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.3.0
+Version: v3.3.1
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -306,7 +306,7 @@ function print_wp_shopping_cart()
 	        $output .= "
 	        <tr><td style='overflow: hidden;'><a href='".$item['cartLink']."'>".$item['name']."</a></td>
 	        <td style='text-align: center'><form method=\"post\"  action=\"\" name='pcquantity' style='display: inline'>
-                <input type=\"hidden\" name=\"product\" value=\"".$item['name']."\" />
+                <input type=\"hidden\" name=\"product\" value=\"".htmlspecialchars($item['name'])."\" />
 
 	        <input type='hidden' name='cquantity' value='1' /><input type='text' name='quantity' value='".$item['quantity']."' size='1' onchange='document.pcquantity.submit();' onkeypress='document.getElementById(\"pinfo\").style.display = \"\";' /></form></td>
 	        <td style='text-align: center'>".print_payment_currency(($item['price'] * $item['quantity']), $paypal_symbol, $decimal)."</td>
@@ -366,6 +366,7 @@ function print_wp_shopping_cart()
 			    <input type="hidden" name="cmd" value="_cart" />
 			    <input type="hidden" name="upload" value="1" />
 			    <input type="hidden" name="rm" value="2" />
+			    <input type="hidden" name="charset" value="utf-8" />
 			    <input type="hidden" name="mrb" value="3FWGC6LFTMTUG" />';
 			    if ($use_affiliate_platform)
 			    {
@@ -594,7 +595,7 @@ function cart_current_page_url() {
 }
 
 function show_wp_cart_options_page () {	
-	$wp_simple_paypal_shopping_cart_version = "3.3.0";
+	$wp_simple_paypal_shopping_cart_version = "3.3.1";
     if (isset($_POST['info_update']))
     {
         update_option('cart_payment_currency', (string)$_POST["cart_payment_currency"]);
