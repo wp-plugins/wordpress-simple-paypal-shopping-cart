@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.3.1
+Version: v3.4
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -106,9 +106,16 @@ if (isset($_POST['addcart']))
 	$domain_url = $_SERVER['SERVER_NAME'];
 	$cookie_domain = str_replace("www","",$domain_url);    	
 	setcookie("cart_in_use","true",time()+21600,"/",$cookie_domain);  //useful to not serve cached page when using with a caching plugin
-    $count = 1;    
-    $products = $_SESSION['simpleCart'];
-    
+   
+	//sanitize data
+	$_POST['product'] = strip_tags($_POST['product']);//for PHP5.2 use filter_var($_POST['product'], FILTER_SANITIZE_STRING);
+	$_POST['item_number'] = strip_tags($_POST['item_number']);
+	if(isset($_POST['price']))$_POST['price'] = strip_tags($_POST['price']);
+	isset($_POST['shipping'])?$_POST['shipping'] = strip_tags($_POST['shipping']):$_POST['shipping']='';
+	isset($_POST['cartLink'])?$_POST['cartLink'] = strip_tags($_POST['cartLink']):$_POST['cartLink']='';
+
+	$count = 1;    
+    $products = $_SESSION['simpleCart'];	    
     if (is_array($products))
     {
         foreach ($products as $key => $item)
@@ -368,8 +375,11 @@ function print_wp_shopping_cart()
 			    <input type="hidden" name="rm" value="2" />
 			    <input type="hidden" name="charset" value="utf-8" />
 			    <input type="hidden" name="mrb" value="3FWGC6LFTMTUG" />';
-			    if ($use_affiliate_platform)
-			    {
+    			$wp_cart_note_to_seller_text = get_option('wp_cart_note_to_seller_text');
+    			if(!empty($wp_cart_note_to_seller_text)){
+    				$output .= '<input type="hidden" name="no_note" value="0" /><input type="hidden" name="cn" value="'.$wp_cart_note_to_seller_text.'" />';
+    			}
+			    if ($use_affiliate_platform){
 			    	$output .= wp_cart_add_custom_field();
 			    }
 			    $output .= '</form>';          
@@ -595,7 +605,7 @@ function cart_current_page_url() {
 }
 
 function show_wp_cart_options_page () {	
-	$wp_simple_paypal_shopping_cart_version = "3.3.1";
+	$wp_simple_paypal_shopping_cart_version = "3.4";
     if (isset($_POST['info_update']))
     {
         update_option('cart_payment_currency', (string)$_POST["cart_payment_currency"]);
@@ -617,6 +627,7 @@ function show_wp_cart_options_page () {
         update_option('wp_shopping_cart_reset_after_redirection_to_return_page', ($_POST['wp_shopping_cart_reset_after_redirection_to_return_page']!='') ? 'checked="checked"':'' );        
                 
         update_option('wp_shopping_cart_image_hide', ($_POST['wp_shopping_cart_image_hide']!='') ? 'checked="checked"':'' );
+        update_option('wp_cart_note_to_seller_text', (string)$_POST["wp_cart_note_to_seller_text"]);
         update_option('wp_use_aff_platform', ($_POST['wp_use_aff_platform']!='') ? 'checked="checked"':'' );
         
         update_option('wp_shopping_cart_enable_sandbox', ($_POST['wp_shopping_cart_enable_sandbox']!='') ? 'checked="checked"':'' );
@@ -676,6 +687,8 @@ function show_wp_cart_options_page () {
     else
         $wp_cart_image_hide = '';
 
+	$wp_cart_note_to_seller_text = get_option('wp_cart_note_to_seller_text');
+	
     if (get_option('wp_use_aff_platform'))
         $wp_use_aff_platform = 'checked="checked"';
     else
@@ -799,6 +812,14 @@ echo '
 
 <table class="form-table">
 <tr valign="top">
+<th scope="row">'.(__("Customize the Note to Seller Text", "WSPSC")).'</th>
+<td><input type="text" name="wp_cart_note_to_seller_text" value="'.$wp_cart_note_to_seller_text.'" size="100" />
+<br />'.(__("Specify the text that you want to use for the note field on PayPal checkout page to collect special instruction (leave this field empty if you don't need to customize it). The default label for the note field is \"Add special instructions to merchant\".", "WSPSC")).'</td>
+</tr>
+</table>
+
+<table class="form-table">
+<tr valign="top">
 <th scope="row">'.(__("Use WP Affiliate Platform", "WSPSC")).'</th>
 <td><input type="checkbox" name="wp_use_aff_platform" value="1" '.$wp_use_aff_platform.' />
 <br />'.(__("Check this if using with the", "WSPSC")).' <a href="http://www.tipsandtricks-hq.com/?p=1474" target="_blank">WP Affiliate Platform plugin</a>. '.(__("This plugin lets you run your own affiliate campaign/program and allows you to reward (pay commission) your affiliates for referred sales", "WSPSC")).'</td>
@@ -810,7 +831,13 @@ echo '
     </div>						
  </form>
  ';
-    echo (__("Like the Simple WordPress Shopping Cart Plugin?", "WSPSC")).' <a href="http://wordpress.org/extend/plugins/wordpress-simple-paypal-shopping-cart" target="_blank">'.(__("Give it a good rating", "WSPSC")).'</a>'; 
+    echo (__("Like the Simple WordPress Shopping Cart Plugin?", "WSPSC")).' <a href="http://wordpress.org/extend/plugins/wordpress-simple-paypal-shopping-cart" target="_blank">'.(__("Give it a good rating", "WSPSC")).'</a>';
+	?>
+ 	<div style="background: none repeat scroll 0 0 #FFF6D5;border: 1px solid #D1B655;color: #3F2502;margin: 10px 0;padding: 5px 5px 5px 10px;text-shadow: 1px 1px #FFFFFF;">	
+ 	<p><?php _e("Need a shopping cart plugin with more features? Checkout my ", "WSPSC"); ?>
+    <a href="http://www.tipsandtricks-hq.com/?p=1059" target="_blank"><?php _e("WP eStore Plugin", "WSPSC"); ?></a></p>
+    </div>
+    <?php 
 }
 
 function simple_cart_total()

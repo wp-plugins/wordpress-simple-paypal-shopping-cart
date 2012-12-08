@@ -1,19 +1,19 @@
 === WordPress Simple Paypal Shopping Cart ===
 Contributors: Ruhul Amin, Tips and Tricks HQ
 Donate link: http://www.tipsandtricks-hq.com
-Tags: shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, PayPal cart widget, sell digital products
+Tags: shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, PayPal cart widget, sell digital products, paypal
 Requires at least: 2.8
-Tested up to: 3.4.1
-Stable tag: 3.3.1
+Tested up to: 3.5
+Stable tag: 3.4
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
 
 == Description ==
 
-WordPress Simple Paypal Shopping Cart allows you to add an 'Add to Cart' button for your product on any posts or pages. 
+WordPress Simple Paypal Shopping Cart allows you to add an 'Add to Cart' button for your product on any posts or pages. This simple shopping cart plugin lets you sell products and services directly from your own wordpress site and turns your WP blog into an ecommerce site.
 
-It also allows you to add/display the shopping cart on any post or page or sidebar easily. The shopping cart shows the user what they currently have in the cart and allows them to remove the items. 
+It also allows you to add/display the shopping cart on any post or page or sidebar easily. The shopping cart shows the user what they currently have in the cart and allows them to change quantity or remove the items. 
 
 It can be easily integrated with the NextGen Photo Gallery plugin to acomodate the selling of photographs from your gallery.
 
@@ -32,6 +32,7 @@ or
 * Use a function to add dynamic "add to cart" button directly in your theme.
 * Minimal number of configuration items to keep the plugin lightweight.
 * You can use Paypal sandbox to do testing if needed.
+* Collect special instruction from your customers on the PayPal checkout page.
 * and more...
 
 = Note =
