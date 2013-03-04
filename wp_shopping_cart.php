@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.4
+Version: v3.5
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -34,6 +34,8 @@ load_plugin_textdomain('WSPSC', false, WP_CART_FOLDER . '/languages');
 add_option('wp_cart_title', __("Your Shopping Cart", "WSPSC"));
 add_option('wp_cart_empty_text', __("Your cart is empty", "WSPSC"));
 add_option('cart_return_from_paypal_url', get_bloginfo('wpurl'));
+
+include_once('wp_shopping_cart_shortcodes.php');
 
 function always_show_cart_handler($atts) 
 {
@@ -487,7 +489,7 @@ function print_wp_cart_button_new($content)
 
             $pieces = explode(':',$m);
     
-                $replacement = '<object>';
+                $replacement = '<div class="wp_cart_button_wrapper">';
                 $replacement .= '<form method="post" class="wp-cart-button-form" action="" style="display:inline" onsubmit="return ReadForm(this, true);">';             
                 if (!empty($var_output))
                 {
@@ -512,7 +514,7 @@ function print_wp_cart_button_new($content)
                 }
                 $replacement .= '<input type="hidden" name="cartLink" value="'.cart_current_page_url().'" />';
                 $replacement .= '<input type="hidden" name="addcart" value="1" /></form>';
-                $replacement .= '</object>';
+                $replacement .= '</div>';
                 $content = str_replace ($match, $replacement, $content);                
         }
         return $content;	
@@ -553,13 +555,12 @@ function wp_cart_add_read_form_javascript()
 }
 function print_wp_cart_button_for_product($name, $price, $shipping=0)
 {
-        $addcart = get_option('addToCartButtonName');
-    
+		$addcart = get_option('addToCartButtonName');
         if (!$addcart || ($addcart == '') )
             $addcart = __("Add to Cart", "WSPSC");
-                  
 
-        $replacement = '<object><form method="post" class="wp-cart-button-form" action="" style="display:inline">';
+		$replacement = '<div class="wp_cart_button_wrapper">';
+        $replacement .= '<form method="post" class="wp-cart-button-form" action="" style="display:inline">';
 		if (preg_match("/http:/", $addcart)) // Use the image as the 'add to cart' button
 		{
 			$replacement .= '<input type="image" src="'.$addcart.'" class="wp_cart_button" alt="'.(__("Add to Cart", "WSPSC")).'"/>';
@@ -567,10 +568,10 @@ function print_wp_cart_button_for_product($name, $price, $shipping=0)
 		else 
 		{
 		    $replacement .= '<input type="submit" value="'.$addcart.'" />';
-		}             	      
-
-        $replacement .= '<input type="hidden" name="product" value="'.$name.'" /><input type="hidden" name="price" value="'.$price.'" /><input type="hidden" name="shipping" value="'.$shipping.'" /><input type="hidden" name="addcart" value="1" /><input type="hidden" name="cartLink" value="'.cart_current_page_url().'" /></form></object>';
-                
+		}
+        $replacement .= '<input type="hidden" name="product" value="'.$name.'" /><input type="hidden" name="price" value="'.$price.'" /><input type="hidden" name="shipping" value="'.$shipping.'" /><input type="hidden" name="addcart" value="1" /><input type="hidden" name="cartLink" value="'.cart_current_page_url().'" />';
+		$replacement .= '</form>';
+        $replacement .= '</div>';
         return $replacement;
 }
 
@@ -593,19 +594,23 @@ function print_payment_currency($price, $symbol, $decimal)
 }
 
 function cart_current_page_url() {
- $pageURL = 'http';
- if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
- $pageURL .= "://";
- if ($_SERVER["SERVER_PORT"] != "80") {
-  $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
- } else {
-  $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
- }
- return $pageURL;
+	$pageURL = 'http';
+	if(!isset($_SERVER["HTTPS"])){$_SERVER["HTTPS"]="";}
+	if(!isset($_SERVER["SERVER_PORT"])){$_SERVER["SERVER_PORT"]="";}
+
+	if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+	$pageURL .= "://";
+	if ($_SERVER["SERVER_PORT"] != "80") {
+		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+	}
+	else {
+		$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+	}
+	return $pageURL;
 }
 
 function show_wp_cart_options_page () {	
-	$wp_simple_paypal_shopping_cart_version = "3.4";
+	$wp_simple_paypal_shopping_cart_version = "3.5";
     if (isset($_POST['info_update']))
     {
         update_option('cart_payment_currency', (string)$_POST["cart_payment_currency"]);
@@ -925,6 +930,7 @@ if (!is_admin())
 
 add_shortcode('show_wp_shopping_cart', 'show_wp_shopping_cart_handler');
 add_shortcode('always_show_wp_shopping_cart', 'always_show_cart_handler');
+add_shortcode('wp_cart_button', 'wp_cart_button_handler');
 
 add_action('wp_head', 'wp_cart_css');
 add_action('wp_head', 'wp_cart_add_read_form_javascript');

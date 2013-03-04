@@ -2,9 +2,9 @@
 Contributors: Ruhul Amin, Tips and Tricks HQ
 Donate link: http://www.tipsandtricks-hq.com
 Tags: shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, PayPal cart widget, sell digital products, paypal
-Requires at least: 2.8
-Tested up to: 3.5
-Stable tag: 3.4
+Requires at least: 3.0
+Tested up to: 3.5.1
+Stable tag: 3.5
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -45,7 +45,7 @@ There are a few exact duplicate copies of this plugin that other people made. We
 * Check the developer's site.
 
 == Usage ==
-1. To add the 'Add to Cart' button simply add the trigger text [wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:end] to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.
+1. To add an 'Add to Cart' button for a product, simply add the shortcode [wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:end] to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.
 2. To add the 'Add to Cart' button on the sidebar or from other template files use the following function:
 <?php echo print_wp_cart_button_for_product('PRODUCT-NAME', PRODUCT-PRICE); ?>
 Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.
@@ -88,7 +88,8 @@ example, [wp_cart:Demo Product 1:price:15:shipping:2:var1[Size|Small|Medium|Larg
 4. Does this plugin has multiple currency support? Yes.
 5. Is the 'Add to Cart' button customizable? Yes.
 6. Does this plugin use a return URL to redirect customers to a specified page after Paypal has processed the payment? Yes.
-
+7. How can I add a buy button on the sidebar widget of my site?
+Check the documentation on [how to add buy buttons to the sidebar](http://www.tipsandtricks-hq.com/ecommerce/wordpress-shopping-cart-additional-resources-322#add_button_in_sidebar)
 
 == Screenshots ==
 Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
