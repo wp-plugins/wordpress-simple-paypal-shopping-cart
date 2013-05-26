@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.5
+Version: v3.6
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -18,10 +18,12 @@ Description: Simple WordPress Shopping Cart Plugin, very easy to use and great f
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 */
+
 if(!isset($_SESSION)){
 	session_start();
 }	
 
+define('WP_CART_VERSION', '3.6');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_URL', plugins_url('',__FILE__));
 
@@ -609,10 +611,15 @@ function cart_current_page_url() {
 	return $pageURL;
 }
 
-function show_wp_cart_options_page () {	
-	$wp_simple_paypal_shopping_cart_version = "3.5";
+function show_wp_cart_options_page () 
+{
     if (isset($_POST['info_update']))
     {
+    	$nonce = $_REQUEST['_wpnonce'];
+		if ( !wp_verify_nonce($nonce, 'wp_simple_cart_settings_update')){
+			wp_die('Error! Nonce Security Check Failed! Go back to settings menu and save the settings again.');
+		}
+
         update_option('cart_payment_currency', (string)$_POST["cart_payment_currency"]);
         update_option('cart_currency_symbol', (string)$_POST["cart_currency_symbol"]);
         update_option('cart_base_shipping_cost', (string)$_POST["cart_base_shipping_cost"]);
@@ -705,7 +712,7 @@ function show_wp_cart_options_page () {
     else
         $wp_shopping_cart_enable_sandbox = '';	        
 	?>
- 	<h2><?php _e("Simple PayPal Shopping Cart Settings", "WSPSC"); ?> v <?php echo $wp_simple_paypal_shopping_cart_version; ?></h2>
+ 	<h2><?php _e("Simple PayPal Shopping Cart Settings", "WSPSC"); ?> v <?php echo WP_CART_VERSION; ?></h2>
  	
  	<div style="background: none repeat scroll 0 0 #FFF6D5;border: 1px solid #D1B655;color: #3F2502;margin: 10px 0;padding: 5px 5px 5px 10px;text-shadow: 1px 1px #FFFFFF;">	
  	<p><?php _e("For more information, updates, detailed documentation and video tutorial, please visit:", "WSPSC"); ?><br />
@@ -722,6 +729,7 @@ function show_wp_cart_options_page () {
 	</div></div>
 	
     <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
+    <?php wp_nonce_field('wp_simple_cart_settings_update'); ?>
     <input type="hidden" name="info_update" id="info_update" value="true" />    
  	<?php
 echo '
@@ -780,7 +788,10 @@ echo '
 		
 <tr valign="top">
 <th scope="row">'.(__("Add to Cart button text or Image", "WSPSC")).'</th>
-<td><input type="text" name="addToCartButtonName" value="'.$addcart.'" size="100" /><br />'.(__("To use a customized image as the button simply enter the URL of the image file.", "WSPSC")).' '.(__("e.g.", "WSPSC")).' http://www.your-domain.com/wp-content/plugins/wordpress-paypal-shopping-cart/images/buy_now_button.png</td>
+<td><input type="text" name="addToCartButtonName" value="'.$addcart.'" size="100" />
+<br />'.(__("To use a customized image as the button simply enter the URL of the image file.", "WSPSC")).' '.(__("e.g.", "WSPSC")).' http://www.your-domain.com/wp-content/plugins/wordpress-paypal-shopping-cart/images/buy_now_button.png
+<br />You can download nice add to cart button images from <a href="http://www.tipsandtricks-hq.com/ecommerce/add-to-cart-button-images-for-shopping-cart-631" target="_blank">this page</a>.
+</td>
 </tr>
 
 <tr valign="top">
@@ -903,6 +914,8 @@ class WP_PayPal_Cart_Widget extends WP_Widget {
 
 function wp_cart_css()
 {
+	$debug_marker = "<!-- WP Simple Shopping Cart plugin v" . WP_CART_VERSION . " - http://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768/ -->";
+	echo "\n${debug_marker}\n";
     echo '<link type="text/css" rel="stylesheet" href="'.WP_CART_URL.'/wp_shopping_cart_style.css" />'."\n";
 }
 
@@ -931,7 +944,7 @@ if (!is_admin())
 add_shortcode('show_wp_shopping_cart', 'show_wp_shopping_cart_handler');
 add_shortcode('always_show_wp_shopping_cart', 'always_show_cart_handler');
 add_shortcode('wp_cart_button', 'wp_cart_button_handler');
+add_shortcode('wp_cart_display_product', 'wp_cart_display_product_handler');
 
 add_action('wp_head', 'wp_cart_css');
 add_action('wp_head', 'wp_cart_add_read_form_javascript');
-?>

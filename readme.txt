@@ -1,10 +1,10 @@
 === WordPress Simple Paypal Shopping Cart ===
 Contributors: Ruhul Amin, Tips and Tricks HQ
 Donate link: http://www.tipsandtricks-hq.com
-Tags: shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, PayPal cart widget, sell digital products, paypal
+Tags: shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, paypal
 Requires at least: 3.0
-Tested up to: 3.5.1
-Stable tag: 3.5
+Tested up to: 3.6
+Stable tag: 3.6
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -31,8 +31,10 @@ or
 * Easily create "add to cart" button with options if needed (price, shipping, options variations). The cart's shortcode can be displayed on posts or pages.
 * Use a function to add dynamic "add to cart" button directly in your theme.
 * Minimal number of configuration items to keep the plugin lightweight.
+* Show a nicely formatted product display box on the fly using a simple shortcode.
 * You can use Paypal sandbox to do testing if needed.
 * Collect special instruction from your customers on the PayPal checkout page.
+* Compatible with WordPress Multi-site Installation.
 * and more...
 
 = Note =
@@ -51,14 +53,24 @@ There are a few exact duplicate copies of this plugin that other people made. We
 Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.
 3. To add the shopping cart to a post or page (eg. checkout page) simply add the shortcode [show_wp_shopping_cart] to a post or page or use the sidebar widget to add the shopping cart to the sidebar. The shopping cart will only be visible in a post or page when a customer adds a product.
 
-Using Shipping
+= Using Product Display Box =
+
+Here is an exmaple shortcode that shows you how to use a product display box.
+
+[wp_cart_display_product name="My Awesome Product" price="25.00" thumbnail="http://www.example.com/images/product-image.jpg" description="This is a short description of the product"]
+
+Simply replace the values with your product specific data
+
+= Using Shipping =
+
 1. To use shipping cost use the following trigger text
 [wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:shipping:SHIPPING-COST:end]
 
 or use the following php function from your wordpress template files
 <?php echo print_wp_cart_button_for_product('product name',price,shipping cost); ?>
 
-Using Variation Control
+= Using Variation Control =
+
 1. To use variation control use the following trigger text
 [wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:var1[VARIATION-NAME|VARIATION1|VARIATION2|VARIATION3]:end]
 
@@ -93,6 +105,10 @@ Check the documentation on [how to add buy buttons to the sidebar](http://www.ti
 
 == Screenshots ==
 Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
+
+== Upgrade Notice ==
+
+None
 
 == Changelog ==
 Changelog can be found at the following URL
