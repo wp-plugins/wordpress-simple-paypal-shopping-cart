@@ -1,29 +1,18 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.6
+Version: v3.7
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
 Description: Simple WordPress Shopping Cart Plugin, very easy to use and great for selling products and services from your blog!
 */
 
-/*
-    This program is free software; you can redistribute it
-    under the terms of the GNU General Public License version 2,
-    as published by the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-*/
-
 if(!isset($_SESSION)){
 	session_start();
 }	
 
-define('WP_CART_VERSION', '3.6');
+define('WP_CART_VERSION', '3.7');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_URL', plugins_url('',__FILE__));
 
@@ -545,7 +534,7 @@ function wp_cart_add_read_form_javascript()
 	                obj.name == "amount") continue;
 		        pos = obj.selectedIndex;        // which option selected
 		        val = obj.options[pos].value;   // selected value
-		        val_combo = val_combo + "(" + val + ")";
+		        val_combo = val_combo + " (" + val + ")";
 	        }
 	    }
 		// Now summarize everything we have processed above
@@ -555,14 +544,56 @@ function wp_cart_add_read_form_javascript()
 	//-->
 	</script>';	
 }
-function print_wp_cart_button_for_product($name, $price, $shipping=0)
+function print_wp_cart_button_for_product($name, $price, $shipping=0, $var1='', $var2='', $var3='')
 {
 		$addcart = get_option('addToCartButtonName');
         if (!$addcart || ($addcart == '') )
             $addcart = __("Add to Cart", "WSPSC");
 
+        $var_output = "";
+        if(!empty($var1))
+        {
+        	$var1_pieces = explode('|',$var1);
+			$variation1_name = $var1_pieces[0];
+			$var_output .= '<span class="wp_cart_variation_name">'.$variation1_name.' : </span>';
+			$var_output .= '<select name="variation1" onchange="ReadForm (this.form, false);">';
+			for ($i=1;$i<sizeof($var1_pieces); $i++)
+			{
+				$var_output .= '<option value="'.$var1_pieces[$i].'">'.$var1_pieces[$i].'</option>';
+			}
+			$var_output .= '</select><br />';
+        }
+        if(!empty($var2))
+        {
+        	$var2_pieces = explode('|',$var2);
+			$variation2_name = $var2_pieces[0];
+			$var_output .= '<span class="wp_cart_variation_name">'.$variation2_name.' : </span>';
+			$var_output .= '<select name="variation2" onchange="ReadForm (this.form, false);">';
+			for ($i=1;$i<sizeof($var2_pieces); $i++)
+			{
+				$var_output .= '<option value="'.$var2_pieces[$i].'">'.$var2_pieces[$i].'</option>';
+			}
+			$var_output .= '</select><br />';
+        }
+        if(!empty($var3))
+        {
+        	$var3_pieces = explode('|',$var3);
+			$variation3_name = $var3_pieces[0];
+			$var_output .= '<span class="wp_cart_variation_name">'.$variation3_name.' : </span>';
+			$var_output .= '<select name="variation3" onchange="ReadForm (this.form, false);">';
+			for ($i=1;$i<sizeof($var3_pieces); $i++)
+			{
+				$var_output .= '<option value="'.$var3_pieces[$i].'">'.$var3_pieces[$i].'</option>';
+			}
+			$var_output .= '</select><br />';
+        }        
+        
 		$replacement = '<div class="wp_cart_button_wrapper">';
-        $replacement .= '<form method="post" class="wp-cart-button-form" action="" style="display:inline">';
+        $replacement .= '<form method="post" class="wp-cart-button-form" action="" style="display:inline" onsubmit="return ReadForm(this, true);">';
+        if (!empty($var_output)){//Show variation
+			$replacement .= '<div class="wp_cart_variation_section">'.$var_output.'</div>';
+        }
+                 
 		if (preg_match("/http:/", $addcart)) // Use the image as the 'add to cart' button
 		{
 			$replacement .= '<input type="image" src="'.$addcart.'" class="wp_cart_button" alt="'.(__("Add to Cart", "WSPSC")).'"/>';
@@ -572,6 +603,7 @@ function print_wp_cart_button_for_product($name, $price, $shipping=0)
 		    $replacement .= '<input type="submit" value="'.$addcart.'" />';
 		}
         $replacement .= '<input type="hidden" name="product" value="'.$name.'" /><input type="hidden" name="price" value="'.$price.'" /><input type="hidden" name="shipping" value="'.$shipping.'" /><input type="hidden" name="addcart" value="1" /><input type="hidden" name="cartLink" value="'.cart_current_page_url().'" />';
+        $replacement .= '<input type="hidden" name="product_tmp" value="'.$name.'" />';
 		$replacement .= '</form>';
         $replacement .= '</div>';
         return $replacement;

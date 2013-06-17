@@ -4,7 +4,7 @@ Donate link: http://www.tipsandtricks-hq.com
 Tags: shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, paypal
 Requires at least: 3.0
 Tested up to: 3.6
-Stable tag: 3.6
+Stable tag: 3.7
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -111,5 +111,6 @@ Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
 None
 
 == Changelog ==
+
 Changelog can be found at the following URL
 http://www.tipsandtricks-hq.com/ecommerce/?p=319
