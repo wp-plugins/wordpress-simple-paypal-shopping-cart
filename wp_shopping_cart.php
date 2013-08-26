@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.7
+Version: v3.8
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -12,9 +12,11 @@ if(!isset($_SESSION)){
 	session_start();
 }	
 
-define('WP_CART_VERSION', '3.7');
+define('WP_CART_VERSION', '3.8');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
+define('WP_CART_PATH',plugin_dir_path( __FILE__ ));
 define('WP_CART_URL', plugins_url('',__FILE__));
+define('WP_CART_SITE_URL',site_url());
 
 define('WP_CART_LIVE_PAYPAL_URL', 'https://www.paypal.com/cgi-bin/webscr');
 define('WP_CART_SANDBOX_PAYPAL_URL', 'https://www.sandbox.paypal.com/cgi-bin/webscr');
@@ -27,6 +29,8 @@ add_option('wp_cart_empty_text', __("Your cart is empty", "WSPSC"));
 add_option('cart_return_from_paypal_url', get_bloginfo('wpurl'));
 
 include_once('wp_shopping_cart_shortcodes.php');
+include_once('wp_shopping_cart_misc_functions.php');
+include_once('wp_shopping_cart_orders.php');
 
 function always_show_cart_handler($atts) 
 {
@@ -57,6 +61,12 @@ function shopping_cart_show($content)
     return $content;
 }
 
+// Reset cart option
+if (isset($_REQUEST["reset_wp_cart"]) && !empty($_REQUEST["reset_wp_cart"]))
+{
+    reset_wp_cart();
+}
+
 // Reset the Cart as this is a returned customer from Paypal
 if (isset($_GET["merchant_return_link"]) && !empty($_GET["merchant_return_link"]))
 {
@@ -85,13 +95,15 @@ function reset_wp_cart()
     if(empty($products))
     {
     	unset($_SESSION['simpleCart']);
+        unset($_SESSION['simple_cart_id']);
     	return;
     }
     foreach ($products as $key => $item)
     {
         unset($products[$key]);
     }
-    $_SESSION['simpleCart'] = $products;    
+    $_SESSION['simpleCart'] = $products;  
+    unset($_SESSION['simple_cart_id']);
 }
 
 if (isset($_POST['addcart']))
@@ -143,11 +155,59 @@ if (isset($_POST['addcart']))
 		$shipping = str_replace($default_cur_symbol,"",$shipping);
             
         $product = array('name' => stripslashes($_POST['product']), 'price' => $price, 'quantity' => $count, 'shipping' => $shipping, 'cartLink' => $_POST['cartLink'], 'item_number' => $_POST['item_number']);
+        if(isset($_POST['file_url']) && !empty($_POST['file_url'])){
+            $file_url = strip_tags($_POST['file_url']);
+            $product['file_url'] = $file_url;  
+        }
         array_push($products, $product);
     }
     
     sort($products);
     $_SESSION['simpleCart'] = $products;
+    if(!isset($_SESSION['simple_cart_id']) && empty($_SESSION['simple_cart_id']))
+    {
+        //First time adding to the cart
+        //$cart_id = uniqid();
+        //$_SESSION['simple_cart_id'] = $cart_id;
+        $wpsc_order = array(
+        'post_title'    => 'WPSC Cart Order',
+        'post_type'     => 'wpsc_cart_orders',
+        'post_content'  => '',
+        'post_status'   => 'trash',
+        );
+        // Insert the post into the database
+        $post_id  = wp_insert_post($wpsc_order);
+        if($post_id){
+            //echo "post id: ".$post_id;
+            $_SESSION['simple_cart_id'] = $post_id;
+            $updated_wpsc_order = array(
+                'ID'             => $post_id,
+                'post_title'    => $post_id,
+                'post_type'     => 'wpsc_cart_orders',
+            );
+            wp_update_post($updated_wpsc_order);
+            $status = "In Progress";
+            update_post_meta($post_id, 'wpsc_order_status', $status);
+        }
+    }
+    else 
+    {
+        //cart updating
+        if(isset($_SESSION['simple_cart_id']) && !empty($_SESSION['simple_cart_id']))
+        {
+            //echo "siimplecart id set";
+            $post_id = $_SESSION['simple_cart_id'];
+            if(isset($_SESSION['simpleCart']) && !empty($_SESSION['simpleCart']))
+            {
+                //echo "updated cart id: ".$post_id;
+                update_post_meta( $post_id, 'wpsc_cart_items', $_SESSION['simpleCart']);
+            }
+        }
+        else{
+            echo "<p>Error! Your session is out of sync. Please reset your session.</p>";
+        }
+    }
+
     
     if (get_option('wp_shopping_cart_auto_redirect_to_checkout_page'))
     {
@@ -190,6 +250,11 @@ else if (isset($_POST['delcart']))
             unset($products[$key]);
     }
     $_SESSION['simpleCart'] = $products;
+    if(isset($_SESSION['simple_cart_id']) && !empty($_SESSION['simple_cart_id']))
+    {
+        $post_id = $_SESSION['simple_cart_id'];
+        update_post_meta( $post_id, 'wpsc_cart_items', $_SESSION['simpleCart']);     
+    }
 }
 
 function print_wp_shopping_cart()
@@ -236,21 +301,18 @@ function print_wp_shopping_cart()
 	$urls = '';
         
     $return = get_option('cart_return_from_paypal_url');
-            
-    if (!empty($return))
-        $urls .= '<input type="hidden" name="return" value="'.$return.'" />';
-	
-	if ($use_affiliate_platform)  
-	{
-		if (function_exists('wp_aff_platform_install'))
-		{
-			$notify = WP_AFF_PLATFORM_URL.'/api/ipn_handler.php';
-			//$notify = WP_CART_URL.'/paypal.php';
-			$urls .= '<input type="hidden" name="notify_url" value="'.$notify.'" />';
-		}
-	}
-	$title = get_option('wp_cart_title');
-	//if (empty($title)) $title = __("Your Shopping Cart", "WSPSC");
+    if(empty($return)){
+        $return = WP_CART_SITE_URL.'/';
+    }
+    $return_url = add_query_arg('reset_wp_cart', '1', $return);
+
+    $urls .= '<input type="hidden" name="return" value="'.$return_url.'" />';
+
+    $notify = WP_CART_SITE_URL.'/?simple_cart_ipn=1';
+    $urls .= '<input type="hidden" name="notify_url" value="'.$notify.'" />';
+
+    $title = get_option('wp_cart_title');
+    //if (empty($title)) $title = __("Your Shopping Cart", "WSPSC");
     
     global $plugin_dir_name;
     $output .= '<div class="shopping_cart" style=" padding: 5px;">';
@@ -372,9 +434,8 @@ function print_wp_shopping_cart()
     			if(!empty($wp_cart_note_to_seller_text)){
     				$output .= '<input type="hidden" name="no_note" value="0" /><input type="hidden" name="cn" value="'.$wp_cart_note_to_seller_text.'" />';
     			}
-			    if ($use_affiliate_platform){
-			    	$output .= wp_cart_add_custom_field();
-			    }
+
+			    $output .= wp_cart_add_custom_field();
 			    $output .= '</form>';          
        	}       
        	$output .= "       
@@ -387,19 +448,31 @@ function print_wp_shopping_cart()
 
 function wp_cart_add_custom_field()
 {
-	if (function_exists('wp_aff_platform_install'))
-	{
-		$output = '';
-		if (!empty($_SESSION['ap_id']))
-		{
-			$output = '<input type="hidden" name="custom" value="'.$_SESSION['ap_id'].'" id="wp_affiliate" />';
-		}
-		else if (isset($_COOKIE['ap_id']))
-		{
-			$output = '<input type="hidden" name="custom" value="'.$_COOKIE['ap_id'].'" id="wp_affiliate" />';
-		}
-		return 	$output;
-	}
+    $_SESSION['wp_cart_custom_values'] = "";
+    $custom_field_val = "";
+    $name = 'wp_cart_id';
+    $value = $_SESSION['simple_cart_id'];
+    $custom_field_val = wpc_append_values_to_custom_field($name,$value);
+	
+    $clientip = $_SERVER['REMOTE_ADDR'];
+	if (!empty($clientip)){
+        $name = 'ip';
+        $value = $clientip;
+        $custom_field_val = wpc_append_values_to_custom_field($name,$value);
+    }
+    	
+    if (function_exists('wp_aff_platform_install'))
+    {
+            $name = 'ap_id';
+            $value = '';
+            if(isset($_SESSION['ap_id'])){$value = $_SESSION['ap_id'];}
+            else if	(isset($_COOKIE['ap_id'])){$value = $_COOKIE['ap_id'];}
+            if(!empty($value)){
+                    $custom_field_val = wpc_append_values_to_custom_field($name,$value);
+            }
+    }
+    $output = '<input type="hidden" name="custom" value="'.$custom_field_val.'" />';
+    return 	$output;
 }
 
 function print_wp_cart_button_new($content)
@@ -544,7 +617,7 @@ function wp_cart_add_read_form_javascript()
 	//-->
 	</script>';	
 }
-function print_wp_cart_button_for_product($name, $price, $shipping=0, $var1='', $var2='', $var3='')
+function print_wp_cart_button_for_product($name, $price, $shipping=0, $var1='', $var2='', $var3='', $atts=array())
 {
 		$addcart = get_option('addToCartButtonName');
         if (!$addcart || ($addcart == '') )
@@ -604,7 +677,12 @@ function print_wp_cart_button_for_product($name, $price, $shipping=0, $var1='', 
 		}
         $replacement .= '<input type="hidden" name="product" value="'.$name.'" /><input type="hidden" name="price" value="'.$price.'" /><input type="hidden" name="shipping" value="'.$shipping.'" /><input type="hidden" name="addcart" value="1" /><input type="hidden" name="cartLink" value="'.cart_current_page_url().'" />';
         $replacement .= '<input type="hidden" name="product_tmp" value="'.$name.'" />';
-		$replacement .= '</form>';
+        if($atts['file_url']){
+            $file_url = $atts['file_url'];
+            $file_url = base64_encode($file_url); 
+            $replacement .= '<input type="hidden" name="file_url" value="'.$file_url.'" />';
+        }
+	$replacement .= '</form>';
         $replacement .= '</div>';
         return $replacement;
 }
@@ -645,6 +723,15 @@ function cart_current_page_url() {
 
 function show_wp_cart_options_page () 
 {
+    if(isset($_POST['wspsc_reset_logfile'])) {
+        // Reset the debug log file
+        if(wspsc_reset_logfile()){
+            echo '<div id="message" class="updated fade"><p><strong>Debug log file has been reset!</strong></p></div>';
+        }
+        else{
+                echo '<div id="message" class="updated fade"><p><strong>Debug log file could not be reset!</strong></p></div>';
+        }
+    }
     if (isset($_POST['info_update']))
     {
     	$nonce = $_REQUEST['_wpnonce'];
@@ -675,6 +762,7 @@ function show_wp_cart_options_page ()
         update_option('wp_use_aff_platform', ($_POST['wp_use_aff_platform']!='') ? 'checked="checked"':'' );
         
         update_option('wp_shopping_cart_enable_sandbox', ($_POST['wp_shopping_cart_enable_sandbox']!='') ? 'checked="checked"':'' );
+        update_option('wp_shopping_cart_enable_debug', ($_POST['wp_shopping_cart_enable_debug']!='') ? 'checked="checked"':'' );
         
         echo '<div id="message" class="updated fade">';
         echo '<p><strong>'.(__("Options Updated!", "WSPSC")).'</strong></p></div>';
@@ -742,7 +830,12 @@ function show_wp_cart_options_page ()
     if (get_option('wp_shopping_cart_enable_sandbox'))
         $wp_shopping_cart_enable_sandbox = 'checked="checked"';
     else
-        $wp_shopping_cart_enable_sandbox = '';	        
+        $wp_shopping_cart_enable_sandbox = '';	
+    
+    $wp_shopping_cart_enable_debug = '';
+    if (get_option('wp_shopping_cart_enable_debug')){
+        $wp_shopping_cart_enable_debug = 'checked="checked"';
+    }    
 	?>
  	<h2><?php _e("Simple PayPal Shopping Cart Settings", "WSPSC"); ?> v <?php echo WP_CART_VERSION; ?></h2>
  	
@@ -774,11 +867,6 @@ echo '
 <tr valign="top">
 <th scope="row">'.(__("Paypal Email Address", "WSPSC")).'</th>
 <td><input type="text" name="cart_paypal_email" value="'.$defaultEmail.'" size="40" /></td>
-</tr>
-<tr valign="top">
-<th scope="row">'.(__("Enable Sandbox Testing", "WSPSC")).'</th>
-<td><input type="checkbox" name="wp_shopping_cart_enable_sandbox" value="1" '.$wp_shopping_cart_enable_sandbox.' />
-<br />'.(__("Check this option if you want to do PayPal sandbox testing. You will need to create a PayPal sandbox account from PayPal Developer site", "WSPSC")).'</td>
 </tr>
 <tr valign="top">
 <th scope="row">'.(__("Shopping Cart title", "WSPSC")).'</th>
@@ -874,6 +962,36 @@ echo '
 </tr>
 </table>
 </div></div>
+
+<div class="postbox">
+    <h3><label for="title">'.(__("Testing and Debugging Settings", "WSPSC")).'</label></h3>
+    <div class="inside">
+    
+    <table class="form-table"> 
+    
+    <tr valign="top">
+    <th scope="row">'.(__("Enable Debug", "WSPSC")).'</th>
+    <td><input type="checkbox" name="wp_shopping_cart_enable_debug" value="1" '.$wp_shopping_cart_enable_debug.' />
+    <br />'.(__("If checked, debug output will be written to the log file. This is useful for troubleshooting post payment failures", "WSPSC")).'
+        <p><i>You can check the debug log file by clicking on the link below (The log file can be viewed using any text editor):</i>
+        <ul>
+            <li><a href="'.WP_CART_URL.'/ipn_handle_debug.log" target="_blank">ipn_handle_debug.log</a></li>
+        </ul>
+        </p>
+        <input type="submit" name="wspsc_reset_logfile" style="font-weight:bold; color:red" value="Reset Debug Log file"/> Simple PayPal Shopping Cart debug log file is "reset" and timestamped with a log file reset message.
+    </td></tr>
+
+    <tr valign="top">
+    <th scope="row">'.(__("Enable Sandbox Testing", "WSPSC")).'</th>
+    <td><input type="checkbox" name="wp_shopping_cart_enable_sandbox" value="1" '.$wp_shopping_cart_enable_sandbox.' />
+    <br />'.(__("Check this option if you want to do PayPal sandbox testing. You will need to create a PayPal sandbox account from PayPal Developer site", "WSPSC")).'</td>
+    </tr>
+    
+    </table>
+    
+    </div>
+</div>
+
     <div class="submit">
         <input type="submit" name="info_update" value="'.(__("Update Options &raquo;", "WSPSC")).'" />
     </div>						
@@ -965,6 +1083,9 @@ add_filter('plugin_action_links', 'wp_simple_cart_add_settings_link', 10, 2 );
 // Insert the options page to the admin menu
 add_action('admin_menu','wp_cart_options_page');
 add_action('widgets_init','wp_paypal_shopping_cart_load_widgets');
+
+add_action('init','wp_cart_init_handler');
+add_action( 'admin_init', 'wp_cart_admin_init_handler' );
 
 //add_filter('the_content', 'print_wp_cart_button',11);
 add_filter('the_content', 'print_wp_cart_button_new',11);

@@ -16,7 +16,7 @@ function wp_cart_button_handler($atts){
 	if(empty($price)){
 		return '<div style="color:red;">Error! You must specify a price for your product in the shortcode.</div>';
 	}
-	return print_wp_cart_button_for_product($name, $price, $shipping, $var1, $var2, $var3);
+	return print_wp_cart_button_for_product($name, $price, $shipping, $var1, $var2, $var3, $atts);
 }
 
 function wp_cart_display_product_handler($atts)
@@ -42,7 +42,7 @@ function wp_cart_display_product_handler($atts)
             return '<div style="color:red;">Error! You must specify a thumbnail image for your product in the shortcode.</div>';
     }
     $currency_symbol = get_option('cart_currency_symbol');
-    $button_code = print_wp_cart_button_for_product($name, $price, $shipping, $var1, $var2, $var3);
+    $button_code = print_wp_cart_button_for_product($name, $price, $shipping, $var1, $var2, $var3, $atts);
     $display_code = <<<EOT
     <div class="wp_cart_product_display_box">
         <div class="wp_cart_product_thumbnail">

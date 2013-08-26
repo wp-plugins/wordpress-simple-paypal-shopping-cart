@@ -1,10 +1,10 @@
 === WordPress Simple Paypal Shopping Cart ===
 Contributors: Ruhul Amin, Tips and Tricks HQ
 Donate link: http://www.tipsandtricks-hq.com
-Tags: shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, paypal
+Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, digital downloads, paypal, paypal cart, e-shop,  
 Requires at least: 3.0
 Tested up to: 3.6
-Stable tag: 3.7
+Stable tag: 3.8
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -15,14 +15,14 @@ WordPress Simple Paypal Shopping Cart allows you to add an 'Add to Cart' button 
 
 It also allows you to add/display the shopping cart on any post or page or sidebar easily. The shopping cart shows the user what they currently have in the cart and allows them to change quantity or remove the items. 
 
-It can be easily integrated with the NextGen Photo Gallery plugin to acomodate the selling of photographs from your gallery.
+It can be easily integrated with the NextGen Photo Gallery plugin to accommodate the selling of photographs from your gallery.
 
 WP simple Paypal Cart Plugin, interfaces with the Paypal sandbox to allow for testing.
 
 This plugin is a lightweight solution (with minimal number of lines of code and minimal options) so it doesn't slow down your site.
 
 For video tutorial, screenshots, detailed documentation, support and updates, please visit:
-[WP Simple Cart Details Page](http://www.tipsandtricks-hq.com/?p=768)
+[WP Simple Cart Details Page](http://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768)
 or
 [WP Simple Cart Documentation](http://www.tipsandtricks-hq.com/ecommerce/wp-shopping-cart)
 
@@ -31,9 +31,13 @@ or
 * Easily create "add to cart" button with options if needed (price, shipping, options variations). The cart's shortcode can be displayed on posts or pages.
 * Use a function to add dynamic "add to cart" button directly in your theme.
 * Minimal number of configuration items to keep the plugin lightweight.
+* Sell any kind of tangible products from your site.
+* Sell any type of media file that you upload to your WordPress site. For example: you can sell ebooks (PDF), music (MP3), videos, photos etc.
+* Your customers will automatically get an email with the media file that they paid for.
 * Show a nicely formatted product display box on the fly using a simple shortcode.
-* You can use Paypal sandbox to do testing if needed.
-* Collect special instruction from your customers on the PayPal checkout page.
+* You can use Paypal sandbox to do testing if needed (before you go live).
+* Collect special instructions from your customers on the PayPal checkout page.
+* The orders menu will show you all the orders that you have received from your site.
 * Compatible with WordPress Multi-site Installation.
 * and more...
 
@@ -47,10 +51,12 @@ There are a few exact duplicate copies of this plugin that other people made. We
 * Check the developer's site.
 
 == Usage ==
-1. To add an 'Add to Cart' button for a product, simply add the shortcode [wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:end] to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.
+1. To add an 'Add to Cart' button for a product, simply add the shortcode [wp_cart_button name="PRODUCT-NAME" price="PRODUCT-PRICE"] to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.
+
 2. To add the 'Add to Cart' button on the sidebar or from other template files use the following function:
 <?php echo print_wp_cart_button_for_product('PRODUCT-NAME', PRODUCT-PRICE); ?>
 Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price.
+
 3. To add the shopping cart to a post or page (eg. checkout page) simply add the shortcode [show_wp_shopping_cart] to a post or page or use the sidebar widget to add the shopping cart to the sidebar. The shopping cart will only be visible in a post or page when a customer adds a product.
 
 = Using Product Display Box =
@@ -63,34 +69,30 @@ Simply replace the values with your product specific data
 
 = Using Shipping =
 
-1. To use shipping cost use the following trigger text
-[wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:shipping:SHIPPING-COST:end]
+1. To use shipping cost for your product, use the "shipping" parameter. Here is an example shortcode usage:
+[wp_cart_button name="Test Product" price="19.95" shipping="4.99"]
 
 or use the following php function from your wordpress template files
 <?php echo print_wp_cart_button_for_product('product name',price,shipping cost); ?>
 
 = Using Variation Control =
 
-1. To use variation control use the following trigger text
-[wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:var1[VARIATION-NAME|VARIATION1|VARIATION2|VARIATION3]:end]
+1. To use variation control use the variation parameter in the shortcode:
+[wp_cart_button name="Test Product" price="25.95" var1="VARIATION-NAME|VARIATION1|VARIATION2|VARIATION3"]
 
-example, [wp_cart:Demo Product 1:price:15:var1[Size|Small|Medium|Large]:end]
+example usage: [wp_cart_button name="Test Product" price="29.95" var1="Size|small|medium|large"]
 
-2. To use variation control with shipping use the following trigger text:
-[wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:shipping:SHIPPING-COST:var1[VARIATION-NAME|VARIATION1|VARIATION2|VARIATION3]:end]
+2. To use multiple variation for a product (2nd or 3rd variation), use the following:
 
-example, [wp_cart:Demo Product 1:price:15:shipping:2:var1[Size|Small|Medium|Large]:end]
+[wp_cart_button name="Test Product" price="29.95" var1="Size|small|medium|large" var2="Color|red|green|blue"]
 
-3. To use multiple variation option use the following trigger text:
-[wp_cart:PRODUCT-NAME:price:PRODUCT-PRICE:var1[VARIATION-NAME|VARIATION1|VARIATION2|VARIATION3]:var2[VARIATION-NAME|VARIATION1|VARIATION2]:end]
-
-example, [wp_cart:Demo Product 1:price:15:shipping:2:var1[Size|Small|Medium|Large]:var2[Color|Red|Green]:end]
+[wp_cart_button name="Test Product" price="29.95" var1="Size|small|medium|large" var2="Color|red|green|blue" var3="Sleeve|short|full"]
 
 == Installation ==
 
 1. Unzip and Upload the folder 'wordpress-paypal-shopping-cart' to the '/wp-content/plugins/' directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Go to Settings and configure the options eg. your email, Shopping Cart name, Return URL etc.
+3. Go to Settings and configure the options (for example: your email, Shopping Cart name, Return URL etc.)
 4. Use the trigger text to add a product to a post or page where u want it to appear.
 
 == Frequently Asked Questions ==
@@ -102,6 +104,8 @@ example, [wp_cart:Demo Product 1:price:15:shipping:2:var1[Size|Small|Medium|Larg
 6. Does this plugin use a return URL to redirect customers to a specified page after Paypal has processed the payment? Yes.
 7. How can I add a buy button on the sidebar widget of my site?
 Check the documentation on [how to add buy buttons to the sidebar](http://www.tipsandtricks-hq.com/ecommerce/wordpress-shopping-cart-additional-resources-322#add_button_in_sidebar)
+8. Can I use this plugin to sell digital downloads? 
+Yes. See the [digital download usage documnentation] (http://www.tipsandtricks-hq.com/ecommerce/wp-simple-cart-sell-digital-downloads-2468)
 
 == Screenshots ==
 Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
