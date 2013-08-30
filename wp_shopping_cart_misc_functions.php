@@ -15,13 +15,14 @@ function wp_cart_init_handler()
         wpc_create_orders_page();
     }
     else//Init hook handing code for front end
-    {    
-		if(isset($_REQUEST['simple_cart_ipn']))
-		{
-	            include_once('paypal.php');
-	            wpc_handle_paypal_ipn();
-	            exit;
-		}
+    {
+        add_filter('ngg_render_template','wp_cart_ngg_template_handler',10,2);
+        if(isset($_REQUEST['simple_cart_ipn']))
+        {
+            include_once('paypal.php');
+            wpc_handle_paypal_ipn();
+            exit;
+        }
     }
 }
 
@@ -66,17 +67,27 @@ function wp_cart_get_custom_var_array($custom_val_string)
 
 function wspsc_reset_logfile()
 {
-	$log_reset = true;
-	$logfile = dirname(__FILE__).'/ipn_handle_debug.log';
-	$text = '['.date('m/d/Y g:i A').'] - SUCCESS : Log file reset';
+    $log_reset = true;
+    $logfile = dirname(__FILE__).'/ipn_handle_debug.log';
+    $text = '['.date('m/d/Y g:i A').'] - SUCCESS : Log file reset';
     $text .= "\n------------------------------------------------------------------\n\n";
-	$fp = fopen($logfile, 'w');
-	if($fp != FALSE) {
-		@fwrite($fp, $text);
-		@fclose($fp);
-	}
-	else{
-		$log_reset = false;	
-	}
-	return $log_reset;
+    $fp = fopen($logfile, 'w');
+    if($fp != FALSE) {
+            @fwrite($fp, $text);
+            @fclose($fp);
+    }
+    else{
+            $log_reset = false;	
+    }
+    return $log_reset;
+}
+
+function wp_cart_ngg_template_handler($arg1,$arg2)
+{
+    if($arg2=="gallery-wp-cart"){
+        $template_name = "gallery-wp-cart";
+        $gallery_template = WP_CART_PATH. "/lib/$template_name.php";
+        return $gallery_template;
+    }
+    return $arg2;
 }
