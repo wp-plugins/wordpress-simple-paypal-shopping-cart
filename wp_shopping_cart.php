@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.8.2
+Version: v3.8.3
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
 	session_start();
 }	
 
-define('WP_CART_VERSION', '3.8.2');
+define('WP_CART_VERSION', '3.8.3');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH',plugin_dir_path( __FILE__ ));
 define('WP_CART_URL', plugins_url('',__FILE__));

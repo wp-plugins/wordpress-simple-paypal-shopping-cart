@@ -120,22 +120,23 @@ function show_wp_cart_options_page ()
  	
  	<div style="background: none repeat scroll 0 0 #FFF6D5;border: 1px solid #D1B655;color: #3F2502;margin: 10px 0;padding: 5px 5px 5px 10px;text-shadow: 1px 1px #FFFFFF;">	
  	<p><?php _e("For more information, updates, detailed documentation and video tutorial, please visit:", "WSPSC"); ?><br />
-    <a href="http://www.tipsandtricks-hq.com/?p=768" target="_blank"><?php _e("WP simple cart homepage", "WSPSC"); ?></a></p>
+    <a href="http://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768" target="_blank"><?php _e("WP Simple Cart Homepage", "WSPSC"); ?></a></p>
     </div>
     
     <div class="postbox">
-	<h3><label for="title"><?php _e("Quick Usage Guide", "WSPSC"); ?></label></h3>
-	<div class="inside">
+    <h3><label for="title"><?php _e("Quick Usage Guide", "WSPSC"); ?></label></h3>
+    <div class="inside">
 	
-    <p><?php _e("1. To add an 'Add to Cart' button for a product simply add the shortcode", "WSPSC"); ?> <strong>[wp_cart:<?php _e("PRODUCT-NAME", "WSPSC"); ?>:price:<?php _e("PRODUCT-PRICE", "WSPSC"); ?>:end]</strong> <?php _e("to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price. For example: [wp_cart:Test Product:price:15.00:end]", "WSPSC"); ?></p>
-	<p><?php _e("2. To add the shopping cart to a post or page (example, checkout page) simply add the shortcode", "WSPSC"); ?><strong>[show_wp_shopping_cart]</strong> <?php _e("to a post or page or use the sidebar widget to add the shopping cart to the sidebar.", "WSPSC"); ?></p> 
+        <p><strong><?php _e("Step 1) ","WSPSC"); ?></strong><?php _e("To add an 'Add to Cart' button for a product simply add the shortcode", "WSPSC"); ?> [wp_cart_button name="<?php _e("PRODUCT-NAME", "WSPSC"); ?>" price="<?php _e("PRODUCT-PRICE", "WSPSC"); ?>"] <?php _e("to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price of your product.", "WSPSC"); ?></p>
+        <p>Example add to cart button shortcode usage: <p style="background-color: #DDDDDD; padding: 5px; display: inline;">[wp_cart_button name="Test Product" price="29.95"]</p></p>
+	<p><strong><?php _e("Step 2) ","WSPSC"); ?></strong><?php _e("To add the shopping cart to a post or page (example: a checkout page) simply add the shortcode", "WSPSC"); ?> [show_wp_shopping_cart] <?php _e("to a post or page or use the sidebar widget to add the shopping cart to the sidebar.", "WSPSC"); ?></p>
+        <p>Example shopping cart shortcode usage: <p style="background-color: #DDDDDD; padding: 5px; display: inline;">[show_wp_shopping_cart]</p></p>
+    </div></div>
 
-	</div></div>
-	
     <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
     <?php wp_nonce_field('wp_simple_cart_settings_update'); ?>
     <input type="hidden" name="info_update" id="info_update" value="true" />    
- 	<?php
+<?php
 echo '
 	<div class="postbox">
 	<h3><label for="title">'.(__("PayPal and Shopping Cart Settings", "WSPSC")).'</label></h3>
