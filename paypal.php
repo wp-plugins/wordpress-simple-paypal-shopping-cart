@@ -147,22 +147,37 @@ class paypal_ipn_handler {
             $status = "Paid";
             update_post_meta( $post_id, 'wpsc_order_status', $status );
             $cart_items = get_post_meta( $post_id, 'wpsc_cart_items', true );
-            $subject = "Thank you for the purchase";
-            $body .= "Dear $first_name $last_name"."\n";
-            $body .= "\nThank you for your purchase! You ordered the following item(s):\n";
+            $product_details = "";
+            $item_counter = 1;
             if($cart_items){
                 foreach ($cart_items as $item){
-                    $body .= "\n".$item['name']." x ".$item['quantity']." - ".$currency_symbol.$item['price']."\n";
+                    if($item_counter != 1){
+                        $product_details .= "\n";
+                    }
+                    $product_details .= $item['name']." x ".$item['quantity']." - ".$currency_symbol.$item['price']."\n";
                     if($item['file_url']){
                         $file_url = base64_decode($item['file_url']);
-                        $body .= "Download Link: ".$file_url."\n";
+                        $product_details .= "Download Link: ".$file_url."\n";
                     }
+                    $item_counter++;
                 }
             }
+            $args = array();
+            $args['product_details'] = $product_details;
+            $from_email = get_option('wpspc_buyer_from_email');
+            $subject = get_option('wpspc_buyer_email_subj');
+            $body = get_option('wpspc_buyer_email_body');
+            $args['email_body'] = $body;
+            $body = wpspc_apply_dynamic_tags_on_email_body($this->ipn_data, $args);
+          
             if($buyer_email){
-                wp_mail($buyer_email, $subject, $body);
-                $this->debug_log('Product Email successfully sent to '.$buyer_email,true);
-                update_post_meta( $post_id, 'wpsc_buyer_email_sent', 'Email sent to: '.$buyer_email);
+                if(get_option('wpspc_send_buyer_email'))
+        	{
+                    $headers = 'From: '.$from_email . "\r\n";
+                    wp_mail($buyer_email, $subject, $body, $headers);
+                    $this->debug_log('Product Email successfully sent to '.$buyer_email,true);
+                    update_post_meta( $post_id, 'wpsc_buyer_email_sent', 'Email sent to: '.$buyer_email);
+                }
             }
         }
 

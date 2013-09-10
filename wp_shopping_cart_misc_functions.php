@@ -132,3 +132,32 @@ function wpspc_update_cart_items_record()
         update_post_meta( $post_id, 'wpsc_cart_items', $_SESSION['simpleCart']);
     }
 }
+
+function wpspc_apply_dynamic_tags_on_email_body($ipn_data, $args)
+{
+    $tags = array("{first_name}","{last_name}","{product_details}");
+    $vals = array($ipn_data['first_name'], $ipn_data['last_name'], $args['product_details']);
+
+    $body = stripslashes(str_replace($tags, $vals, $args['email_body']));
+    return $body;
+}
+
+function wpspc_run_activation()
+{
+    //General options
+    add_option('wp_cart_title', __("Your Shopping Cart", "WSPSC"));
+    add_option('wp_cart_empty_text', __("Your cart is empty", "WSPSC"));
+    add_option('cart_return_from_paypal_url', get_bloginfo('wpurl'));
+
+    //Add Confirmation Email Settings
+    add_option("wpspc_send_buyer_email", 1); 
+    $from_email_address = get_bloginfo('name')." <sales@your-domain.com>";
+    add_option('wpspc_buyer_from_email', $from_email_address);
+    $buyer_email_subj = "Thank you for the purchase";
+    add_option('wpspc_buyer_email_subj', $buyer_email_subj);
+    $email_body .= "Dear {first_name} {last_name}"."\n";
+    $email_body .= "\nThank you for your purchase! You ordered the following item(s):\n";
+    $email_body .= "\n{product_details}";
+    add_option('wpspc_buyer_email_body', $email_body);
+
+}

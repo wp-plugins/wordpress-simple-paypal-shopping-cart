@@ -1,5 +1,47 @@
 <?php
 
+function wp_cart_options()
+{    
+    $wpspc_plugin_tabs = array(
+        'wordpress-paypal-shopping-cart' => 'General Settings',
+        'wordpress-paypal-shopping-cart&action=email-settings' => 'Email Settings'
+    );
+    echo '<div class="wrap">'.screen_icon( ).'<h2>'.(__("WP Paypal Shopping Cart Options", "WSPSC")).'</h2>';
+    $current = "";
+    if(isset($_GET['page'])){
+        $current = $_GET['page'];
+        if(isset($_GET['action'])){
+            $current .= "&action=".$_GET['action'];
+        }
+    }
+    $content = '';
+    $content .= '<h2 class="nav-tab-wrapper">';
+    foreach($wpspc_plugin_tabs as $location => $tabname)
+    {
+        if($current == $location){
+            $class = ' nav-tab-active';
+        } else{
+            $class = '';    
+        }
+        $content .= '<a class="nav-tab'.$class.'" href="?page='.$location.'">'.$tabname.'</a>';
+    }
+    $content .= '</h2>';
+    echo $content;     
+    echo '<div id="poststuff"><div id="post-body">';
+        
+   switch ($_GET['action'])
+   {
+       case 'email-settings':
+           show_wp_cart_email_settings_page();
+           break;
+       default:
+           show_wp_cart_options_page();
+           break;
+   }
+    echo '</div></div>';
+    echo '</div>';
+}
+
 function show_wp_cart_options_page () 
 {
     if(isset($_POST['wspsc_reset_logfile'])) {
@@ -273,7 +315,7 @@ echo '
 </div>
 
     <div class="submit">
-        <input type="submit" name="info_update" value="'.(__("Update Options &raquo;", "WSPSC")).'" />
+        <input type="submit" class="button-primary" name="info_update" value="'.(__("Update Options &raquo;", "WSPSC")).'" />
     </div>						
  </form>
  ';
@@ -284,4 +326,87 @@ echo '
     <a href="http://www.tipsandtricks-hq.com/?p=1059" target="_blank"><?php _e("WP eStore Plugin", "WSPSC"); ?></a></p>
     </div>
     <?php 
+}
+
+function show_wp_cart_email_settings_page()
+{
+    if (isset($_POST['wpspc_email_settings_update']))
+    {
+        $nonce = $_REQUEST['_wpnonce'];
+        if ( !wp_verify_nonce($nonce, 'wpspc_email_settings_update')){
+                wp_die('Error! Nonce Security Check Failed! Go back to email settings menu and save the settings again.');
+        }
+        update_option('wpspc_send_buyer_email', ($_POST['wpspc_send_buyer_email']!='') ? 'checked="checked"':'' );        
+        update_option('wpspc_buyer_from_email', stripslashes((string)$_POST["wpspc_buyer_from_email"]));
+        update_option('wpspc_buyer_email_subj', stripslashes((string)$_POST["wpspc_buyer_email_subj"]));
+        update_option('wpspc_buyer_email_body', stripslashes((string)$_POST["wpspc_buyer_email_body"]));;
+        
+        echo '<div id="message" class="updated fade"><p><strong>';
+        echo 'Email Settings Updated!';
+        echo '</strong></p></div>';
+    }
+    $wpspc_send_buyer_email = '';
+    if (get_option('wpspc_send_buyer_email')){
+        $wpspc_send_buyer_email = 'checked="checked"';
+    }
+    $wpspc_buyer_from_email = get_option('wpspc_buyer_from_email');    
+    $wpspc_buyer_email_subj = get_option('wpspc_buyer_email_subj');    
+    $wpspc_buyer_email_body = get_option('wpspc_buyer_email_body');
+    ?>
+    
+    <div style="background: none repeat scroll 0 0 #FFF6D5;border: 1px solid #D1B655;color: #3F2502;margin: 10px 0;padding: 5px 5px 5px 10px;text-shadow: 1px 1px #FFFFFF;">	
+    <p><?php _e("For more information, updates, detailed documentation and video tutorial, please visit:", "WSPSC"); ?><br />
+    <a href="http://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768" target="_blank"><?php _e("WP Simple Cart Homepage", "WSPSC"); ?></a></p>
+    </div>
+    
+    <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
+    <?php wp_nonce_field('wpspc_email_settings_update'); ?>
+    <input type="hidden" name="info_update" id="info_update" value="true" />
+    
+    <div class="postbox">
+    <h3><label for="title">Purchase Confirmation Email Settings</label></h3>
+    <div class="inside">
+
+    <p><i>The following options affect the emails that gets sent to your buyers after a purchase.</i></p>
+
+    <table class="form-table">
+
+    <tr valign="top">
+    <th scope="row">Send Emails to Buyer After Purchase</th>
+    <td><input type="checkbox" name="wpspc_send_buyer_email" value="1" <?php echo $wpspc_send_buyer_email; ?> /><span class="description"> If checked the plugin will send an email to the buyer with the sale details. If digital goods are purchased then the email will contain the download links for the purchased products.</a></span></td>
+    </tr>
+    
+    <tr valign="top">
+    <th scope="row">From Email Address</th>
+    <td><input type="text" name="wpspc_buyer_from_email" value="<?php echo $wpspc_buyer_from_email; ?>" size="50" />
+    <br /><p class="description">Example: Your Name &lt;sales@your-domain.com&gt; This is the email address that will be used to send the email to the buyer. This name and email address will appear in the from field of the email.</p></td>
+    </tr>
+
+    <tr valign="top">
+    <th scope="row">Buyer Email Subject</th>
+    <td><input type="text" name="wpspc_buyer_email_subj" value="<?php echo $wpspc_buyer_email_subj; ?>" size="50" />
+    <br /><p class="description">This is the subject of the email that will be sent to the buyer.</p></td>
+    </tr>
+
+    <tr valign="top">
+    <th scope="row">Buyer Email Body</th>
+    <td>
+    <textarea name="wpspc_buyer_email_body" cols="90" rows="7"><?php echo $wpspc_buyer_email_body; ?></textarea>
+    <br /><p class="description">This is the body of the email that will be sent to the buyer. Do not change the text within the braces {}. You can use the following email tags in this email body field:
+    <br />{first_name} – First name of the buyer
+    <br />{last_name} – Last name of the buyer
+    <br />{product_details} – The item details of the purchased product (this will include the download link for digital items).    
+    </p></td>
+    </tr>
+
+    </table>    
+
+    </div></div>
+        
+    <div class="submit">
+        <input type="submit" class="button-primary" name="wpspc_email_settings_update" value="<?php echo (__("Update Options &raquo;", "WSPSC")) ?>" />
+    </div>
+    </form>
+    
+    <?php
 }

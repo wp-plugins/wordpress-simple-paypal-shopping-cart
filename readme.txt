@@ -4,7 +4,7 @@ Donate link: http://www.tipsandtricks-hq.com
 Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, digital downloads, paypal, paypal cart, e-shop,  
 Requires at least: 3.0
 Tested up to: 3.6
-Stable tag: 3.8.4
+Stable tag: 3.8.5
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -14,6 +14,8 @@ Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling
 WordPress Simple Paypal Shopping Cart allows you to add an 'Add to Cart' button for your product on any posts or pages. This simple shopping cart plugin lets you sell products and services directly from your own wordpress site and turns your WP blog into an ecommerce site.
 
 It also allows you to add/display the shopping cart on any post or page or sidebar easily. The shopping cart shows the user what they currently have in the cart and allows them to change quantity or remove the items. 
+
+http://www.youtube.com/watch?v=tEZWfTmZ2kk
 
 It can be easily integrated with the NextGen Photo Gallery plugin to accommodate the selling of photographs from your gallery.
 
@@ -38,6 +40,7 @@ or
 * You can use Paypal sandbox to do testing if needed (before you go live).
 * Collect special instructions from your customers on the PayPal checkout page.
 * The orders menu will show you all the orders that you have received from your site.
+* Ability to configure an email that will get sent to your buyers after they purchase your product.
 * Compatible with WordPress Multi-site Installation.
 * and more...
 
@@ -115,6 +118,13 @@ Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
 None
 
 == Changelog ==
+= 3.8.5 =
+- Added an email settings menu where the site admin can customize the buyer email that gets sent after a transaction
+- Also, added the following dynamic email tags for the email body field:
+
+{first_name} – First name of the buyer
+{last_name} – Last name of the buyer
+{product_details} – The item details of the purchased product (this will include the download link for digital items).
 
 = 3.8.4 =
 - Fixing an issue that resulted from doing a commit when wordpress.org plugin repository was undergoing maintenance
