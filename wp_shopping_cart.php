@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.8.5
+Version: v3.8.6
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
     session_start();
 }	
 
-define('WP_CART_VERSION', '3.8.5');
+define('WP_CART_VERSION', '3.8.6');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH',plugin_dir_path( __FILE__ ));
 define('WP_CART_URL', plugins_url('',__FILE__));
@@ -759,7 +759,7 @@ register_activation_hook(__FILE__,'wpspc_plugin_install');
 function wp_simple_cart_add_settings_link($links, $file) 
 {
 	if ($file == plugin_basename(__FILE__)){
-		$settings_link = '<a href="options-general.php?page='.dirname(plugin_basename(__FILE__)).'/wp_shopping_cart.php">'.(__("Settings", "WSPSC")).'</a>';
+		$settings_link = '<a href="options-general.php?page=wordpress-paypal-shopping-cart">'.(__("Settings", "WSPSC")).'</a>';
 		array_unshift($links, $settings_link);
 	}
 	return $links;

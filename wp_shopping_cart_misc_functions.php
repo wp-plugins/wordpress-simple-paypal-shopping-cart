@@ -1,7 +1,6 @@
 <?php
 
 /* TODO
-- add email menu
 - Simple discount coupons option (see the user submitted coupon code version and incorporate that in here)
 - Mention the available languages
 */
@@ -90,7 +89,7 @@ function wp_cart_ngg_template_handler($arg1,$arg2)
         $gallery_template = WP_CART_PATH. "/lib/$template_name.php";
         return $gallery_template;
     }
-    return $arg2;
+    return $arg1;
 }
 
 function wpspc_insert_new_record()
