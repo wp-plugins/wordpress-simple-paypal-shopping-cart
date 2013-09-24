@@ -26,6 +26,7 @@ class paypal_ipn_handler {
         global $products,$currency,$paypal_email;
         $txn_id = $this->ipn_data['txn_id'];
         $transaction_type = $this->ipn_data['txn_type'];
+        $payment_status = $this->ipn_data['payment_status'];
         $transaction_subject = $this->ipn_data['transaction_subject'];
         $custom_value_str = $this->ipn_data['custom'];
         //$this->debug_log('custom values from paypal: '.$custom_value_str,true);
@@ -39,7 +40,14 @@ class paypal_ipn_handler {
         $country = $this->ipn_data['address_country'];
         $address = $street_address.", ".$city.", ".$state.", ".$zip.", ".$country;
         $custom_values = wp_cart_get_custom_var_array($custom_value_str);
-
+        $this->debug_log('Payment Status: '.$payment_status,true);
+        if($payment_status == "Completed" || $payment_status == "Processed" ){
+            //We will process this notification
+        }
+        else{
+            $this->debug_log('This is not a payment complete notification. This IPN will not be processed.',true);
+            return true;
+        }
         if ($transaction_type == "cart")
         {
             $this->debug_log('Transaction Type: Shopping Cart',true);
@@ -164,12 +172,12 @@ class paypal_ipn_handler {
             }
             $args = array();
             $args['product_details'] = $product_details;
+            update_post_meta($post_id, 'wpspsc_items_ordered', $product_details);
             $from_email = get_option('wpspc_buyer_from_email');
             $subject = get_option('wpspc_buyer_email_subj');
             $body = get_option('wpspc_buyer_email_body');
             $args['email_body'] = $body;
             $body = wpspc_apply_dynamic_tags_on_email_body($this->ipn_data, $args);
-          
             if($buyer_email){
                 if(get_option('wpspc_send_buyer_email'))
         	{

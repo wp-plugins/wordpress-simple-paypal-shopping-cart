@@ -1,6 +1,9 @@
 <?php
 
 /* TODO
+- Change some of the INPUT name to make it more unique - http://wordpress.org/support/topic/checkout-functions-return-404-error-all-of-the-sudden
+- add a "button_image" parameter in the shortcode to customize the add to cart button
+- add an option for the admin email notification.
 - Simple discount coupons option (see the user submitted coupon code version and incorporate that in here)
 - Mention the available languages
 */
@@ -11,7 +14,7 @@ function wp_cart_init_handler()
     //Add any common init hook handing code
     if(is_admin())//Init hook handing code for wp-admin
     {
-        wpc_create_orders_page();
+        wpspc_create_orders_page();
     }
     else//Init hook handing code for front end
     {
@@ -28,7 +31,7 @@ function wp_cart_init_handler()
 
 function wp_cart_admin_init_handler()
 {
-    wpsc_add_meta_boxes();
+    wpspc_add_meta_boxes();
 }
 
 function wpc_append_values_to_custom_field($name,$value)

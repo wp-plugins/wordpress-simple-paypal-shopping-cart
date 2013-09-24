@@ -1,8 +1,8 @@
 <?php
 
-add_action( 'save_post', 'wpsc_cart_save_orders', 10, 2 );
+add_action( 'save_post', 'wpspc_cart_save_orders', 10, 2 );
 
-function wpc_create_orders_page()
+function wpspc_create_orders_page()
 {
       register_post_type( 'wpsc_cart_orders',
         array(
@@ -32,18 +32,18 @@ function wpc_create_orders_page()
     );
 }
 
-function wpsc_add_meta_boxes()
+function wpspc_add_meta_boxes()
 {
     add_meta_box( 'order_review_meta_box',
         'Order Review',
-        'wpsc_order_review_meta_box',
+        'wpspc_order_review_meta_box',
         'wpsc_cart_orders', 
         'normal', 
         'high'
     );
 }
 
-function wpsc_order_review_meta_box($wpsc_cart_orders)
+function wpspc_order_review_meta_box($wpsc_cart_orders)
 {
     // Retrieve current name of the Director and Movie Rating based on review ID
     $order_id = $wpsc_cart_orders->ID;
@@ -60,6 +60,8 @@ function wpsc_order_review_meta_box($wpsc_cart_orders)
     if(!empty($email_sent_value)){
         $email_sent_field_msg = "Yes. ".$email_sent_value;
     }
+    
+    $items_ordered = get_post_meta( $wpsc_cart_orders->ID, 'wpspsc_items_ordered', true );
     ?>
     <table>
         <p>Order ID: #<?php echo $order_id;?></p>
@@ -93,13 +95,17 @@ function wpsc_order_review_meta_box($wpsc_cart_orders)
         <tr>
             <td>Buyer Email Sent?</td>
             <td><input type="text" size="80" name="wpsc_buyer_email_sent" value="<?php echo $email_sent_field_msg; ?>" readonly /></td>
-        </tr>        
+        </tr>  
+        <tr>
+            <td>Item(s) Ordered:</td>
+            <td><textarea name="wpspsc_items_ordered" cols="83" rows="5"><?php echo $items_ordered;?></textarea></td>
+        </tr>
         
     </table>
     <?php
 }
 
-function wpsc_cart_save_orders( $order_id, $wpsc_cart_orders ) {
+function wpspc_cart_save_orders( $order_id, $wpsc_cart_orders ) {
     // Check post type for movie reviews
     if ( $wpsc_cart_orders->post_type == 'wpsc_cart_orders' ) {
         // Store data in post meta table if present in post data
@@ -121,11 +127,14 @@ function wpsc_cart_save_orders( $order_id, $wpsc_cart_orders ) {
         if ( isset( $_POST['wpsc_address'] ) && $_POST['wpsc_address'] != '' ) {
             update_post_meta( $order_id, 'wpsc_address', $_POST['wpsc_address'] );
         }
+        if ( isset( $_POST['wpspsc_items_ordered'] ) && $_POST['wpspsc_items_ordered'] != '' ) {
+            update_post_meta( $order_id, 'wpspsc_items_ordered', $_POST['wpspsc_items_ordered'] );
+        }
     }
 }
 
-add_filter( 'manage_edit-wpsc_cart_orders_columns', 'wpsc_orders_display_columns' );
-function wpsc_orders_display_columns( $columns ) 
+add_filter( 'manage_edit-wpsc_cart_orders_columns', 'wpspc_orders_display_columns' );
+function wpspc_orders_display_columns( $columns ) 
 {
     //unset( $columns['title'] );
     unset( $columns['comments'] );
@@ -142,8 +151,8 @@ function wpsc_orders_display_columns( $columns )
 }
 
 //add_action( 'manage_posts_custom_column', 'wpsc_populate_order_columns' , 10, 2);
-add_action('manage_wpsc_cart_orders_posts_custom_column', 'wpsc_populate_order_columns', 10, 2);
-function wpsc_populate_order_columns($column, $post_id)
+add_action('manage_wpsc_cart_orders_posts_custom_column', 'wpspc_populate_order_columns', 10, 2);
+function wpspc_populate_order_columns($column, $post_id)
 {
     if ( 'wpsc_first_name' == $column ) {
         $ip_address = get_post_meta( $post_id, 'wpsc_first_name', true );
