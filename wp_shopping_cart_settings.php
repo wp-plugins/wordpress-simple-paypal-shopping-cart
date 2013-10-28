@@ -4,7 +4,8 @@ function wp_cart_options()
 {    
     $wpspc_plugin_tabs = array(
         'wordpress-paypal-shopping-cart' => 'General Settings',
-        'wordpress-paypal-shopping-cart&action=email-settings' => 'Email Settings'
+        'wordpress-paypal-shopping-cart&action=email-settings' => 'Email Settings',
+        'wordpress-paypal-shopping-cart&action=discount-settings' => 'Coupon/Discount'
     );
     echo '<div class="wrap">'.screen_icon( ).'<h2>'.(__("WP Paypal Shopping Cart Options", "WSPSC")).'</h2>';
     $current = "";
@@ -33,6 +34,10 @@ function wp_cart_options()
    {
        case 'email-settings':
            show_wp_cart_email_settings_page();
+           break;
+       case 'discount-settings':
+           include_once ('wp_shopping_cart_discounts_menu.php');
+           show_wp_cart_coupon_discount_settings_page();
            break;
        default:
            show_wp_cart_options_page();

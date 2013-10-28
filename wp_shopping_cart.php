@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.8.7
+Version: v3.8.8
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
     session_start();
 }	
 
-define('WP_CART_VERSION', '3.8.7');
+define('WP_CART_VERSION', '3.8.8');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH',plugin_dir_path( __FILE__ ));
 define('WP_CART_URL', plugins_url('',__FILE__));
@@ -26,6 +26,7 @@ load_plugin_textdomain('WSPSC', false, WP_CART_FOLDER . '/languages');
 include_once('wp_shopping_cart_shortcodes.php');
 include_once('wp_shopping_cart_misc_functions.php');
 include_once('wp_shopping_cart_orders.php');
+include_once('class-coupon.php');
 
 function always_show_cart_handler($atts) 
 {
@@ -62,61 +63,46 @@ if (isset($_REQUEST["reset_wp_cart"]) && !empty($_REQUEST["reset_wp_cart"]))
     reset_wp_cart();
 }
 
-// Reset the Cart as this is a returned customer from Paypal
-if (isset($_GET["merchant_return_link"]) && !empty($_GET["merchant_return_link"]))
-{
-    reset_wp_cart();
-    header('Location: ' . get_option('cart_return_from_paypal_url'));
-}
-
-if (isset($_GET["mc_gross"])&&  $_GET["mc_gross"]> 0)
-{
-    reset_wp_cart();
-    header('Location: ' . get_option('cart_return_from_paypal_url'));
-}
-
 //Clear the cart if the customer landed on the thank you page
 if (get_option('wp_shopping_cart_reset_after_redirection_to_return_page'))
 {
-	if(get_option('cart_return_from_paypal_url') == cart_current_page_url())
-	{
-		reset_wp_cart();
-	}
+    if(get_option('cart_return_from_paypal_url') == cart_current_page_url())
+    {
+        reset_wp_cart();
+    }
 }
 
 function reset_wp_cart()
 {
     $products = $_SESSION['simpleCart'];
-    if(empty($products))
-    {
-    	unset($_SESSION['simpleCart']);
-        unset($_SESSION['simple_cart_id']);
-    	return;
-    }
     foreach ($products as $key => $item)
     {
         unset($products[$key]);
     }
-    $_SESSION['simpleCart'] = $products;  
+    $_SESSION['simpleCart'] = $products;
     unset($_SESSION['simple_cart_id']);
+    unset($_SESSION['wpspsc_cart_action_msg']);
+    unset($_SESSION['wpspsc_discount_applied_once']);
+    unset($_SESSION['wpspsc_applied_coupon_code']);
 }
 
 function wpspc_cart_actions_handler()
 {
+    unset($_SESSION['wpspsc_cart_action_msg']);
     if (isset($_POST['addcart']))
     {
-            $domain_url = $_SERVER['SERVER_NAME'];
-            $cookie_domain = str_replace("www","",$domain_url);    	
-            setcookie("cart_in_use","true",time()+21600,"/",$cookie_domain);  //useful to not serve cached page when using with a caching plugin
+        $domain_url = $_SERVER['SERVER_NAME'];
+        $cookie_domain = str_replace("www","",$domain_url);    	
+        setcookie("cart_in_use","true",time()+21600,"/",$cookie_domain);  //useful to not serve cached page when using with a caching plugin
 
-            //sanitize data
-            $_POST['product'] = strip_tags($_POST['product']);//for PHP5.2 use filter_var($_POST['product'], FILTER_SANITIZE_STRING);
-            $_POST['item_number'] = strip_tags($_POST['item_number']);
-            if(isset($_POST['price']))$_POST['price'] = strip_tags($_POST['price']);
-            isset($_POST['shipping'])?$_POST['shipping'] = strip_tags($_POST['shipping']):$_POST['shipping']='';
-            isset($_POST['cartLink'])?$_POST['cartLink'] = strip_tags($_POST['cartLink']):$_POST['cartLink']='';
+        //sanitize data
+        $_POST['product'] = strip_tags($_POST['product']);//for PHP5.2 use filter_var($_POST['product'], FILTER_SANITIZE_STRING);
+        $_POST['item_number'] = strip_tags($_POST['item_number']);
+        if(isset($_POST['price']))$_POST['price'] = strip_tags($_POST['price']);
+        isset($_POST['shipping'])?$_POST['shipping'] = strip_tags($_POST['shipping']):$_POST['shipping']='';
+        isset($_POST['cartLink'])?$_POST['cartLink'] = strip_tags($_POST['cartLink']):$_POST['cartLink']='';
 
-            $count = 1;    
+        $count = 1;    
         $products = $_SESSION['simpleCart'];	    
         if (is_array($products))
         {
@@ -145,13 +131,13 @@ function wpspc_cart_actions_handler()
                 $price = $_POST['price'];
             }
 
-                    $default_cur_symbol = get_option('cart_currency_symbol');
-                    $price = str_replace($default_cur_symbol,"",$price);
+            $default_cur_symbol = get_option('cart_currency_symbol');
+            $price = str_replace($default_cur_symbol,"",$price);
 
-                    $shipping = $_POST['shipping'];
-                    $shipping = str_replace($default_cur_symbol,"",$shipping);
+            $shipping = $_POST['shipping'];
+            $shipping = str_replace($default_cur_symbol,"",$shipping);
 
-            $product = array('name' => stripslashes($_POST['product']), 'price' => $price, 'quantity' => $count, 'shipping' => $shipping, 'cartLink' => $_POST['cartLink'], 'item_number' => $_POST['item_number']);
+            $product = array('name' => stripslashes($_POST['product']), 'price' => $price, 'price_orig' =>$price, 'quantity' => $count, 'shipping' => $shipping, 'cartLink' => $_POST['cartLink'], 'item_number' => $_POST['item_number']);
             if(isset($_POST['file_url']) && !empty($_POST['file_url'])){
                 $file_url = strip_tags($_POST['file_url']);
                 $product['file_url'] = $file_url;  
@@ -161,6 +147,9 @@ function wpspc_cart_actions_handler()
 
         sort($products);
         $_SESSION['simpleCart'] = $products;
+
+        wpspsc_reapply_discount_coupon_if_needed();//Re-apply coupon to the cart if necessary
+        
         if(!isset($_SESSION['simple_cart_id']) && empty($_SESSION['simple_cart_id']))
         {
             wpspc_insert_new_record();
@@ -204,11 +193,15 @@ function wpspc_cart_actions_handler()
                 unset($products[$key]);
                 array_push($products, $item);
             }
-            else if (($item['name'] == stripslashes($_POST['product'])) && !$_POST['quantity'])
+            else if (($item['name'] == stripslashes($_POST['product'])) && !$_POST['quantity']){
                 unset($products[$key]);
+            }
         }
         sort($products);
         $_SESSION['simpleCart'] = $products;
+        
+        wpspsc_reapply_discount_coupon_if_needed();//Re-apply coupon to the cart if necessary
+        
         if(isset($_SESSION['simple_cart_id']) && !empty($_SESSION['simple_cart_id']))
         {
             wpspc_update_cart_items_record();
@@ -220,13 +213,24 @@ function wpspc_cart_actions_handler()
         foreach ($products as $key => $item)
         {
             if ($item['name'] == stripslashes($_POST['product']))
-                unset($products[$key]);
+            unset($products[$key]);
         }
         $_SESSION['simpleCart'] = $products;
+        
+        wpspsc_reapply_discount_coupon_if_needed();//Re-apply coupon to the cart if necessary
+        
         if(isset($_SESSION['simple_cart_id']) && !empty($_SESSION['simple_cart_id']))
         {
             wpspc_update_cart_items_record();     
         }
+        if(count($_SESSION['simpleCart']) < 1){
+            reset_wp_cart();
+        }
+    }
+    else if(isset($_POST['wpspsc_coupon_code']))
+    {
+        $coupon_code = strip_tags($_POST['wpspsc_coupon_code']);
+        wpspsc_apply_cart_discount($coupon_code);
     }
 }
 
@@ -353,7 +357,7 @@ function print_wp_shopping_cart()
 	        
 	        $form .= "
 	            <input type=\"hidden\" name=\"item_name_$count\" value=\"".$item['name']."\" />
-	            <input type=\"hidden\" name=\"amount_$count\" value='".number_format($item['price'],2)."' />
+	            <input type=\"hidden\" name=\"amount_$count\" value='".wpspsc_number_format_price($item['price'])."' />
 	            <input type=\"hidden\" name=\"quantity_$count\" value=\"".$item['quantity']."\" />
 	            <input type='hidden' name='item_number' value='".$item['item_number']."' />
 	        ";        
@@ -361,7 +365,7 @@ function print_wp_shopping_cart()
 	    }
 	    if (!get_option('wp_shopping_cart_use_profile_shipping'))
 	    {
-	    	$postage_cost = number_format($postage_cost,2);
+	    	$postage_cost = wpspsc_number_format_price($postage_cost);
 	    	$form .= "<input type=\"hidden\" name=\"shipping_1\" value='".$postage_cost."' />"; //You can also use "handling_cart" variable to use shipping and handling here 
 	    }
 	    if (get_option('wp_shopping_cart_collect_address'))//force address collection
@@ -374,8 +378,6 @@ function print_wp_shopping_cart()
        	
        	if ($count)
        	{
-       		//$output .= '<tr><td></td><td></td><td></td></tr>';  
-
             if ($postage_cost != 0)
             {
                 $output .= "
@@ -383,39 +385,52 @@ function print_wp_shopping_cart()
                 <tr><td colspan='2' style='font-weight: bold; text-align: right;'>".(__("Shipping", "WSPSC")).": </td><td style='text-align: center'>".print_payment_currency($postage_cost, $paypal_symbol, $decimal)."</td><td></td></tr>";
             }
 
-            $output .= "
-       		<tr><td colspan='2' style='font-weight: bold; text-align: right;'>".(__("Total", "WSPSC")).": </td><td style='text-align: center'>".print_payment_currency(($total+$postage_cost), $paypal_symbol, $decimal)."</td><td></td></tr>
-       		<tr><td colspan='4'>";
-       
+            $output .= "<tr><td colspan='2' style='font-weight: bold; text-align: right;'>".(__("Total", "WSPSC")).": </td><td style='text-align: center'>".print_payment_currency(($total+$postage_cost), $paypal_symbol, $decimal)."</td><td></td></tr>";
+
+            if(isset($_SESSION['wpspsc_cart_action_msg']) && !empty($_SESSION['wpspsc_cart_action_msg'])){
+                    $output .= '<tr><td colspan="4"><span class="wpspsc_cart_action_msg">'.$_SESSION['wpspsc_cart_action_msg'].'</span></td></tr>';
+            } 
+        
+            if (get_option('wpspsc_enable_coupon') == '1'){
+                $output .= '<tr><td colspan="4">
+                <div class="wpspsc_coupon_section">
+                <span class="wpspsc_coupon_label">'.(__("Enter Coupon Code", "WSPSC")).'</span>
+                <form  method="post" action="" >
+                <input type="text" name="wpspsc_coupon_code" value="" size="10" />
+                <span class="wpspsc_coupon_apply_button"><input type="submit" name="wpspsc_apply_coupon" class="wpspsc_apply_coupon" value="'.(__("Apply", "WSPSC")).'" /></span>
+                </form>
+                </div>
+                </td></tr>';
+            }
+        
             $paypal_checkout_url = WP_CART_LIVE_PAYPAL_URL;
             if (get_option('wp_shopping_cart_enable_sandbox')){
             	$paypal_checkout_url = WP_CART_SANDBOX_PAYPAL_URL;
             }
-              	$output .= '<form action="'.$paypal_checkout_url.'" method="post">'.$form;
-    			if ($count)
-            		$output .= '<input type="image" src="'.WP_CART_URL.'/images/'.(__("paypal_checkout_EN.png", "WSPSC")).'" name="submit" class="wp_cart_checkout_button" alt="'.(__("Make payments with PayPal - it\'s fast, free and secure!", "WSPSC")).'" />';
-       
-    			$output .= $urls.'
-			    <input type="hidden" name="business" value="'.$email.'" />
-			    <input type="hidden" name="currency_code" value="'.$paypal_currency.'" />
-			    <input type="hidden" name="cmd" value="_cart" />
-			    <input type="hidden" name="upload" value="1" />
-			    <input type="hidden" name="rm" value="2" />
-			    <input type="hidden" name="charset" value="utf-8" />
-			    <input type="hidden" name="mrb" value="3FWGC6LFTMTUG" />';
-    			$wp_cart_note_to_seller_text = get_option('wp_cart_note_to_seller_text');
-    			if(!empty($wp_cart_note_to_seller_text)){
-    				$output .= '<input type="hidden" name="no_note" value="0" /><input type="hidden" name="cn" value="'.$wp_cart_note_to_seller_text.'" />';
-    			}
+            
+            $output .= "<tr class='wpspsc_checkout_form'><td colspan='4'>";
+            $output .= '<form action="'.$paypal_checkout_url.'" method="post">'.$form;
+            if ($count)
+            $output .= '<input type="image" src="'.WP_CART_URL.'/images/'.(__("paypal_checkout_EN.png", "WSPSC")).'" name="submit" class="wp_cart_checkout_button" alt="'.(__("Make payments with PayPal - it\'s fast, free and secure!", "WSPSC")).'" />';
 
-			    $output .= wp_cart_add_custom_field();
-			    $output .= '</form>';          
+            $output .= $urls.'
+            <input type="hidden" name="business" value="'.$email.'" />
+            <input type="hidden" name="currency_code" value="'.$paypal_currency.'" />
+            <input type="hidden" name="cmd" value="_cart" />
+            <input type="hidden" name="upload" value="1" />
+            <input type="hidden" name="rm" value="2" />
+            <input type="hidden" name="charset" value="utf-8" />
+            <input type="hidden" name="mrb" value="3FWGC6LFTMTUG" />';
+            $wp_cart_note_to_seller_text = get_option('wp_cart_note_to_seller_text');
+            if(!empty($wp_cart_note_to_seller_text)){
+                $output .= '<input type="hidden" name="no_note" value="0" /><input type="hidden" name="cn" value="'.$wp_cart_note_to_seller_text.'" />';
+            }
+
+            $output .= wp_cart_add_custom_field();
+            $output .= '</form>';
+            $output .= '</td></tr>';
        	}       
-       	$output .= "       
-       	</td></tr>
-    	</table></div>
-    	";
-    
+       	$output .= "</table></div>";
     return $output;
 }
 
@@ -673,7 +688,7 @@ function cart_not_empty()
             return 0;
 }
 
-function print_payment_currency($price, $symbol, $decimal)
+function print_payment_currency($price, $symbol, $decimal='.')
 {
     return $symbol.number_format($price, 2, $decimal, ',');
 }
@@ -703,7 +718,7 @@ function simple_cart_total()
 		$item_total_shipping += $item['shipping'] * $item['quantity'];
 	}
 	$grand_total = $total + $item_total_shipping;
-	return number_format($grand_total,2);
+	return wpspsc_number_format_price($grand_total);
 }
 
 // Handle the options page display

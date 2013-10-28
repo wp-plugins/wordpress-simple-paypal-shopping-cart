@@ -1,10 +1,10 @@
 <?php
 
 /* TODO
-- Change some of the INPUT name to make it more unique - http://wordpress.org/support/topic/checkout-functions-return-404-error-all-of-the-sudden
+- After processing an IPN, call a function to clear all trash orders that are older than 6 hours.
 - add a "button_image" parameter in the shortcode to customize the add to cart button
 - add an option for the admin email notification.
-- Simple discount coupons option (see the user submitted coupon code version and incorporate that in here)
+- add a reset cart button
 - Mention the available languages
 */
 
@@ -32,6 +32,12 @@ function wp_cart_init_handler()
 function wp_cart_admin_init_handler()
 {
     wpspc_add_meta_boxes();
+}
+
+function wpspsc_number_format_price($price)
+{
+    $formatted_num = number_format($price,2,'.','');
+    return $formatted_num;
 }
 
 function wpc_append_values_to_custom_field($name,$value)
@@ -161,5 +167,4 @@ function wpspc_run_activation()
     $email_body .= "\nThank you for your purchase! You ordered the following item(s):\n";
     $email_body .= "\n{product_details}";
     add_option('wpspc_buyer_email_body', $email_body);
-
 }

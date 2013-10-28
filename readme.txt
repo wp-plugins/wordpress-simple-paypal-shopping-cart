@@ -3,8 +3,8 @@ Contributors: Ruhul Amin, Tips and Tricks HQ
 Donate link: http://www.tipsandtricks-hq.com
 Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, digital downloads, paypal, paypal cart, e-shop
 Requires at least: 3.0
-Tested up to: 3.6.1
-Stable tag: 3.8.7
+Tested up to: 3.7
+Stable tag: 3.8.8
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -41,6 +41,8 @@ or
 * Collect special instructions from your customers on the PayPal checkout page.
 * The orders menu will show you all the orders that you have received from your site.
 * Ability to configure an email that will get sent to your buyers after they purchase your product.
+* Ability to configure discount coupons.
+* You can create coupons and give to your customers. When they use coupons during the checkout they will receive a discount.
 * Compatible with WordPress Multi-site Installation.
 * and more...
 
@@ -118,6 +120,12 @@ Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
 None
 
 == Changelog ==
+
+= 3.8.8 =
+- Added a discount coupon feature to the shopping cart. You can now configure discount coupon via the Simple cart settings -> Coupon/Discount menu
+- View link now shows the order details
+- fixed a bug where the shipping price wasn't properly showing for more than $1000
+- WordPress 3.7 compatibility
 
 = 3.8.7 =
 - Changed a few function names and made them unique to reduce the chance of a function name conflict with another plugin.

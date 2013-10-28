@@ -24,6 +24,15 @@ opacity:0.7;
 margin: 0;	
 }
 
+.wpspsc_error_message{
+color:red !important;
+font-weight:bold;
+}
+.wpspsc_success_message{
+color:green !important;
+font-weight:bold;
+}
+
 /* product display specific CSS */
 .wp_cart_product_display_box{
 border: 1px solid #E8E5DC;
