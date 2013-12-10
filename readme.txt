@@ -4,7 +4,7 @@ Donate link: http://www.tipsandtricks-hq.com
 Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, digital downloads, paypal, paypal cart, e-shop
 Requires at least: 3.0
 Tested up to: 3.7.1
-Stable tag: 3.8.9
+Stable tag: 3.9.0
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -123,8 +123,7 @@ None
 
 == Changelog ==
 
-= 3.8.9 =
-
+= 3.9.0 and 3.8.9 =
 - WP Super Cache workaround - http://www.tipsandtricks-hq.com/ecommerce/wp-shopping-cart-and-wp-super-cache-workaround-334
 - Added a new shortcode argument to specify a SKU number for your product.
 - Fixed a few debug warnings/notices
