@@ -29,19 +29,22 @@ function wp_cart_options()
     $content .= '</h2>';
     echo $content;     
     echo '<div id="poststuff"><div id="post-body">';
-        
-   switch ($_GET['action'])
+   if(isset($_GET['action']))
+   {    
+        switch ($_GET['action'])
+        {
+            case 'email-settings':
+                show_wp_cart_email_settings_page();
+                break;
+            case 'discount-settings':
+                include_once ('wp_shopping_cart_discounts_menu.php');
+                show_wp_cart_coupon_discount_settings_page();
+                break;
+        }
+   }
+   else
    {
-       case 'email-settings':
-           show_wp_cart_email_settings_page();
-           break;
-       case 'discount-settings':
-           include_once ('wp_shopping_cart_discounts_menu.php');
-           show_wp_cart_coupon_discount_settings_page();
-           break;
-       default:
-           show_wp_cart_options_page();
-           break;
+       show_wp_cart_options_page();
    }
     echo '</div></div>';
     echo '</div>';

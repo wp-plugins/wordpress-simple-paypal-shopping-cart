@@ -163,7 +163,7 @@ function wpspc_run_activation()
     add_option('wpspc_buyer_from_email', $from_email_address);
     $buyer_email_subj = "Thank you for the purchase";
     add_option('wpspc_buyer_email_subj', $buyer_email_subj);
-    $email_body .= "Dear {first_name} {last_name}"."\n";
+    $email_body = "Dear {first_name} {last_name}"."\n";
     $email_body .= "\nThank you for your purchase! You ordered the following item(s):\n";
     $email_body .= "\n{product_details}";
     add_option('wpspc_buyer_email_body', $email_body);

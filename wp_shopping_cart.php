@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.8.8
+Version: v3.8.9
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
     session_start();
 }	
 
-define('WP_CART_VERSION', '3.8.8');
+define('WP_CART_VERSION', '3.8.9');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH',plugin_dir_path( __FILE__ ));
 define('WP_CART_URL', plugins_url('',__FILE__));
@@ -35,6 +35,7 @@ function always_show_cart_handler($atts)
 
 function show_wp_shopping_cart_handler()
 {
+    $output = "";
     if (cart_not_empty())
     {
        	$output = print_wp_shopping_cart();
@@ -90,10 +91,11 @@ function wpspc_cart_actions_handler()
 {
     unset($_SESSION['wpspsc_cart_action_msg']);
     if (isset($_POST['addcart']))
-    {
-        $domain_url = $_SERVER['SERVER_NAME'];
-        $cookie_domain = str_replace("www","",$domain_url);    	
-        setcookie("cart_in_use","true",time()+21600,"/",$cookie_domain);  //useful to not serve cached page when using with a caching plugin
+    {   	
+        setcookie("cart_in_use","true",time()+21600,"/",COOKIE_DOMAIN);  //useful to not serve cached page when using with a caching plugin
+        if (function_exists('wp_cache_serve_cache_file')){//WP Super cache workaround
+            setcookie("comment_author_","wp_cart",time()+21600,"/",COOKIE_DOMAIN);
+        }
 
         //sanitize data
         $_POST['product'] = strip_tags($_POST['product']);//for PHP5.2 use filter_var($_POST['product'], FILTER_SANITIZE_STRING);
@@ -236,6 +238,7 @@ function wpspc_cart_actions_handler()
 
 function print_wp_shopping_cart()
 {
+    $output = "";
 	if (!cart_not_empty())
 	{
 	    $empty_cart_text = get_option('wp_cart_empty_text');
@@ -317,7 +320,8 @@ function print_wp_shopping_cart()
         <tr>
         <th style="text-align: left">'.(__("Item Name", "WSPSC")).'</th><th>'.(__("Quantity", "WSPSC")).'</th><th>'.(__("Price", "WSPSC")).'</th><th></th>
         </tr>';
-    
+            $item_total_shipping = 0;
+            $postage_cost = 0;
 	    foreach ($_SESSION['simpleCart'] as $item)
 	    {
 	        $total += $item['price'] * $item['quantity'];
@@ -328,10 +332,6 @@ function print_wp_shopping_cart()
 	    {
 	    	$baseShipping = get_option('cart_base_shipping_cost');
 	    	$postage_cost = $item_total_shipping + $baseShipping;
-	    }
-	    else
-	    {
-	    	$postage_cost = 0;
 	    }
 	    
 	    $cart_free_shipping_threshold = get_option('cart_free_shipping_threshold');
@@ -359,7 +359,7 @@ function print_wp_shopping_cart()
 	            <input type=\"hidden\" name=\"item_name_$count\" value=\"".$item['name']."\" />
 	            <input type=\"hidden\" name=\"amount_$count\" value='".wpspsc_number_format_price($item['price'])."' />
 	            <input type=\"hidden\" name=\"quantity_$count\" value=\"".$item['quantity']."\" />
-	            <input type='hidden' name='item_number' value='".$item['item_number']."' />
+	            <input type='hidden' name='item_number_$count' value='".$item['item_number']."' />
 	        ";        
 	        $count++;
 	    }
@@ -665,7 +665,10 @@ function print_wp_cart_button_for_product($name, $price, $shipping=0, $var1='', 
 		}
         $replacement .= '<input type="hidden" name="product" value="'.$name.'" /><input type="hidden" name="price" value="'.$price.'" /><input type="hidden" name="shipping" value="'.$shipping.'" /><input type="hidden" name="addcart" value="1" /><input type="hidden" name="cartLink" value="'.cart_current_page_url().'" />';
         $replacement .= '<input type="hidden" name="product_tmp" value="'.$name.'" />';
-        if($atts['file_url']){
+        isset($atts['item_number'])?$item_num = $atts['item_number']: $item_num = '';
+        $replacement .= '<input type="hidden" name="item_number" value="'.$item_num.'" />';
+        
+        if(isset($atts['file_url'])){
             $file_url = $atts['file_url'];
             $file_url = base64_encode($file_url); 
             $replacement .= '<input type="hidden" name="file_url" value="'.$file_url.'" />';

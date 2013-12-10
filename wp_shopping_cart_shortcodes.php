@@ -3,6 +3,7 @@
 function wp_cart_button_handler($atts){
 	extract(shortcode_atts(array(
 		'name' => '',
+                'item_number' =>'',
 		'price' => '',
 		'shipping' => '0',
 		'var1' => '',
@@ -23,11 +24,12 @@ function wp_cart_display_product_handler($atts)
 {
     extract(shortcode_atts(array(
         'name' => '',
+        'item_number' =>'',
         'price' => '',
         'shipping' => '0',
-		'var1' => '',
-		'var2' => '',
-		'var3' => '',    
+        'var1' => '',
+        'var2' => '',
+        'var3' => '',    
         'thumbnail' => '',
         'description' => '',    
     ), $atts));
