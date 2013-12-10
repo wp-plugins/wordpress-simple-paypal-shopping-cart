@@ -123,11 +123,12 @@ None
 
 == Changelog ==
 
-= 3.8.9 uncommitted =
+= 3.8.9 =
 
 - WP Super Cache workaround - http://www.tipsandtricks-hq.com/ecommerce/wp-shopping-cart-and-wp-super-cache-workaround-334
 - Added a new shortcode argument to specify a SKU number for your product.
 - Fixed a few debug warnings/notices
+- Added Italian language file
 
 = 3.8.8 =
 - Added a discount coupon feature to the shopping cart. You can now configure discount coupon via the Simple cart settings -> Coupon/Discount menu
