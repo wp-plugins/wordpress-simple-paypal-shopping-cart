@@ -9,6 +9,7 @@ function wp_cart_button_handler($atts){
 		'var1' => '',
 		'var2' => '',
 		'var3' => '',
+                'button_image' => '',
 	), $atts));
 
 	if(empty($name)){
@@ -31,7 +32,8 @@ function wp_cart_display_product_handler($atts)
         'var2' => '',
         'var3' => '',    
         'thumbnail' => '',
-        'description' => '',    
+        'description' => '',
+        'button_image' => '',
     ), $atts));
 
     if(empty($name)){

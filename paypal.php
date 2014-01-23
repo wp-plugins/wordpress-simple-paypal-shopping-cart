@@ -131,6 +131,7 @@ class paypal_ipn_handler {
         //TODO
         $post_id = $custom_values['wp_cart_id'];
         $ip_address = $custom_values['ip'];
+        $applied_coupon_code = $custom_values['coupon_code'];
         $currency_symbol = get_option('cart_currency_symbol');
         $this->debug_log('custom values',true);
         $this->debug_log_array($custom_values,true);
@@ -154,6 +155,7 @@ class paypal_ipn_handler {
             update_post_meta( $post_id, 'wpsc_address', $address );
             $status = "Paid";
             update_post_meta( $post_id, 'wpsc_order_status', $status );
+            update_post_meta( $post_id, 'wpsc_applied_coupon', $applied_coupon_code );
             $cart_items = get_post_meta( $post_id, 'wpsc_cart_items', true );
             $product_details = "";
             $item_counter = 1;

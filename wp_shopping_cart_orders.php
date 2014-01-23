@@ -62,6 +62,7 @@ function wpspc_order_review_meta_box($wpsc_cart_orders)
     }
     
     $items_ordered = get_post_meta( $wpsc_cart_orders->ID, 'wpspsc_items_ordered', true );
+    $applied_coupon = get_post_meta( $wpsc_cart_orders->ID, 'wpsc_applied_coupon', true );
     ?>
     <table>
         <p>Order ID: #<?php echo $order_id;?></p>
@@ -99,6 +100,10 @@ function wpspc_order_review_meta_box($wpsc_cart_orders)
         <tr>
             <td>Item(s) Ordered:</td>
             <td><textarea name="wpspsc_items_ordered" cols="83" rows="5"><?php echo $items_ordered;?></textarea></td>
+        </tr>
+        <tr>
+            <td>Applied Coupon Code:</td>
+            <td><input type="text" size="20" name="wpsc_applied_coupon" value="<?php echo $applied_coupon; ?>" readonly /></td>
         </tr>
         
     </table>

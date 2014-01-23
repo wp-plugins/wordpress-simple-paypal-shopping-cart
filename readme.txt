@@ -45,6 +45,8 @@ or
 * You can create coupons and give to your customers. When they use coupons during the checkout they will receive a discount.
 * Compatible with WordPress Multi-site Installation.
 * Ability to specify SKU (item number) for each of your products in the shortcode.
+* Ability to customize the add to cart button image and use a custom image for your purchase buttons.
+* Track coupons with the order to see which customer used which coupon code.
 * Can be translated into any language.
 * and more...
 
@@ -122,6 +124,9 @@ Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
 None
 
 == Changelog ==
+= 3.9.2 =
+- Added an option to specify a custom button image for the add to cart buttons. You can use the "button_image" parameter in the shortcode to customize the add to cart button image.
+- Coupon code that is used in a transaciton will be saved with the order so you can see it in the back end.
 
 = 3.9.1 =
 - WP 3.8 compatibility

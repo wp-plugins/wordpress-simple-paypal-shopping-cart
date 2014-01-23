@@ -459,6 +459,12 @@ function wp_cart_add_custom_field()
                     $custom_field_val = wpc_append_values_to_custom_field($name,$value);
             }
     }
+
+    if(isset($_SESSION['wpspsc_applied_coupon_code'])){
+        $name = "coupon_code";
+        $value = $_SESSION['wpspsc_applied_coupon_code'];
+        $custom_field_val = wpc_append_values_to_custom_field($name,$value);
+    }
     $output = '<input type="hidden" name="custom" value="'.$custom_field_val.'" />';
     return 	$output;
 }
@@ -654,15 +660,22 @@ function print_wp_cart_button_for_product($name, $price, $shipping=0, $var1='', 
         if (!empty($var_output)){//Show variation
 			$replacement .= '<div class="wp_cart_variation_section">'.$var_output.'</div>';
         }
-                 
-		if (preg_match("/http:/", $addcart)) // Use the image as the 'add to cart' button
-		{
-			$replacement .= '<input type="image" src="'.$addcart.'" class="wp_cart_button" alt="'.(__("Add to Cart", "WSPSC")).'"/>';
-		} 
-		else 
-		{
-		    $replacement .= '<input type="submit" value="'.$addcart.'" />';
-		}
+        
+        if(isset($atts['button_image']) && !empty($atts['button_image'])){
+            //Use the custom button image for this shortcode
+            $replacement .= '<input type="image" src="'.$atts['button_image'].'" class="wp_cart_button" alt="'.(__("Add to Cart", "WSPSC")).'"/>';
+        }
+        else
+        {
+            //Use the button text or image value from the settings
+            if (preg_match("/http:/", $addcart)){ // Use the image as the 'add to cart' button
+                $replacement .= '<input type="image" src="'.$addcart.'" class="wp_cart_button" alt="'.(__("Add to Cart", "WSPSC")).'"/>';
+            } 
+            else{
+                $replacement .= '<input type="submit" value="'.$addcart.'" />';
+            }
+        }
+                
         $replacement .= '<input type="hidden" name="product" value="'.$name.'" /><input type="hidden" name="price" value="'.$price.'" /><input type="hidden" name="shipping" value="'.$shipping.'" /><input type="hidden" name="addcart" value="1" /><input type="hidden" name="cartLink" value="'.cart_current_page_url().'" />';
         $replacement .= '<input type="hidden" name="product_tmp" value="'.$name.'" />';
         isset($atts['item_number'])?$item_num = $atts['item_number']: $item_num = '';
