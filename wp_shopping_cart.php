@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.9.2
+Version: v3.9.3
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Tips and Tricks HQ, Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
     session_start();
 }	
 
-define('WP_CART_VERSION', '3.9.2');
+define('WP_CART_VERSION', '3.9.3');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH',plugin_dir_path( __FILE__ ));
 define('WP_CART_URL', plugins_url('',__FILE__));
@@ -23,6 +23,7 @@ define('WP_CART_SANDBOX_PAYPAL_URL', 'https://www.sandbox.paypal.com/cgi-bin/web
 // loading language files
 load_plugin_textdomain('WSPSC', false, WP_CART_FOLDER . '/languages');
 
+include_once('wp_shopping_cart_utility_functions.php');
 include_once('wp_shopping_cart_shortcodes.php');
 include_once('wp_shopping_cart_misc_functions.php');
 include_once('wp_shopping_cart_orders.php');
@@ -164,7 +165,7 @@ function wpspc_cart_actions_handler()
                 wpspc_update_cart_items_record();
             }
             else{
-                echo "<p>Error! Your session is out of sync. Please reset your session.</p>";
+                echo "<p>".(__("Error! Your session is out of sync. Please reset your session.", "WSPSC"))."</p>";
             }
         }
 
@@ -815,6 +816,7 @@ add_shortcode('show_wp_shopping_cart', 'show_wp_shopping_cart_handler');
 add_shortcode('always_show_wp_shopping_cart', 'always_show_cart_handler');
 add_shortcode('wp_cart_button', 'wp_cart_button_handler');
 add_shortcode('wp_cart_display_product', 'wp_cart_display_product_handler');
+add_shortcode('wp_compact_cart', 'wspsc_compact_cart_handler');
 
 add_action('wp_head', 'wp_cart_css');
 add_action('wp_head', 'wp_cart_add_read_form_javascript');

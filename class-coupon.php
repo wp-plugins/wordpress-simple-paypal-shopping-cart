@@ -16,7 +16,7 @@ class WPSPSC_Coupons_Collection
     function find_coupon_by_code($coupon_code)
     {
         if(empty($this->coupon_items)){
-            echo "<br />Admin needs to configure some discount coupons before it can be used";
+            echo "<br />".(__("Admin needs to configure some discount coupons before it can be used", "WSPSC"));
             return new stdClass();
         }
         foreach($this->coupon_items as $key => $coupon)
@@ -82,9 +82,9 @@ class WPSPSC_COUPON_ITEM
     
     function print_coupon_item_details()
     {
-        echo "<br />Coupon ID: ".$this->id;
-        echo "<br />Coupon Code: ".$this->coupon_code;
-        echo "<br />Discount Amt: ".$this->discount_rate;
+        echo "<br />".(__("Coupon ID: ", "WSPSC")).$this->id;
+        echo "<br />".(__("Coupon Code: ", "WSPSC")).$this->coupon_code;
+        echo "<br />".(__("Discount Amt: ", "WSPSC")).$this->discount_rate;
     }
 }
 

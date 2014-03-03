@@ -178,9 +178,9 @@ function show_wp_cart_options_page ()
     <div class="inside">
 	
         <p><strong><?php _e("Step 1) ","WSPSC"); ?></strong><?php _e("To add an 'Add to Cart' button for a product simply add the shortcode", "WSPSC"); ?> [wp_cart_button name="<?php _e("PRODUCT-NAME", "WSPSC"); ?>" price="<?php _e("PRODUCT-PRICE", "WSPSC"); ?>"] <?php _e("to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price of your product.", "WSPSC"); ?></p>
-        <p>Example add to cart button shortcode usage: <p style="background-color: #DDDDDD; padding: 5px; display: inline;">[wp_cart_button name="Test Product" price="29.95"]</p></p>
+        <p><?php _e("Example add to cart button shortcode usage:", "WSPSC");?> <p style="background-color: #DDDDDD; padding: 5px; display: inline;">[wp_cart_button name="Test Product" price="29.95"]</p></p>
 	<p><strong><?php _e("Step 2) ","WSPSC"); ?></strong><?php _e("To add the shopping cart to a post or page (example: a checkout page) simply add the shortcode", "WSPSC"); ?> [show_wp_shopping_cart] <?php _e("to a post or page or use the sidebar widget to add the shopping cart to the sidebar.", "WSPSC"); ?></p>
-        <p>Example shopping cart shortcode usage: <p style="background-color: #DDDDDD; padding: 5px; display: inline;">[show_wp_shopping_cart]</p></p>
+        <p><?php _e("Example shopping cart shortcode usage:", "WSPSC");?> <p style="background-color: #DDDDDD; padding: 5px; display: inline;">[show_wp_shopping_cart]</p></p>
     </div></div>
 
     <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
@@ -372,38 +372,38 @@ function show_wp_cart_email_settings_page()
     <input type="hidden" name="info_update" id="info_update" value="true" />
     
     <div class="postbox">
-    <h3><label for="title">Purchase Confirmation Email Settings</label></h3>
+    <h3><label for="title"><?php _e("Purchase Confirmation Email Settings", "WSPSC");?></label></h3>
     <div class="inside">
 
-    <p><i>The following options affect the emails that gets sent to your buyers after a purchase.</i></p>
+    <p><i><?php _e("The following options affect the emails that gets sent to your buyers after a purchase.", "WSPSC");?></i></p>
 
     <table class="form-table">
 
     <tr valign="top">
-    <th scope="row">Send Emails to Buyer After Purchase</th>
-    <td><input type="checkbox" name="wpspc_send_buyer_email" value="1" <?php echo $wpspc_send_buyer_email; ?> /><span class="description"> If checked the plugin will send an email to the buyer with the sale details. If digital goods are purchased then the email will contain the download links for the purchased products.</a></span></td>
+    <th scope="row"><?php _e("Send Emails to Buyer After Purchase", "WSPSC");?></th>
+    <td><input type="checkbox" name="wpspc_send_buyer_email" value="1" <?php echo $wpspc_send_buyer_email; ?> /><span class="description"><?php _e("If checked the plugin will send an email to the buyer with the sale details. If digital goods are purchased then the email will contain the download links for the purchased products.", "WSPSC");?></a></span></td>
     </tr>
     
     <tr valign="top">
-    <th scope="row">From Email Address</th>
+    <th scope="row"><?php _e("From Email Address", "WSPSC");?></th>
     <td><input type="text" name="wpspc_buyer_from_email" value="<?php echo $wpspc_buyer_from_email; ?>" size="50" />
-    <br /><p class="description">Example: Your Name &lt;sales@your-domain.com&gt; This is the email address that will be used to send the email to the buyer. This name and email address will appear in the from field of the email.</p></td>
+    <br /><p class="description"><?php _e("Example: Your Name &lt;sales@your-domain.com&gt; This is the email address that will be used to send the email to the buyer. This name and email address will appear in the from field of the email.", "WSPSC");?></p></td>
     </tr>
 
     <tr valign="top">
-    <th scope="row">Buyer Email Subject</th>
+    <th scope="row"><?php _e("Buyer Email Subject", "WSPSC");?></th>
     <td><input type="text" name="wpspc_buyer_email_subj" value="<?php echo $wpspc_buyer_email_subj; ?>" size="50" />
-    <br /><p class="description">This is the subject of the email that will be sent to the buyer.</p></td>
+    <br /><p class="description"><?php _e("This is the subject of the email that will be sent to the buyer.", "WSPSC");?></p></td>
     </tr>
 
     <tr valign="top">
-    <th scope="row">Buyer Email Body</th>
+    <th scope="row"><?php _e("Buyer Email Body", "WSPSC");?></th>
     <td>
     <textarea name="wpspc_buyer_email_body" cols="90" rows="7"><?php echo $wpspc_buyer_email_body; ?></textarea>
-    <br /><p class="description">This is the body of the email that will be sent to the buyer. Do not change the text within the braces {}. You can use the following email tags in this email body field:
-    <br />{first_name} – First name of the buyer
-    <br />{last_name} – Last name of the buyer
-    <br />{product_details} – The item details of the purchased product (this will include the download link for digital items).    
+    <br /><p class="description"><?php _e("This is the body of the email that will be sent to the buyer. Do not change the text within the braces {}. You can use the following email tags in this email body field:", "WSPSC");?>
+    <br />{first_name} – <?php _e("First name of the buyer", "WSPSC");?>
+    <br />{last_name} – <?php _e("Last name of the buyer", "WSPSC");?>
+    <br />{product_details} – <?php _e("The item details of the purchased product (this will include the download link for digital items).", "WSPSC");?>    
     </p></td>
     </tr>
 

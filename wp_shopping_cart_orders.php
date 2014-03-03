@@ -7,19 +7,19 @@ function wpspc_create_orders_page()
       register_post_type( 'wpsc_cart_orders',
         array(
             'labels' => array(
-                'name' => 'Cart Orders',
-                'singular_name' => 'Cart Order',
-                'add_new' => 'Add New',
-                'add_new_item' => 'Add New Order',
-                'edit' => 'Edit',
-                'edit_item' => 'Edit Order',
-                'new_item' => 'New Order',
-                'view' => 'View',
-                'view_item' => 'View Order',
-                'search_items' => 'Search Order',
-                'not_found' => 'No order found',
-                'not_found_in_trash' => 'No order found in Trash',
-                'parent' => 'Parent Order'
+                'name' => __("Cart Orders", "WSPSC"),
+                'singular_name' => __("Cart Order", "WSPSC"),
+                'add_new' => __("Add New", "WSPSC"),
+                'add_new_item' => __("Add New Order", "WSPSC"),
+                'edit' => __("Edit", "WSPSC"),
+                'edit_item' => __("Edit Order", "WSPSC"),
+                'new_item' => __("New Order", "WSPSC"),
+                'view' => __("View", "WSPSC"),
+                'view_item' => __("View Order", "WSPSC"),
+                'search_items' => __("Search Order", "WSPSC"),
+                'not_found' => __("No order found", "WSPSC"),
+                'not_found_in_trash' => __("No order found in Trash", "WSPSC"),
+                'parent' => __("Parent Order", "WSPSC")
             ),
 
             'public' => true,
@@ -35,7 +35,7 @@ function wpspc_create_orders_page()
 function wpspc_add_meta_boxes()
 {
     add_meta_box( 'order_review_meta_box',
-        'Order Review',
+        __("Order Review", "WSPSC"),
         'wpspc_order_review_meta_box',
         'wpsc_cart_orders', 
         'normal', 
@@ -65,44 +65,44 @@ function wpspc_order_review_meta_box($wpsc_cart_orders)
     $applied_coupon = get_post_meta( $wpsc_cart_orders->ID, 'wpsc_applied_coupon', true );
     ?>
     <table>
-        <p>Order ID: #<?php echo $order_id;?></p>
+        <p><?php _e("Order ID: #", "WSPSC"); echo $order_id;?></p>
         <?php if($txn_id){?>
-        <p>Transaction ID: #<?php echo $txn_id;?></p>
+        <p><?php _e("Transaction ID: #", "WSPSC"); echo $txn_id;?></p>
         <?php } ?>
         <tr>
-            <td>First Name</td>
+            <td><?php _e("First Name", "WSPSC");?></td>
             <td><input type="text" size="40" name="wpsc_first_name" value="<?php echo $first_name; ?>" /></td>
         </tr>
         <tr>
-            <td>Last Name</td>
+            <td><?php _e("Last Name", "WSPSC");?></td>
             <td><input type="text" size="40" name="wpsc_last_name" value="<?php echo $last_name; ?>" /></td>
         </tr>
         <tr>
-            <td>Email Address</td>
+            <td><?php _e("Email Address", "WSPSC");?></td>
             <td><input type="text" size="40" name="wpsc_email_address" value="<?php echo $email; ?>" /></td>
         </tr>
         <tr>
-            <td>IP Address</td>
+            <td><?php _e("IP Address", "WSPSC");?></td>
             <td><input type="text" size="40" name="wpsc_ipaddress" value="<?php echo $ip_address; ?>" /></td>
         </tr>
         <tr>
-            <td>Total</td>
+            <td><?php _e("Total", "WSPSC");?></td>
             <td><input type="text" size="20" name="wpsc_total_amount" value="<?php echo $total_amount; ?>" /></td>
         </tr>
         <tr>
-            <td>Address</td>
+            <td><?php _e("Address", "WSPSC");?></td>
             <td><textarea name="wpsc_address" cols="83" rows="2"><?php echo $address;?></textarea></td>
         </tr>
         <tr>
-            <td>Buyer Email Sent?</td>
+            <td><?php _e("Buyer Email Sent?", "WSPSC");?></td>
             <td><input type="text" size="80" name="wpsc_buyer_email_sent" value="<?php echo $email_sent_field_msg; ?>" readonly /></td>
         </tr>  
         <tr>
-            <td>Item(s) Ordered:</td>
+            <td><?php _e("Item(s) Ordered:", "WSPSC");?></td>
             <td><textarea name="wpspsc_items_ordered" cols="83" rows="5"><?php echo $items_ordered;?></textarea></td>
         </tr>
         <tr>
-            <td>Applied Coupon Code:</td>
+            <td><?php _e("Applied Coupon Code:", "WSPSC");?></td>
             <td><input type="text" size="20" name="wpsc_applied_coupon" value="<?php echo $applied_coupon; ?>" readonly /></td>
         </tr>
         
@@ -145,13 +145,13 @@ function wpspc_orders_display_columns( $columns )
     unset( $columns['comments'] );
     unset( $columns['date'] );
     //$columns['wpsc_order_id'] = 'Order ID';
-    $columns['title'] = 'Order ID';
-    $columns['wpsc_first_name'] = 'First Name';
-    $columns['wpsc_last_name'] = 'Last Name';
-    $columns['wpsc_email_address'] = 'Email';
-    $columns['wpsc_total_amount'] = 'Total';
-    $columns['wpsc_order_status'] = "Status";
-    $columns['date'] = 'Date';
+    $columns['title'] = __("Order ID", "WSPSC");
+    $columns['wpsc_first_name'] = __("First Name", "WSPSC");
+    $columns['wpsc_last_name'] = __("Last Name", "WSPSC");
+    $columns['wpsc_email_address'] = __("Email", "WSPSC");
+    $columns['wpsc_total_amount'] = __("Total", "WSPSC");
+    $columns['wpsc_order_status'] = __("Status", "WSPSC");
+    $columns['date'] = __("Date", "WSPSC");
     return $columns;
 }
 

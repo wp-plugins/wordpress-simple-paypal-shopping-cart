@@ -1,10 +1,10 @@
 === WordPress Simple Paypal Shopping Cart ===
 Contributors: Ruhul Amin, Tips and Tricks HQ
 Donate link: http://www.tipsandtricks-hq.com
-Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, digital downloads, paypal, paypal cart, e-shop
+Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, digital downloads, paypal, paypal cart, e-shop, compact cart,
 Requires at least: 3.0
-Tested up to: 3.8
-Stable tag: 3.9.2
+Tested up to: 3.8.1
+Stable tag: 3.9.3
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -47,6 +47,7 @@ or
 * Ability to specify SKU (item number) for each of your products in the shortcode.
 * Ability to customize the add to cart button image and use a custom image for your purchase buttons.
 * Track coupons with the order to see which customer used which coupon code.
+* Ability to add a compact shopping cart to your site using a shortcode.
 * Can be translated into any language.
 * and more...
 
@@ -75,6 +76,12 @@ Here is an exmaple shortcode that shows you how to use a product display box.
 [wp_cart_display_product name="My Awesome Product" price="25.00" thumbnail="http://www.example.com/images/product-image.jpg" description="This is a short description of the product"]
 
 Simply replace the values with your product specific data
+
+= Using a compact shopping cart =
+
+Add the following shortcode where you want to show the compact shopping cart:
+
+[wp_compact_cart]
 
 = Using Shipping =
 
@@ -124,6 +131,13 @@ Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
 None
 
 == Changelog ==
+
+= 3.9.3 =
+- Added a new feature to show a compact shopping cart. You can show the compact shopping cart anywhere on your site (example: sidebar, header etc).
+- Language translation strings updated. Translation instruction here - http://www.tipsandtricks-hq.com/ecommerce/translating-the-wp-simple-shopping-cart-plugin-2627
+- Added a new function for getting the total cart item quantity (wpspc_get_total_cart_qty).
+- Added a new function to get the sub total amount of the cart (wpspc_get_total_cart_sub_total).
+
 = 3.9.2 =
 - Added an option to specify a custom button image for the add to cart buttons. You can use the "button_image" parameter in the shortcode to customize the add to cart button image.
 - Coupon code that is used in a transaciton will be saved with the order so you can see it in the back end.

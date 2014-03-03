@@ -1,10 +1,11 @@
 <?php
 
 /* TODO
+- add a reset cart button
 - After processing an IPN, call a function to clear all trash orders that are older than 6 hours.
 - add an option for the admin email notification.
-- add a reset cart button
 - Mention the available languages
+- Add more filters and hooks
 */
 
 /* this function gets called when init is fired */

@@ -57,17 +57,17 @@ function show_wp_cart_coupon_discount_settings_page()
     <input type="hidden" name="coupon_settings_update" id="coupon_settings_update" value="true" />
 
     <div class="postbox">
-    <h3><label for="title">Coupon/Discount Settings</label></h3>
+    <h3><label for="title"><?php _e("Coupon/Discount Settings", "WSPSC");?></label></h3>
     <div class="inside">
 
     <form method="post" action="">
     <table class="form-table" width="100%" border="0" cellspacing="0" cellpadding="6">
     
     <tr valign="top">
-    <th scope="row">Enable Discount Coupon Feature</th>
+    <th scope="row"><?php _e("Enable Discount Coupon Feature", "WSPSC");?></th>
     <td>
     <input type="checkbox" name="wpspsc_enable_coupon" value="1" <?php echo $wpspsc_enable_coupon; ?> />
-    <span class="description"> When checked your customers will be able to enter a coupon code in the shopping cart before checkout.</span>
+    <span class="description"><?php _e("When checked your customers will be able to enter a coupon code in the shopping cart before checkout.", "WSPSC");?></span>
     </td>
     </tr>
     
@@ -90,7 +90,7 @@ function show_wp_cart_coupon_discount_settings_page()
     <input type="hidden" name="info_update" id="info_update" value="true" />
 
     <div class="postbox">
-    <h3><label for="title">Add Coupon/Discount</label></h3>
+    <h3><label for="title"><?php _e("Add Coupon/Discount", "WSPSC");?></label></h3>
     <div class="inside">
 
     <form method="post" action="">
@@ -128,8 +128,8 @@ function show_wp_cart_coupon_discount_settings_page()
     $output .= '
     <table class="widefat" style="max-width:800px;">
     <thead><tr>
-    <th scope="col">Coupon Code</th>
-    <th scope="col">Discount Rate (%)</th>
+    <th scope="col">'.(__("Coupon Code", "WSPSC")).'</th>
+    <th scope="col">'.(__("Discount Rate (%)", "WSPSC")).'</th>
     <th scope="col"></th>
     </tr></thead>
     <tbody>';
@@ -158,12 +158,12 @@ function show_wp_cart_coupon_discount_settings_page()
         }
         else
         {
-            $output .= '<tr><td colspan="5">No Coupons Configured.</td></tr>';
+            $output .= '<tr><td colspan="5">'.(__("No Coupons Configured.", "WSPSC")).'</td></tr>';
         }
     }
     else
     {
-        $output .= '<tr><td colspan="5">No Record found</td></tr>';
+        $output .= '<tr><td colspan="5">'.(__("No Record found", "WSPSC")).'</td></tr>';
     }
 
     $output .= '</tbody>

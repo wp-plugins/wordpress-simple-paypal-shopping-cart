@@ -13,10 +13,10 @@ function wp_cart_button_handler($atts){
 	), $atts));
 
 	if(empty($name)){
-		return '<div style="color:red;">Error! You must specify a product name in the shortcode.</div>';
+		return '<div style="color:red;">'.(__("Error! You must specify a product name in the shortcode.", "WSPSC")).'</div>';
 	}
 	if(empty($price)){
-		return '<div style="color:red;">Error! You must specify a price for your product in the shortcode.</div>';
+		return '<div style="color:red;">'.(__("Error! You must specify a price for your product in the shortcode.", "WSPSC")).'</div>';
 	}
 	return print_wp_cart_button_for_product($name, $price, $shipping, $var1, $var2, $var3, $atts);
 }
@@ -37,13 +37,13 @@ function wp_cart_display_product_handler($atts)
     ), $atts));
 
     if(empty($name)){
-            return '<div style="color:red;">Error! You must specify a product name in the shortcode.</div>';
+            return '<div style="color:red;">'.(__("Error! You must specify a product name in the shortcode.", "WSPSC")).'</div>';
     }
     if(empty($price)){
-            return '<div style="color:red;">Error! You must specify a price for your product in the shortcode.</div>';
+            return '<div style="color:red;">'.(__("Error! You must specify a price for your product in the shortcode.", "WSPSC")).'</div>';
     }
     if(empty($thumbnail)){
-            return '<div style="color:red;">Error! You must specify a thumbnail image for your product in the shortcode.</div>';
+            return '<div style="color:red;">'.(__("Error! You must specify a thumbnail image for your product in the shortcode.", "WSPSC")).'</div>';
     }
     $currency_symbol = get_option('cart_currency_symbol');
     $button_code = print_wp_cart_button_for_product($name, $price, $shipping, $var1, $var2, $var3, $atts);
@@ -69,4 +69,32 @@ function wp_cart_display_product_handler($atts)
     </div>
 EOT;
     return $display_code; 
+}
+
+function wspsc_compact_cart_handler($args)
+{
+    $num_items = wpspc_get_total_cart_qty();
+    $curSymbol = get_option('cart_currency_symbol');
+    $checkout_url = get_option('cart_checkout_page_url');
+
+    $output = "";
+    $output .= '<div class="wpsps_compact_cart wpsps-cart-wrapper">';
+    $output .= '<div class="wpsps_compact_cart_container">';	
+    if($num_items>0){
+            $cart_total = wpspc_get_total_cart_sub_total();
+            $item_message = ($num_items == 1)? "Item" : "Items";
+            $output .= $num_items . " " . $item_message;		
+            $output .= '<span class="wpsps_compact_cart_price"> '. print_payment_currency($cart_total,$curSymbol).'</span>';
+            if(!empty($checkout_url)){
+                $output .= '<a class="wpsps_compact_cart_co_btn" href="'.$checkout_url.'">'.__("View Cart", "WSPSC").'</a>';
+            }
+    }
+    else{
+            $cart_total = 0;
+            $output .= __("Cart is empty", "WSPSC");
+            $output .= '<span class="wpsps_compact_cart_price"> '. print_payment_currency($cart_total,$curSymbol).'</span>';
+    }
+    $output .= '</div>';
+    $output .= '</div>';
+    return $output;
 }
