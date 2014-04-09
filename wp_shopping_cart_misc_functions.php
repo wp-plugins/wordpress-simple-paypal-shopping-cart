@@ -1,9 +1,10 @@
 <?php
 
 /* TODO
+- Send email notification to seller option
 - add a reset cart button
 - After processing an IPN, call a function to clear all trash orders that are older than 6 hours.
-- add an option for the admin email notification.
+- A fancy cart shortcode
 - Mention the available languages
 - Add more filters and hooks
 */
@@ -143,8 +144,8 @@ function wpspc_update_cart_items_record()
 
 function wpspc_apply_dynamic_tags_on_email_body($ipn_data, $args)
 {
-    $tags = array("{first_name}","{last_name}","{product_details}");
-    $vals = array($ipn_data['first_name'], $ipn_data['last_name'], $args['product_details']);
+    $tags = array("{first_name}","{last_name}","{product_details}","{payer_email}");
+    $vals = array($ipn_data['first_name'], $ipn_data['last_name'], $args['product_details'], $args['payer_email']);
 
     $body = stripslashes(str_replace($tags, $vals, $args['email_body']));
     return $body;
@@ -167,4 +168,15 @@ function wpspc_run_activation()
     $email_body .= "\nThank you for your purchase! You ordered the following item(s):\n";
     $email_body .= "\n{product_details}";
     add_option('wpspc_buyer_email_body', $email_body);
+    
+    $notify_email_address = get_bloginfo('admin_email');
+    add_option('wpspc_notify_email_address', $notify_email_address);
+    $seller_email_subj = "Notification of product sale";
+    add_option('wpspc_seller_email_subj', $seller_email_subj);
+    $seller_email_body = "Dear Seller\n";
+    $seller_email_body .= "\nThis mail is to notify you of a product sale.\n";
+    $seller_email_body .= "\n{product_details}";        
+    $seller_email_body .= "\n\nThe sale was made to {first_name} {last_name} ({payer_email})";
+    $seller_email_body .= "\n\nThanks";
+    add_option('wpspc_seller_email_body', $seller_email_body);
 }

@@ -3,8 +3,8 @@ Contributors: Ruhul Amin, Tips and Tricks HQ
 Donate link: http://www.tipsandtricks-hq.com
 Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, digital downloads, paypal, paypal cart, e-shop, compact cart,
 Requires at least: 3.0
-Tested up to: 3.8.1
-Stable tag: 3.9.4
+Tested up to: 3.8.2
+Stable tag: 3.9.5
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -17,11 +17,11 @@ It also allows you to add/display the shopping cart on any post or page or sideb
 
 http://www.youtube.com/watch?v=tEZWfTmZ2kk
 
+This plugin is a lightweight solution (with minimal number of lines of code and minimal options) so it doesn't slow down your site.
+
 It can be easily integrated with the NextGen Photo Gallery plugin to accommodate the selling of photographs from your gallery.
 
 WP simple Paypal Cart Plugin, interfaces with the Paypal sandbox to allow for testing.
-
-This plugin is a lightweight solution (with minimal number of lines of code and minimal options) so it doesn't slow down your site.
 
 For video tutorial, screenshots, detailed documentation, support and updates, please visit:
 [WP Simple Cart Details Page](http://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768)
@@ -41,7 +41,8 @@ or
 * Collect special instructions from your customers on the PayPal checkout page.
 * The orders menu will show you all the orders that you have received from your site.
 * Ability to configure an email that will get sent to your buyers after they purchase your product.
-* Ability to configure discount coupons.
+* Ability to configure a sale notification email that gets sent to the site admin when a customer purchase your item(s).
+* Ability to configure discount coupons. Offer special discounts on your store/shop.
 * You can create coupons and give to your customers. When they use coupons during the checkout they will receive a discount.
 * Compatible with WordPress Multi-site Installation.
 * Ability to specify SKU (item number) for each of your products in the shortcode.
@@ -50,6 +51,20 @@ or
 * Ability to add a compact shopping cart to your site using a shortcode.
 * Can be translated into any language.
 * and more...
+
+= Translations =
+
+The following language translations are already available:
+
+* English
+* German
+* Spanish
+* French
+* Italian
+* Japanese
+* Polish
+
+You can translate the plugin using [this documentation](http://www.tipsandtricks-hq.com/ecommerce/translating-the-wp-simple-shopping-cart-plugin-2627).
 
 = Note =
 
@@ -109,7 +124,7 @@ example usage: [wp_cart_button name="Test Product" price="29.95" var1="Size|smal
 1. Unzip and Upload the folder 'wordpress-paypal-shopping-cart' to the '/wp-content/plugins/' directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Go to Settings and configure the options (for example: your email, Shopping Cart name, Return URL etc.)
-4. Use the trigger text to add a product to a post or page where u want it to appear.
+4. Use the trigger text to add a product to a post or page where you want it to appear.
 
 == Frequently Asked Questions ==
 1. Can this plugin be used to accept paypal payment for a service or a product? Yes
@@ -122,6 +137,10 @@ example usage: [wp_cart_button name="Test Product" price="29.95" var1="Size|smal
 Check the documentation on [how to add buy buttons to the sidebar](http://www.tipsandtricks-hq.com/ecommerce/wordpress-shopping-cart-additional-resources-322#add_button_in_sidebar)
 8. Can I use this plugin to sell digital downloads? 
 Yes. See the [digital download usage documnentation] (http://www.tipsandtricks-hq.com/ecommerce/wp-simple-cart-sell-digital-downloads-2468)
+9. Can I configure discount coupon with this shopping cart plugin?
+Yes. you can setup discount coupons from the "Coupon/Discount" interface of the plugin.
+10. Can I configure product sale notification so I get notified when a sale is made? 
+Yes. You can configure sale notification from the "Email Settings" interface of the plugin.
 
 == Screenshots ==
 Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
@@ -131,6 +150,12 @@ Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
 None
 
 == Changelog ==
+
+= 3.9.5 =
+- Added a new feature that lets you (the site admin) configure a sale notification email for the admin. When your customer purchase a product, you get a notification email. Activate this feature from the "Email Settings" interface of the plugin.
+- Added Polish language translation to the plugin. The Polish langage translation file was submitted by Gregor Konrad.
+- Fixed a minor issue with custom button images that uses HTTPS URL.
+- Added more CSS classes in the shopping cart so you can apply CSS tweaks easily.
 
 = 3.9.4 =
 - Fixed a minor bug in the new compact cart shortcode [wp_compact_cart]

@@ -180,13 +180,26 @@ class paypal_ipn_handler {
             $body = get_option('wpspc_buyer_email_body');
             $args['email_body'] = $body;
             $body = wpspc_apply_dynamic_tags_on_email_body($this->ipn_data, $args);
-            if($buyer_email){
+            $headers = 'From: '.$from_email . "\r\n";
+            if(!empty($buyer_email)){
+                $args['payer_email'] = $buyer_email;
                 if(get_option('wpspc_send_buyer_email'))
         	{
-                    $headers = 'From: '.$from_email . "\r\n";
                     wp_mail($buyer_email, $subject, $body, $headers);
                     $this->debug_log('Product Email successfully sent to '.$buyer_email,true);
                     update_post_meta( $post_id, 'wpsc_buyer_email_sent', 'Email sent to: '.$buyer_email);
+                }
+            }
+            $notify_email = get_option('wpspc_notify_email_address');
+            $seller_email_subject = get_option('wpspc_seller_email_subj');
+            $seller_email_body = get_option('wpspc_seller_email_body');
+            $args['email_body'] = $seller_email_body;
+            $seller_email_body = wpspc_apply_dynamic_tags_on_email_body($this->ipn_data, $args);
+            if(!empty($notify_email)){
+                if(get_option('wpspc_send_seller_email'))
+        	{
+                    wp_mail($notify_email, $seller_email_subject, $seller_email_body, $headers);
+                    $this->debug_log('Notify Email successfully sent to '.$notify_email,true);
                 }
             }
         }

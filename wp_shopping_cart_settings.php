@@ -349,6 +349,11 @@ function show_wp_cart_email_settings_page()
         update_option('wpspc_buyer_email_subj', stripslashes((string)$_POST["wpspc_buyer_email_subj"]));
         update_option('wpspc_buyer_email_body', stripslashes((string)$_POST["wpspc_buyer_email_body"]));;
         
+        update_option('wpspc_send_seller_email', ($_POST['wpspc_send_seller_email']!='') ? 'checked="checked"':'' );        
+        update_option('wpspc_notify_email_address', stripslashes((string)$_POST["wpspc_notify_email_address"]));
+        update_option('wpspc_seller_email_subj', stripslashes((string)$_POST["wpspc_seller_email_subj"]));
+        update_option('wpspc_seller_email_body', stripslashes((string)$_POST["wpspc_seller_email_body"]));;
+        
         echo '<div id="message" class="updated fade"><p><strong>';
         echo 'Email Settings Updated!';
         echo '</strong></p></div>';
@@ -360,6 +365,26 @@ function show_wp_cart_email_settings_page()
     $wpspc_buyer_from_email = get_option('wpspc_buyer_from_email');    
     $wpspc_buyer_email_subj = get_option('wpspc_buyer_email_subj');    
     $wpspc_buyer_email_body = get_option('wpspc_buyer_email_body');
+    $wpspc_send_seller_email = '';
+    if (get_option('wpspc_send_seller_email')){
+        $wpspc_send_seller_email = 'checked="checked"';
+    }
+    $wpspc_notify_email_address = get_option('wpspc_notify_email_address'); 
+    if(empty($wpspc_notify_email_address)){
+        $wpspc_notify_email_address = get_bloginfo('admin_email'); //default value
+    }
+    $wpspc_seller_email_subj = get_option('wpspc_seller_email_subj');  
+    if(empty($wpspc_seller_email_subj)){
+        $wpspc_seller_email_subj = "Notification of product sale";
+    }
+    $wpspc_seller_email_body = get_option('wpspc_seller_email_body');
+    if(empty($wpspc_seller_email_body)){
+        $wpspc_seller_email_body = "Dear Seller\n".
+        "\nThis mail is to notify you of a product sale.\n".
+        "\n{product_details}".      
+        "\n\nThe sale was made to {first_name} {last_name} ({payer_email})".
+        "\n\nThanks";
+    }
     ?>
     
     <div style="background: none repeat scroll 0 0 #FFF6D5;border: 1px solid #D1B655;color: #3F2502;margin: 10px 0;padding: 5px 5px 5px 10px;text-shadow: 1px 1px #FFFFFF;">	
@@ -403,6 +428,35 @@ function show_wp_cart_email_settings_page()
     <br /><p class="description"><?php _e("This is the body of the email that will be sent to the buyer. Do not change the text within the braces {}. You can use the following email tags in this email body field:", "WSPSC");?>
     <br />{first_name} – <?php _e("First name of the buyer", "WSPSC");?>
     <br />{last_name} – <?php _e("Last name of the buyer", "WSPSC");?>
+    <br />{product_details} – <?php _e("The item details of the purchased product (this will include the download link for digital items).", "WSPSC");?>    
+    </p></td>
+    </tr>
+    
+    <tr valign="top">
+    <th scope="row"><?php _e("Send Emails to Seller After Purchase", "WSPSC");?></th>
+    <td><input type="checkbox" name="wpspc_send_seller_email" value="1" <?php echo $wpspc_send_seller_email; ?> /><span class="description"><?php _e("If checked the plugin will send an email to the seller with the sale details", "WSPSC");?></a></span></td>
+    </tr>
+    
+    <tr valign="top">
+    <th scope="row"><?php _e("Notification Email Address*", "WSPSC");?></th>
+    <td><input type="text" name="wpspc_notify_email_address" value="<?php echo $wpspc_notify_email_address; ?>" size="50" />
+    <br /><p class="description"><?php _e("This is the email address where the seller will be notified of product sales. You can put multiple email addresses separated by comma (,) in the above field to send the notification to multiple email addresses.", "WSPSC");?></p></td>
+    </tr>
+
+    <tr valign="top">
+    <th scope="row"><?php _e("Seller Email Subject*", "WSPSC");?></th>
+    <td><input type="text" name="wpspc_seller_email_subj" value="<?php echo $wpspc_seller_email_subj; ?>" size="50" />
+    <br /><p class="description"><?php _e("This is the subject of the email that will be sent to the seller for record.", "WSPSC");?></p></td>
+    </tr>
+
+    <tr valign="top">
+    <th scope="row"><?php _e("Seller Email Body*", "WSPSC");?></th>
+    <td>
+    <textarea name="wpspc_seller_email_body" cols="90" rows="7"><?php echo $wpspc_seller_email_body; ?></textarea>
+    <br /><p class="description"><?php _e("This is the body of the email that will be sent to the seller for record. Do not change the text within the braces {}. You can use the following email tags in this email body field:", "WSPSC");?>
+    <br />{first_name} – <?php _e("First name of the buyer", "WSPSC");?>
+    <br />{last_name} – <?php _e("Last name of the buyer", "WSPSC");?>
+    <br />{payer_email} – <?php _e("Email Address of the buyer", "WSPSC");?>
     <br />{product_details} – <?php _e("The item details of the purchased product (this will include the download link for digital items).", "WSPSC");?>    
     </p></td>
     </tr>

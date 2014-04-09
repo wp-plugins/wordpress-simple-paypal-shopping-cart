@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.9.4
+Version: v3.9.5
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Tips and Tricks HQ, Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
     session_start();
 }	
 
-define('WP_CART_VERSION', '3.9.4');
+define('WP_CART_VERSION', '3.9.5');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH',plugin_dir_path( __FILE__ ));
 define('WP_CART_URL', plugins_url('',__FILE__));
@@ -245,19 +245,21 @@ function print_wp_shopping_cart()
 	    $empty_cart_text = get_option('wp_cart_empty_text');
 		if (!empty($empty_cart_text)) 
 		{
-			if (preg_match("/http/", $empty_cart_text))
-			{
-				$output .= '<img src="'.$empty_cart_text.'" alt="'.$empty_cart_text.'" />';
-			}
-			else
-			{
-				$output .= $empty_cart_text;
-			}			
+                    $output .= '<div class="wp_cart_empty_cart_section">';
+                    if (preg_match("/http/", $empty_cart_text))
+                    {
+                            $output .= '<img src="'.$empty_cart_text.'" alt="'.$empty_cart_text.'" class="wp_cart_empty_cart_image" />';
+                    }
+                    else
+                    {
+                            $output .= $empty_cart_text;
+                    }	
+                    $output .= '</div>';
 		}
 		$cart_products_page_url = get_option('cart_products_page_url');
 		if (!empty($cart_products_page_url))
 		{
-			$output .= '<br /><a rel="nofollow" href="'.$cart_products_page_url.'">'.(__("Visit The Shop", "WSPSC")).'</a>';
+			$output .= '<div class="wp_cart_visit_shop_link"><a rel="nofollow" href="'.$cart_products_page_url.'">'.(__("Visit The Shop", "WSPSC")).'</a></div>';
 		}		
 		return $output;
 	}
@@ -669,7 +671,7 @@ function print_wp_cart_button_for_product($name, $price, $shipping=0, $var1='', 
         else
         {
             //Use the button text or image value from the settings
-            if (preg_match("/http:/", $addcart)){ // Use the image as the 'add to cart' button
+            if (preg_match("/http:/", $addcart) || preg_match("/https:/", $addcart)){ // Use the image as the 'add to cart' button
                 $replacement .= '<input type="image" src="'.$addcart.'" class="wp_cart_button" alt="'.(__("Add to Cart", "WSPSC")).'"/>';
             } 
             else{
