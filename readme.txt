@@ -17,9 +17,9 @@ It also allows you to add/display the shopping cart on any post or page or sideb
 
 http://www.youtube.com/watch?v=tEZWfTmZ2kk
 
-This plugin is a lightweight solution (with minimal number of lines of code and minimal options) so it doesn't slow down your site.
-
 It can be easily integrated with the NextGen Photo Gallery plugin to accommodate the selling of photographs from your gallery.
+
+This plugin is a lightweight solution (with minimal number of lines of code and minimal options) so it doesn't slow down your site.
 
 WP simple Paypal Cart Plugin, interfaces with the Paypal sandbox to allow for testing.
 
