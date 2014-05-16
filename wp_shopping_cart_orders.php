@@ -53,6 +53,7 @@ function wpspc_order_review_meta_box($wpsc_cart_orders)
     $txn_id = get_post_meta( $wpsc_cart_orders->ID, 'wpsc_txn_id', true );
     $ip_address = get_post_meta( $wpsc_cart_orders->ID, 'wpsc_ipaddress', true );
     $total_amount = get_post_meta( $wpsc_cart_orders->ID, 'wpsc_total_amount', true );
+    $shipping_amount = get_post_meta( $wpsc_cart_orders->ID, 'wpsc_shipping_amount', true );
     $address = get_post_meta( $wpsc_cart_orders->ID, 'wpsc_address', true );
     $email_sent_value = get_post_meta( $wpsc_cart_orders->ID, 'wpsc_buyer_email_sent', true );
     
@@ -88,6 +89,10 @@ function wpspc_order_review_meta_box($wpsc_cart_orders)
         <tr>
             <td><?php _e("Total", "WSPSC");?></td>
             <td><input type="text" size="20" name="wpsc_total_amount" value="<?php echo $total_amount; ?>" /></td>
+        </tr>
+        <tr>
+            <td><?php _e("Shipping", "WSPSC");?></td>
+            <td><input type="text" size="20" name="wpsc_shipping_amount" value="<?php echo $shipping_amount; ?>" /></td>
         </tr>
         <tr>
             <td><?php _e("Address", "WSPSC");?></td>
@@ -128,6 +133,9 @@ function wpspc_cart_save_orders( $order_id, $wpsc_cart_orders ) {
         }
         if ( isset( $_POST['wpsc_total_amount'] ) && $_POST['wpsc_total_amount'] != '' ) {
             update_post_meta( $order_id, 'wpsc_total_amount', $_POST['wpsc_total_amount'] );
+        }
+        if ( isset( $_POST['wpsc_shipping_amount'] ) && $_POST['wpsc_shipping_amount'] != '' ) {
+            update_post_meta( $order_id, 'wpsc_shipping_amount', $_POST['wpsc_shipping_amount'] );
         }
         if ( isset( $_POST['wpsc_address'] ) && $_POST['wpsc_address'] != '' ) {
             update_post_meta( $order_id, 'wpsc_address', $_POST['wpsc_address'] );

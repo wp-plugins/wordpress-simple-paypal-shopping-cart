@@ -1,10 +1,10 @@
 === WordPress Simple Paypal Shopping Cart ===
-Contributors: Ruhul Amin, Tips and Tricks HQ
+Contributors: Tips and Tricks HQ, Ruhul Amin, wptipsntricks
 Donate link: http://www.tipsandtricks-hq.com
-Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, digital downloads, paypal, paypal cart, e-shop, compact cart,
+Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell, selling, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, digital downloads, paypal, paypal cart, e-shop, compact cart, sell service,
 Requires at least: 3.0
 Tested up to: 3.9
-Stable tag: 3.9.5
+Stable tag: 3.9.6
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -34,7 +34,8 @@ or
 * Use a function to add dynamic "add to cart" button directly in your theme.
 * Minimal number of configuration items to keep the plugin lightweight.
 * Sell any kind of tangible products from your site.
-* Sell any type of media file that you upload to your WordPress site. For example: you can sell ebooks (PDF), music (MP3), videos, photos etc.
+* Ability to sell services from your your site.
+* Sell any type of media file that you upload to your WordPress site. For example: you can sell ebooks (PDF), music files (MP3), audio files, videos, photos, images etc.
 * Your customers will automatically get an email with the media file that they paid for.
 * Show a nicely formatted product display box on the fly using a simple shortcode.
 * You can use Paypal sandbox to do testing if needed (before you go live).
@@ -49,10 +50,17 @@ or
 * Ability to customize the add to cart button image and use a custom image for your purchase buttons.
 * Track coupons with the order to see which customer used which coupon code.
 * Ability to add a compact shopping cart to your site using a shortcode.
+* Ability to use a custom checkout page style.
 * Can be translated into any language.
 * and more...
 
-= Translations =
+= Shopping Cart Setup Video Tutorials =
+
+There is a series of video tutorials to show you how to setup the shopping cart on your site. 
+
+Check the video tutorials [here](http://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768).
+
+= Language Translations =
 
 The following language translations are already available:
 
@@ -63,6 +71,7 @@ The following language translations are already available:
 * Italian
 * Japanese
 * Polish
+* Czech
 
 You can translate the plugin using [this documentation](http://www.tipsandtricks-hq.com/ecommerce/translating-the-wp-simple-shopping-cart-plugin-2627).
 
@@ -150,6 +159,11 @@ Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
 None
 
 == Changelog ==
+
+= 3.9.6 =
+- Added Czech Language translation to the plugin. The Czech translation file was submitted by Tomas Sykora.
+- Added a new option/feature to specify a custom paypal checkout page style name. The plugin will use the custom checkout page style if you specify one.
+- Each order now also shows the shipping amount in the order managment interface.
 
 = 3.9.5 =
 - Added a new feature that lets you (the site admin) configure a sale notification email for the admin. When your customer purchase a product, you get a notification email. Activate this feature from the "Email Settings" interface of the plugin.

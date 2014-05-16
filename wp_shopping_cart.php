@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.9.5
+Version: v3.9.6
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Tips and Tricks HQ, Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
     session_start();
 }	
 
-define('WP_CART_VERSION', '3.9.5');
+define('WP_CART_VERSION', '3.9.6');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH',plugin_dir_path( __FILE__ ));
 define('WP_CART_URL', plugins_url('',__FILE__));
@@ -688,6 +688,10 @@ function print_wp_cart_button_for_product($name, $price, $shipping=0, $var1='', 
             $file_url = $atts['file_url'];
             $file_url = base64_encode($file_url); 
             $replacement .= '<input type="hidden" name="file_url" value="'.$file_url.'" />';
+        }
+        $page_style_name = get_option('wp_cart_paypal_co_page_style');
+        if(!empty($page_style_name)){
+            $replacement .= '<input type="hidden" name="page_style" value="'.$page_style_name.'" />';
         }
 	$replacement .= '</form>';
         $replacement .= '</div>';

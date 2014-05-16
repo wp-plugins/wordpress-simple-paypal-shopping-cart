@@ -88,6 +88,7 @@ function show_wp_cart_options_page ()
                 
         update_option('wp_shopping_cart_image_hide', ($_POST['wp_shopping_cart_image_hide']!='') ? 'checked="checked"':'' );
         update_option('wp_cart_note_to_seller_text', (string)$_POST["wp_cart_note_to_seller_text"]);
+        update_option('wp_cart_paypal_co_page_style', (string)$_POST["wp_cart_paypal_co_page_style"]);
         update_option('wp_use_aff_platform', ($_POST['wp_use_aff_platform']!='') ? 'checked="checked"':'' );
         
         update_option('wp_shopping_cart_enable_sandbox', ($_POST['wp_shopping_cart_enable_sandbox']!='') ? 'checked="checked"':'' );
@@ -149,6 +150,7 @@ function show_wp_cart_options_page ()
         $wp_cart_image_hide = '';
 
 	$wp_cart_note_to_seller_text = get_option('wp_cart_note_to_seller_text');
+        $wp_cart_paypal_co_page_style = get_option('wp_cart_paypal_co_page_style');
 	
     if (get_option('wp_use_aff_platform'))
         $wp_use_aff_platform = 'checked="checked"';
@@ -281,6 +283,14 @@ echo '
 <th scope="row">'.(__("Customize the Note to Seller Text", "WSPSC")).'</th>
 <td><input type="text" name="wp_cart_note_to_seller_text" value="'.$wp_cart_note_to_seller_text.'" size="100" />
 <br />'.(__("Specify the text that you want to use for the note field on PayPal checkout page to collect special instruction (leave this field empty if you don't need to customize it). The default label for the note field is \"Add special instructions to merchant\".", "WSPSC")).'</td>
+</tr>
+</table>
+
+<table class="form-table">
+<tr valign="top">
+<th scope="row">'.(__("Custom Checkout Page Style Name", "WSPSC")).'</th>
+<td><input type="text" name="wp_cart_paypal_co_page_style" value="'.$wp_cart_paypal_co_page_style.'" size="40" />
+<br />'.(__("Specify the page style name here if you want to customize the paypal checkout page with custom page style otherwise leave this field empty.", "WSPSC")).'</td>
 </tr>
 </table>
 
