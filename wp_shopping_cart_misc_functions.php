@@ -1,10 +1,10 @@
 <?php
 
 /* TODO
-- Show the shipping and tax amount (if any) in the orders interface (it is already available in the object)
-- add a reset cart button
-- After processing an IPN, call a function to clear all trash orders that are older than 6 hours.
 - A new fancy cart shortcode (new icons and nice CSS styles)
+- Add a reset cart button
+- A stats addon or interface. Show graph using the orders data.
+- After processing an IPN, call a function to clear all trash orders that are older than 6 hours.
 - Add more filters and hooks
 */
 

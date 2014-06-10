@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.9.6
+Version: v3.9.7
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Tips and Tricks HQ, Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
     session_start();
 }	
 
-define('WP_CART_VERSION', '3.9.6');
+define('WP_CART_VERSION', '3.9.7');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH',plugin_dir_path( __FILE__ ));
 define('WP_CART_URL', plugins_url('',__FILE__));
@@ -321,7 +321,7 @@ function print_wp_shopping_cart()
     {   
         $output .= '
         <tr>
-        <th style="text-align: left">'.(__("Item Name", "WSPSC")).'</th><th>'.(__("Quantity", "WSPSC")).'</th><th>'.(__("Price", "WSPSC")).'</th><th></th>
+        <th class="wspsc_cart_item_name_th">'.(__("Item Name", "WSPSC")).'</th><th class="wspsc_cart_qty_th">'.(__("Quantity", "WSPSC")).'</th><th class="wspsc_cart_price_th">'.(__("Price", "WSPSC")).'</th><th></th>
         </tr>';
             $item_total_shipping = 0;
             $postage_cost = 0;
@@ -411,8 +411,14 @@ function print_wp_shopping_cart()
             	$paypal_checkout_url = WP_CART_SANDBOX_PAYPAL_URL;
             }
             
+            $form_target_code = '';
+            if (get_option('wspsc_open_pp_checkout_in_new_tab')){
+                $form_target_code = 'target="_blank"';
+            }
+                
             $output .= "<tr class='wpspsc_checkout_form'><td colspan='4'>";
-            $output .= '<form action="'.$paypal_checkout_url.'" method="post">'.$form;
+            $output .= '<form action="'.$paypal_checkout_url.'" method="post" '.$form_target_code.'>';
+            $output .= $form;
             if ($count)
             $output .= '<input type="image" src="'.WP_CART_URL.'/images/'.(__("paypal_checkout_EN.png", "WSPSC")).'" name="submit" class="wp_cart_checkout_button" alt="'.(__("Make payments with PayPal - it\'s fast, free and secure!", "WSPSC")).'" />';
 
@@ -468,8 +474,10 @@ function wp_cart_add_custom_field()
         $value = $_SESSION['wpspsc_applied_coupon_code'];
         $custom_field_val = wpc_append_values_to_custom_field($name,$value);
     }
+    
+    $custom_field_val = apply_filters('wpspc_cart_custom_field_value', $custom_field_val);
     $output = '<input type="hidden" name="custom" value="'.$custom_field_val.'" />';
-    return 	$output;
+    return $output;
 }
 
 function print_wp_cart_button_new($content)
@@ -748,7 +756,7 @@ function simple_cart_total()
 function wp_cart_options_page () 
 {
     include_once('wp_shopping_cart_settings.php');
-    add_options_page(__("WP Paypal Shopping Cart", "WSPSC"), __("WP Shopping Cart", "WSPSC"), 'manage_options', 'wordpress-paypal-shopping-cart', 'wp_cart_options');  
+    add_options_page(__("WP Paypal Shopping Cart", "WSPSC"), __("WP Shopping Cart", "WSPSC"), 'manage_options', 'wordpress-paypal-shopping-cart', 'wp_cart_options');
 }
 
 function wp_paypal_shopping_cart_load_widgets()

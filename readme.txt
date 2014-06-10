@@ -3,8 +3,8 @@ Contributors: Tips and Tricks HQ, Ruhul Amin, wptipsntricks
 Donate link: http://www.tipsandtricks-hq.com
 Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell, selling, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, sell service, digital downloads, paypal, paypal cart, e-shop, compact cart,
 Requires at least: 3.0
-Tested up to: 3.9
-Stable tag: 3.9.6
+Tested up to: 3.9.1
+Stable tag: 3.9.7
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -16,6 +16,10 @@ WordPress Simple Paypal Shopping Cart allows you to add an 'Add to Cart' button 
 It also allows you to add/display the shopping cart on any post or page or sidebar easily. The shopping cart shows the user what they currently have in the cart and allows them to change quantity or remove the items. 
 
 http://www.youtube.com/watch?v=tEZWfTmZ2kk
+
+You will be able to create products by using shortcodes dynamically.
+
+The shopping cart output will be responsive if you are using it with a responsive theme.
 
 It can be easily integrated with the NextGen Photo Gallery plugin to accommodate the selling of photographs from your gallery.
 
@@ -51,6 +55,8 @@ or
 * Track coupons with the order to see which customer used which coupon code.
 * Ability to add a compact shopping cart to your site using a shortcode.
 * Ability to use a custom checkout page style.
+* Ability to open checkout page in a new browser tab/window.
+* Works nicely with responsive WordPress themes.
 * Can be translated into any language.
 * and more...
 
@@ -159,6 +165,14 @@ Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
 None
 
 == Changelog ==
+
+= 3.9.7 =
+- Added a new feature to open the checkout page in a new tab/window when user clicks the checkout button.
+- Updated the Cart Orders menu icon to use a slightly better looking dashicon.
+- Added a new filter to allow modification of the custom field value. Filter name is wpspc_cart_custom_field_value
+- Added a new action hook after the PayPal IPN is processed. This will allow you to do extra post payment processing task for your orders. Hook name wpspc_paypal_ipn_processed
+- Made some improvements to some of the shopping cart icons (cart and delete item icons have been updated). 
+- Cart output will work with a responsive theme.
 
 = 3.9.6 =
 - Added Czech Language translation to the plugin. The Czech translation file was submitted by Tomas Sykora.

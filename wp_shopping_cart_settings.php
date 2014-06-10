@@ -84,6 +84,7 @@ function show_wp_cart_options_page ()
                 
         update_option('wp_shopping_cart_auto_redirect_to_checkout_page', ($_POST['wp_shopping_cart_auto_redirect_to_checkout_page']!='') ? 'checked="checked"':'' );
         update_option('cart_checkout_page_url', (string)$_POST["cart_checkout_page_url"]);
+        update_option('wspsc_open_pp_checkout_in_new_tab', ($_POST['wspsc_open_pp_checkout_in_new_tab']!='') ? 'checked="checked"':'' );
         update_option('wp_shopping_cart_reset_after_redirection_to_return_page', ($_POST['wp_shopping_cart_reset_after_redirection_to_return_page']!='') ? 'checked="checked"':'' );        
                 
         update_option('wp_shopping_cart_image_hide', ($_POST['wp_shopping_cart_image_hide']!='') ? 'checked="checked"':'' );
@@ -129,6 +130,11 @@ function show_wp_cart_options_page ()
     else
         $wp_shopping_cart_auto_redirect_to_checkout_page = '';	
         
+    if (get_option('wspsc_open_pp_checkout_in_new_tab'))
+        $wspsc_open_pp_checkout_in_new_tab = 'checked="checked"';
+    else
+        $wspsc_open_pp_checkout_in_new_tab = '';
+    
     if (get_option('wp_shopping_cart_reset_after_redirection_to_return_page'))
         $wp_shopping_cart_reset_after_redirection_to_return_page = 'checked="checked"';
     else
@@ -264,6 +270,12 @@ echo '
 </tr>
 
 <tr valign="top">
+<th scope="row">'.(__("Open PayPal Checkout Page in a New Tab", "WSPSC")).'</th>
+<td><input type="checkbox" name="wspsc_open_pp_checkout_in_new_tab" value="1" '.$wspsc_open_pp_checkout_in_new_tab.' />
+<br />'.(__("If checked the PayPal checkout page will be opened in a new tab/window when the user clicks the checkout button.", "WSPSC")).'</td>
+</tr>
+
+<tr valign="top">
 <th scope="row">'.(__("Reset Cart After Redirection to Return Page", "WSPSC")).'</th>
 <td><input type="checkbox" name="wp_shopping_cart_reset_after_redirection_to_return_page" value="1" '.$wp_shopping_cart_reset_after_redirection_to_return_page.' />
 <br />'.(__("If checked the shopping cart will be reset when the customer lands on the return URL (Thank You) page.", "WSPSC")).'</td>
@@ -318,7 +330,8 @@ echo '
             <li><a href="'.WP_CART_URL.'/ipn_handle_debug.log" target="_blank">ipn_handle_debug.log</a></li>
         </ul>
         </p>
-        <input type="submit" name="wspsc_reset_logfile" style="font-weight:bold; color:red" value="Reset Debug Log file"/> Simple PayPal Shopping Cart debug log file is "reset" and timestamped with a log file reset message.
+        <input type="submit" name="wspsc_reset_logfile" class="button" style="font-weight:bold; color:red" value="Reset Debug Log file"/> 
+        <p class="description">It will reset the debug log file and timestamp it with a log file reset message.</a>
     </td></tr>
 
     <tr valign="top">
@@ -340,7 +353,7 @@ echo '
     echo (__("Like the Simple WordPress Shopping Cart Plugin?", "WSPSC")).' <a href="http://wordpress.org/extend/plugins/wordpress-simple-paypal-shopping-cart" target="_blank">'.(__("Give it a good rating", "WSPSC")).'</a>';
 	?>
  	<div style="background: none repeat scroll 0 0 #FFF6D5;border: 1px solid #D1B655;color: #3F2502;margin: 10px 0;padding: 5px 5px 5px 10px;text-shadow: 1px 1px #FFFFFF;">	
- 	<p><?php _e("Need a shopping cart plugin with more features? Checkout my ", "WSPSC"); ?>
+ 	<p><?php _e("Need a shopping cart plugin with a lot of features and good support? Check out our ", "WSPSC"); ?>
     <a href="http://www.tipsandtricks-hq.com/?p=1059" target="_blank"><?php _e("WP eStore Plugin", "WSPSC"); ?></a></p>
     </div>
     <?php 

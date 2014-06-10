@@ -26,7 +26,7 @@ function wpspc_create_orders_page()
             'menu_position' => 80,
             'supports' => false,
             'taxonomies' => array( '' ),
-            'menu_icon' => WP_CART_URL.'/images/cart-orders-icon.png',
+            'menu_icon' => 'dashicons-cart',/*WP_CART_URL.'/images/cart-orders-icon.png'*/
             'has_archive' => true
         )
     );

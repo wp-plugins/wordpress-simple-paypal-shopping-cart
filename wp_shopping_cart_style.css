@@ -6,10 +6,19 @@ font-size:14px;
 }
 .shopping_cart img{
 border:none;
+box-shadow: none;
 }
 .shopping_cart input{
 width:auto !important;
 }
+
+.shopping_cart .wspsc_cart_item_name_th{
+text-align: left;
+}
+.shopping_cart .wspsc_cart_qty_th, .shopping_cart .wspsc_cart_price_th{
+text-align: center;
+}
+
 .wp-cart-button-form input{
 width: auto !important;
 }
