@@ -4,7 +4,7 @@ Donate link: http://www.tipsandtricks-hq.com
 Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell, selling, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, sell service, digital downloads, paypal, paypal cart, e-shop, compact cart,
 Requires at least: 3.0
 Tested up to: 3.9.1
-Stable tag: 3.9.7
+Stable tag: 3.9.8
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -78,6 +78,7 @@ The following language translations are already available:
 * Japanese
 * Polish
 * Czech
+* Hebrew
 
 You can translate the plugin using [this documentation](http://www.tipsandtricks-hq.com/ecommerce/translating-the-wp-simple-shopping-cart-plugin-2627).
 
@@ -165,6 +166,11 @@ Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
 None
 
 == Changelog ==
+
+= TODO 3.9.8 =
+- Added Hebrew Language translation to the plugin. The Hebrew translation file was submitted by Sagi Cooper.
+- Added extra condition to address the "Invalid argument supplied" error that a few users were getting.
+
 
 = 3.9.7 =
 - Added a new feature to open the checkout page in a new tab/window when user clicks the checkout button.

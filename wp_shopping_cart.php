@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v3.9.7
+Version: v3.9.8
 Plugin URI: http://www.tipsandtricks-hq.com/?p=768
 Author: Tips and Tricks HQ, Ruhul Amin
 Author URI: http://www.tipsandtricks-hq.com/
@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
     session_start();
 }	
 
-define('WP_CART_VERSION', '3.9.7');
+define('WP_CART_VERSION', '3.9.8');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH',plugin_dir_path( __FILE__ ));
 define('WP_CART_URL', plugins_url('',__FILE__));
@@ -68,8 +68,8 @@ if (isset($_REQUEST["reset_wp_cart"]) && !empty($_REQUEST["reset_wp_cart"]))
 //Clear the cart if the customer landed on the thank you page
 if (get_option('wp_shopping_cart_reset_after_redirection_to_return_page'))
 {
-    if(get_option('cart_return_from_paypal_url') == cart_current_page_url())
-    {
+    //TODO - remove this field altogether later. Cart will always be reset using query prameter on the thank you page.
+    if(get_option('cart_return_from_paypal_url') == cart_current_page_url()){
         reset_wp_cart();
     }
 }
@@ -77,6 +77,9 @@ if (get_option('wp_shopping_cart_reset_after_redirection_to_return_page'))
 function reset_wp_cart()
 {
     $products = $_SESSION['simpleCart'];
+    if(!is_array($products)){
+        return;
+    }
     foreach ($products as $key => $item)
     {
         unset($products[$key]);
