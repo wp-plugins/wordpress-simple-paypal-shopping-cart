@@ -167,10 +167,9 @@ None
 
 == Changelog ==
 
-= TODO 3.9.8 =
+= 3.9.8 =
 - Added Hebrew Language translation to the plugin. The Hebrew translation file was submitted by Sagi Cooper.
 - Added extra condition to address the "Invalid argument supplied" error that a few users were getting.
-
 
 = 3.9.7 =
 - Added a new feature to open the checkout page in a new tab/window when user clicks the checkout button.
