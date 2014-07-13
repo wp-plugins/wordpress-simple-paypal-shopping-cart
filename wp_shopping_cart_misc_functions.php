@@ -2,6 +2,7 @@
 
 /* TODO
 - A new fancy cart shortcode (new icons and nice CSS styles)
+- Add expiry option to the coupon code.
 - Add a reset cart button
 - A stats addon or interface. Show graph using the orders data.
 - After processing an IPN, call a function to clear all trash orders that are older than 6 hours.

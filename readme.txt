@@ -54,6 +54,7 @@ or
 * Ability to customize the add to cart button image and use a custom image for your purchase buttons.
 * Track coupons with the order to see which customer used which coupon code.
 * Ability to add a compact shopping cart to your site using a shortcode.
+* Ability to show shopping cart with product image thumbnails.
 * Ability to use a custom checkout page style.
 * Ability to open checkout page in a new browser tab/window.
 * Works nicely with responsive WordPress themes.
@@ -79,6 +80,7 @@ The following language translations are already available:
 * Polish
 * Czech
 * Hebrew
+* Swedish
 
 You can translate the plugin using [this documentation](http://www.tipsandtricks-hq.com/ecommerce/translating-the-wp-simple-shopping-cart-plugin-2627).
 
@@ -166,6 +168,14 @@ Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
 None
 
 == Changelog ==
+
+= 3.9.9 =
+- Added a new feature that allows you to show the product thumbnail image in the shopping cart. Use "show_thumbnail" parameter in the shopping cart shortcode for this.
+- Added Swedish language translation to the plugin. The Swedish translation file was submitted by Felicia.
+- Fixed a minor bug with the checkout page style feature.
+- Added a new filter for the item name field in the shopping cart.
+- Made some minor CSS improvements for the cart output.
+- The {product_details} email shortcode will now show the full amount of the item (instead of the individual item amount).
 
 = 3.9.8 =
 - Added Hebrew Language translation to the plugin. The Hebrew translation file was submitted by Sagi Cooper.

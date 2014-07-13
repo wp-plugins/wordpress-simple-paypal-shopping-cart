@@ -9,6 +9,7 @@ function wp_cart_button_handler($atts){
 		'var1' => '',
 		'var2' => '',
 		'var3' => '',
+                'thumbnail' => '',
                 'button_image' => '',
 	), $atts));
 

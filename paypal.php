@@ -165,7 +165,8 @@ class paypal_ipn_handler {
                     if($item_counter != 1){
                         $product_details .= "\n";
                     }
-                    $product_details .= $item['name']." x ".$item['quantity']." - ".$currency_symbol.$item['price']."\n";
+                    $item_total = $item['price'] * $item['quantity'];
+                    $product_details .= $item['name']." x ".$item['quantity']." - ".$currency_symbol.wpspsc_number_format_price($item_total)."\n";
                     if($item['file_url']){
                         $file_url = base64_decode($item['file_url']);
                         $product_details .= "Download Link: ".$file_url."\n";
