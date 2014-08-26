@@ -1,19 +1,18 @@
 <?php
 
 /* TODO
-- A new fancy cart shortcode (new icons and nice CSS styles)
-- Add expiry option to the coupon code.
 - Add a reset cart button
 - A stats addon or interface. Show graph using the orders data.
 - After processing an IPN, call a function to clear all trash orders that are older than 6 hours.
-- Add more filters and hooks
+- A new fancy cart shortcode (new icons and nice CSS styles)
+- Add more filters and hooks and document them.
 */
 
 /* this function gets called when init is fired */
 function wp_cart_init_handler()
 {
     //Add any common init hook handing code
-    if(is_admin())//Init hook handing code for wp-admin
+    if( is_admin() && current_user_can('manage_options')) //Init hook handing code for wp-admin
     {
         wpspc_create_orders_page();
     }
@@ -179,4 +178,14 @@ function wpspc_run_activation()
     $seller_email_body .= "\n\nThe sale was made to {first_name} {last_name} ({payer_email})";
     $seller_email_body .= "\n\nThanks";
     add_option('wpspc_seller_email_body', $seller_email_body);
+}
+
+function wpspsc_settings_menu_footer()
+{
+    ?>
+    <div style="background: none repeat scroll 0 0 #FFF6D5;border: 1px solid #D1B655;color: #3F2502;margin: 10px 0;padding: 5px 5px 5px 10px;text-shadow: 1px 1px #FFFFFF;">	
+    <p><?php _e("Need a shopping cart plugin with a lot of features and good support? Check out our ", "WSPSC"); ?>
+    <a href="https://www.tipsandtricks-hq.com/?p=1059" target="_blank"><?php _e("WP eStore Plugin", "WSPSC"); ?></a></p>
+    </div>
+    <?php
 }

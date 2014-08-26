@@ -72,12 +72,13 @@ class WPSPSC_COUPON_ITEM
     var $id;
     var $coupon_code;
     var $discount_rate;
-
-    function WPSPSC_COUPON_ITEM($coupon_code, $discount_rate)
+    var $expiry_date;
+    function WPSPSC_COUPON_ITEM($coupon_code, $discount_rate, $expiry_date)
     {
         $this->id = uniqid();
         $this->coupon_code = $coupon_code;
         $this->discount_rate = $discount_rate;
+        $this->expiry_date = $expiry_date;
     }
     
     function print_coupon_item_details()
@@ -85,6 +86,7 @@ class WPSPSC_COUPON_ITEM
         echo "<br />".(__("Coupon ID: ", "WSPSC")).$this->id;
         echo "<br />".(__("Coupon Code: ", "WSPSC")).$this->coupon_code;
         echo "<br />".(__("Discount Amt: ", "WSPSC")).$this->discount_rate;
+        echo "<br />".(__("Expiry date: ", "WSPSC")).$this->expiry_date;
     }
 }
 
@@ -96,7 +98,14 @@ function wpspsc_apply_cart_discount($coupon_code)
         $_SESSION['wpspsc_cart_action_msg'] = '<div class="wpspsc_error_message">'.__("Coupon code used does not exist!", "WSPSC").'</div>';
         return;
     }
-
+    $coupon_expiry_date = $coupon_item->expiry_date;
+    if(!empty($coupon_expiry_date)){
+        $current_date = date("Y-m-d");
+        if($current_date > $coupon_expiry_date){
+            $_SESSION['wpspsc_cart_action_msg'] = '<div class="wpspsc_error_message">'.__("Coupon code expired!", "WSPSC").'</div>';
+            return;
+        }
+    }
     if (isset($_SESSION['wpspsc_discount_applied_once']) && $_SESSION['wpspsc_discount_applied_once'] == '1'){
         $_SESSION['wpspsc_cart_action_msg'] = '<div class="wpspsc_error_message">'.__("Discount can only be applied once per checkout!", "WSPSC").'</div>';
         return;

@@ -2,18 +2,26 @@
 
 /*
   Plugin Name: WP Simple Paypal Shopping cart
-  Version: v3.9.9
-  Plugin URI: http://www.tipsandtricks-hq.com/?p=768
+  Version: v4.0.0
+  Plugin URI: https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768
   Author: Tips and Tricks HQ, Ruhul Amin
-  Author URI: http://www.tipsandtricks-hq.com/
+  Author URI: https://www.tipsandtricks-hq.com/
   Description: Simple WordPress Shopping Cart Plugin, very easy to use and great for selling products and services from your blog!
  */
 
-if (!isset($_SESSION)) {
-    session_start();
+if (!defined('ABSPATH'))exit; //Exit if accessed directly
+
+if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+} else {
+    if (session_id() == '') {
+        session_start();
+    }
 }
 
-define('WP_CART_VERSION', '3.9.9');
+define('WP_CART_VERSION', '4.0.0');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH', plugin_dir_path(__FILE__));
 define('WP_CART_URL', plugins_url('', __FILE__));
@@ -574,6 +582,16 @@ function wp_cart_add_read_form_javascript() {
 	</script>';
 }
 
+function wpspsc_admin_side_enqueue_scripts()
+{
+    if ($_GET['page'] == 'wordpress-paypal-shopping-cart') //simple paypal shopping cart discount page
+    {
+        wp_enqueue_style('jquery-ui-style', '//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css');
+        wp_register_script('wpspsc-admin', WP_CART_URL.'/lib/wpspsc_admin_side.js', array('jquery', 'jquery-ui-datepicker'));
+        wp_enqueue_script('wpspsc-admin');
+    }
+}
+
 function print_wp_cart_button_for_product($name, $price, $shipping = 0, $var1 = '', $var2 = '', $var3 = '', $atts = array()) {
     $addcart = get_option('addToCartButtonName');
     if (!$addcart || ($addcart == ''))
@@ -734,7 +752,7 @@ class WP_PayPal_Cart_Widget extends WP_Widget {
 }
 
 function wp_cart_css() {
-    $debug_marker = "<!-- WP Simple Shopping Cart plugin v" . WP_CART_VERSION . " - http://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768/ -->";
+    $debug_marker = "<!-- WP Simple Shopping Cart plugin v" . WP_CART_VERSION . " - https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768/ -->";
     echo "\n${debug_marker}\n";
     echo '<link type="text/css" rel="stylesheet" href="' . WP_CART_URL . '/wp_shopping_cart_style.css" />' . "\n";
 }
@@ -779,3 +797,4 @@ add_shortcode('wp_compact_cart', 'wspsc_compact_cart_handler');
 
 add_action('wp_head', 'wp_cart_css');
 add_action('wp_head', 'wp_cart_add_read_form_javascript');
+add_action('admin_enqueue_scripts', 'wpspsc_admin_side_enqueue_scripts' );

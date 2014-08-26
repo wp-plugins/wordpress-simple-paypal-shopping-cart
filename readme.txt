@@ -1,10 +1,10 @@
 === WordPress Simple Paypal Shopping Cart ===
 Contributors: Tips and Tricks HQ, Ruhul Amin, wptipsntricks
-Donate link: http://www.tipsandtricks-hq.com
-Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell, selling, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, sell service, digital downloads, paypal, paypal cart, e-shop, compact cart,
+Donate link: https://www.tipsandtricks-hq.com
+Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell, selling, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, sell service, digital downloads, paypal, paypal cart, e-shop, compact cart, coupon, discount
 Requires at least: 3.0
-Tested up to: 3.9.1
-Stable tag: 3.9.9
+Tested up to: 3.9.2
+Stable tag: 4.0.0
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -28,7 +28,7 @@ This plugin is a lightweight solution (with minimal number of lines of code and 
 WP simple Paypal Cart Plugin, interfaces with the Paypal sandbox to allow for testing.
 
 For video tutorial, screenshots, detailed documentation, support and updates, please visit:
-[WP Simple Cart Details Page](http://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768)
+[WP Simple Cart Details Page](https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768)
 or
 [WP Simple Cart Documentation](http://www.tipsandtricks-hq.com/ecommerce/wp-shopping-cart)
 
@@ -49,6 +49,7 @@ or
 * Ability to configure a sale notification email that gets sent to the site admin when a customer purchase your item(s).
 * Ability to configure discount coupons. Offer special discounts on your store/shop.
 * You can create coupons and give to your customers. When they use coupons during the checkout they will receive a discount.
+* Create discount coupons with an expiry date. The coupon code automatically expires after the date you set.
 * Compatible with WordPress Multi-site Installation.
 * Ability to specify SKU (item number) for each of your products in the shortcode.
 * Ability to customize the add to cart button image and use a custom image for your purchase buttons.
@@ -65,7 +66,7 @@ or
 
 There is a series of video tutorials to show you how to setup the shopping cart on your site. 
 
-Check the video tutorials [here](http://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768).
+Check the video tutorials [here](https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768).
 
 = Language Translations =
 
@@ -161,13 +162,19 @@ Yes. you can setup discount coupons from the "Coupon/Discount" interface of the 
 Yes. You can configure sale notification from the "Email Settings" interface of the plugin.
 
 == Screenshots ==
-Visit the plugin site at http://www.tipsandtricks-hq.com/?p=768 for screenshots.
+Visit the plugin site at https://www.tipsandtricks-hq.com/?p=768 for screenshots.
 
 == Upgrade Notice ==
 
 None
 
 == Changelog ==
+
+= 4.0.0 =
+- Changed the permission on the orders menu so it is only available to admin users from the backend.
+- Made some enhancement around the PHP session_start function call.
+- Added an extra check to prevent direct access to the cart file.
+- Added expiry date field in the discount coupon. You can now create discount coupons with an expiry.
 
 = 3.9.9 =
 - Added a new feature that allows you to show the product thumbnail image in the shopping cart. Use "show_thumbnail" parameter in the shopping cart shortcode for this.

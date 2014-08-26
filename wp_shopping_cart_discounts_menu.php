@@ -23,7 +23,8 @@ function show_wp_cart_coupon_discount_settings_page()
         $collection_obj = WPSPSC_Coupons_Collection::get_instance();
         $coupon_code = trim(stripcslashes($_POST["wpspsc_coupon_code"]));
         $discount_rate = trim($_POST["wpspsc_coupon_rate"]);
-        $coupon_item = new WPSPSC_COUPON_ITEM($coupon_code, $discount_rate);
+        $expiry_date = trim($_POST["wpspsc_coupon_expiry_date"]);
+        $coupon_item = new WPSPSC_COUPON_ITEM($coupon_code, $discount_rate, $expiry_date);
         $collection_obj->add_coupon_item($coupon_item);
         WPSPSC_Coupons_Collection::save_object($collection_obj);
         
@@ -49,7 +50,7 @@ function show_wp_cart_coupon_discount_settings_page()
     
     <div style="background: none repeat scroll 0 0 #FFF6D5;border: 1px solid #D1B655;color: #3F2502;margin: 10px 0;padding: 5px 5px 5px 10px;text-shadow: 1px 1px #FFFFFF;">	
     <p><?php _e("For more information, updates, detailed documentation and video tutorial, please visit:", "WSPSC"); ?><br />
-    <a href="http://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768" target="_blank"><?php _e("WP Simple Cart Homepage", "WSPSC"); ?></a></p>
+    <a href="https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768" target="_blank"><?php _e("WP Simple Cart Homepage", "WSPSC"); ?></a></p>
     </div>
     
     <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
@@ -94,7 +95,7 @@ function show_wp_cart_coupon_discount_settings_page()
     <div class="inside">
 
     <form method="post" action="">
-    <table class="form-table" border="0" cellspacing="0" cellpadding="6" style="max-width:600px;">
+    <table class="form-table" border="0" cellspacing="0" cellpadding="6" style="max-width:650px;">
 
     <tr valign="top">
 
@@ -106,6 +107,11 @@ function show_wp_cart_coupon_discount_settings_page()
     <td width="25%" align="left">
     Discount Rate (%)<br />
     <input name="wpspsc_coupon_rate" type="text" size="7" value=""/>            
+    </td>
+    
+    <td width="25%" align="left">
+    Expiry Date<br />
+    <input name="wpspsc_coupon_expiry_date" class="wpspsc_coupon_expiry" type="text" size="15" value=""/>            
     </td>
 
     <td width="25%" align="left">
@@ -130,6 +136,7 @@ function show_wp_cart_coupon_discount_settings_page()
     <thead><tr>
     <th scope="col">'.(__("Coupon Code", "WSPSC")).'</th>
     <th scope="col">'.(__("Discount Rate (%)", "WSPSC")).'</th>
+    <th scope="col">'.(__("Expiry Date", "WSPSC")).'</th>    
     <th scope="col"></th>
     </tr></thead>
     <tbody>';
@@ -145,7 +152,12 @@ function show_wp_cart_coupon_discount_settings_page()
             {
                 $output .= '<tr>';
                 $output .= '<td><strong>'.$coupon->coupon_code.'</strong></td>';
-                $output .= '<td><strong>'.$coupon->discount_rate.'</strong></td>';			
+                $output .= '<td><strong>'.$coupon->discount_rate.'</strong></td>';
+                if(empty($coupon->expiry_date)){
+                    $output .= '<td><strong>'.__('No Expiry','WSPSC').'</strong></td>';
+                }else{
+                    $output .= '<td><strong>'.$coupon->expiry_date.'</strong></td>';
+                }
                 $output .= '<td>';
                 $output .= "<form method=\"post\" action=\"\" onSubmit=\"return confirm('Are you sure you want to delete this entry?');\">";				
                 $output .= "<input type=\"hidden\" name=\"wpspsc_delete_coupon_id\" value=".$coupon->id." />";
@@ -169,7 +181,8 @@ function show_wp_cart_coupon_discount_settings_page()
     $output .= '</tbody>
     </table>';
 
-    //$output .= '<p><a href="options-general.php?page=wordpress-paypal-shopping-cart&action=discount-settings">Add New</a></p>';
+    //$output .= '<p><a href="options-general.php?page=wordpress-paypal-shopping-cart&action=discount-settings">Add New</a></p>';   
     echo $output;
+    wpspsc_settings_menu_footer();
 }
 
