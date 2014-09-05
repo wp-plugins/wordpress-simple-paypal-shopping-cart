@@ -2,7 +2,7 @@
 
 /*
   Plugin Name: WP Simple Paypal Shopping cart
-  Version: v4.0.0
+  Version: v4.0.1
   Plugin URI: https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768
   Author: Tips and Tricks HQ, Ruhul Amin
   Author URI: https://www.tipsandtricks-hq.com/
@@ -21,7 +21,7 @@ if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
     }
 }
 
-define('WP_CART_VERSION', '4.0.0');
+define('WP_CART_VERSION', '4.0.1');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH', plugin_dir_path(__FILE__));
 define('WP_CART_URL', plugins_url('', __FILE__));
@@ -677,7 +677,13 @@ function cart_not_empty() {
 }
 
 function print_payment_currency($price, $symbol, $decimal = '.') {
-    return $symbol . number_format($price, 2, $decimal, ',');
+    $formatted_price = '';
+    $formatted_price = apply_filters('wspsc_print_formatted_price', $formatted_price, $price, $symbol);
+    if(!empty($formatted_price)){
+        return $formatted_price;
+    }
+    $formatted_price = $symbol . number_format($price, 2, $decimal, ',');
+    return $formatted_price;
 }
 
 function cart_current_page_url() {

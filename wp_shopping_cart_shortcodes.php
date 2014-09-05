@@ -47,6 +47,7 @@ function wp_cart_display_product_handler($atts)
             return '<div style="color:red;">'.(__("Error! You must specify a thumbnail image for your product in the shortcode.", "WSPSC")).'</div>';
     }
     $currency_symbol = get_option('cart_currency_symbol');
+    $formatted_price = print_payment_currency($price, $currency_symbol);
     $button_code = print_wp_cart_button_for_product($name, $price, $shipping, $var1, $var2, $var3, $atts);
     $display_code = <<<EOT
     <div class="wp_cart_product_display_box">
@@ -54,19 +55,19 @@ function wp_cart_display_product_handler($atts)
             <img src="$thumbnail" />
         </div>
         <div class="wp_cart_product_display_bottom">
-	        <div class="wp_cart_product_name">
-	            $name
-	        </div>
-	        <div class="wp_cart_product_description">
-	            $description
-	        </div>
-			<div class="wp_cart_product_price">
-	        	{$currency_symbol}{$price}
-	        </div>
-			<div class="wp_cart_product_button">
-	        	$button_code
-			</div>
-		</div>
+            <div class="wp_cart_product_name">
+                $name
+            </div>
+            <div class="wp_cart_product_description">
+                $description
+            </div>
+                <div class="wp_cart_product_price">
+                $formatted_price
+            </div>
+                <div class="wp_cart_product_button">
+                $button_code
+                </div>
+            </div>
     </div>
 EOT;
     return $display_code; 
