@@ -1,13 +1,15 @@
 <?php
 
 /*
-  Plugin Name: WP Simple Paypal Shopping cart
-  Version: v4.0.1
-  Plugin URI: https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768
-  Author: Tips and Tricks HQ, Ruhul Amin
-  Author URI: https://www.tipsandtricks-hq.com/
-  Description: Simple WordPress Shopping Cart Plugin, very easy to use and great for selling products and services from your blog!
- */
+Plugin Name: WP Simple Paypal Shopping cart
+Version: v4.0.2
+Plugin URI: https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768
+Author: Tips and Tricks HQ, Ruhul Amin
+Author URI: https://www.tipsandtricks-hq.com/
+Description: Simple WordPress Shopping Cart Plugin, very easy to use and great for selling products and services from your blog!
+Text Domain: WSPSC
+Domain Path: /languages/
+*/
 
 if (!defined('ABSPATH'))exit; //Exit if accessed directly
 
@@ -30,6 +32,9 @@ define('WP_CART_LIVE_PAYPAL_URL', 'https://www.paypal.com/cgi-bin/webscr');
 define('WP_CART_SANDBOX_PAYPAL_URL', 'https://www.sandbox.paypal.com/cgi-bin/webscr');
 
 // loading language files
+//Set up localisation. First loaded overrides strings present in later loaded file
+$locale = apply_filters( 'plugin_locale', get_locale(), 'WSPSC' );
+load_textdomain( 'WSPSC', WP_LANG_DIR . "/WSPSC-$locale.mo" );
 load_plugin_textdomain('WSPSC', false, WP_CART_FOLDER . '/languages');
 
 include_once('wp_shopping_cart_utility_functions.php');
@@ -524,7 +529,7 @@ function print_wp_cart_button_new($content) {
         $pieces = explode(':', $m);
 
         $replacement = '<div class="wp_cart_button_wrapper">';
-        $replacement .= '<form method="post" class="wp-cart-button-form" action="" style="display:inline" onsubmit="return ReadForm(this, true);">';
+        $replacement .= '<form method="post" class="wp-cart-button-form" action="" style="display:inline" onsubmit="return ReadForm(this, true);" ' . apply_filters("wspsc_add_cart_button_form_attr", "") . '>';
         if (!empty($var_output)) {
             $replacement .= $var_output;
         }
@@ -630,7 +635,7 @@ function print_wp_cart_button_for_product($name, $price, $shipping = 0, $var1 = 
     }
 
     $replacement = '<div class="wp_cart_button_wrapper">';
-    $replacement .= '<form method="post" class="wp-cart-button-form" action="" style="display:inline" onsubmit="return ReadForm(this, true);">';
+    $replacement .= '<form method="post" class="wp-cart-button-form" action="" style="display:inline" onsubmit="return ReadForm(this, true);" ' . apply_filters("wspsc_add_cart_button_form_attr", "") . '>';
     if (!empty($var_output)) {//Show variation
         $replacement .= '<div class="wp_cart_variation_section">' . $var_output . '</div>';
     }
@@ -643,7 +648,7 @@ function print_wp_cart_button_for_product($name, $price, $shipping = 0, $var1 = 
         if (preg_match("/http:/", $addcart) || preg_match("/https:/", $addcart)) { // Use the image as the 'add to cart' button
             $replacement .= '<input type="image" src="' . $addcart . '" class="wp_cart_button" alt="' . (__("Add to Cart", "WSPSC")) . '"/>';
         } else {
-            $replacement .= '<input type="submit" value="' . $addcart . '" />';
+            $replacement .= '<input type="submit" value="' . apply_filters('wspsc_add_cart_submit_button_value', $addcart, $price) . '" />';
         }
     }
 

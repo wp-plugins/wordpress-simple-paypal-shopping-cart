@@ -38,6 +38,7 @@ class paypal_ipn_handler {
         $state = $this->ipn_data['address_state'];
         $zip = $this->ipn_data['address_zip'];
         $country = $this->ipn_data['address_country'];
+        $phone = $this->ipn_data['contact_phone'];
         $address = $street_address.", ".$city.", ".$state.", ".$zip.", ".$country;
         $custom_values = wp_cart_get_custom_var_array($custom_value_str);
         $this->debug_log('Payment Status: '.$payment_status,true);
@@ -125,8 +126,8 @@ class paypal_ipn_handler {
             $this->debug_log('Invalid Product Currency : '.$payment_currency,false);
             return false;
             }
-        }
-
+        }        
+        
         /*** Send notification email ***/
         //TODO
         $post_id = $custom_values['wp_cart_id'];
@@ -136,8 +137,40 @@ class paypal_ipn_handler {
         $this->debug_log('custom values',true);
         $this->debug_log_array($custom_values,true);
         //$this->debug_log('post id: '.$post_id,true);
-        if($post_id){
+        if($post_id)
+        {           
+            //security check
+            if(!get_post_status($post_id))
+            {
+                $this->debug_log('Order ID '.$post_id.' does not exist in the database. This is not a Simple PayPal Shopping Cart order', false);
+                return;
+            }
             
+            if (get_option('wp_shopping_cart_strict_email_check') != '')
+            {
+                $seller_paypal_email = get_option('cart_paypal_email');
+                if ($seller_paypal_email != $this->ipn_data['receiver_email']){
+                    $error_msg .= 'Invalid Seller Paypal Email Address : '.$this->ipn_data['receiver_email'];
+                    $this->debug_log($error_msg, false);
+                    return;
+                }
+                else{
+                    $this->debug_log('Seller Paypal Email Address is Valid: '.$this->ipn_data['receiver_email'],true);
+                }
+            }
+            
+            $transaction_id = get_post_meta( $post_id, 'wpsc_txn_id', true );
+            if(!empty($transaction_id))
+            {
+                if($transaction_id == $txn_id)  //this transaction has been already processed once
+                {
+                    $this->debug_log('This transaction has been already processed once. Transaction ID: '.$transaction_id, false);
+                    return;
+                }
+            }
+            
+            //End of security check
+        
             $updated_wpsc_order = array(
                 'ID'             => $post_id,
                 'post_status'    => 'publish',
@@ -153,6 +186,7 @@ class paypal_ipn_handler {
             update_post_meta( $post_id, 'wpsc_total_amount', $mc_gross);
             update_post_meta( $post_id, 'wpsc_ipaddress', $ip_address );
             update_post_meta( $post_id, 'wpsc_address', $address );
+            update_post_meta( $post_id, 'wpspsc_phone', $phone );
             $status = "Paid";
             update_post_meta( $post_id, 'wpsc_order_status', $status );
             update_post_meta( $post_id, 'wpsc_applied_coupon', $applied_coupon_code );

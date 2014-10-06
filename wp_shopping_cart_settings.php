@@ -90,6 +90,7 @@ function show_wp_cart_options_page ()
         update_option('wp_shopping_cart_image_hide', ($_POST['wp_shopping_cart_image_hide']!='') ? 'checked="checked"':'' );
         update_option('wp_cart_note_to_seller_text', (string)$_POST["wp_cart_note_to_seller_text"]);
         update_option('wp_cart_paypal_co_page_style', (string)$_POST["wp_cart_paypal_co_page_style"]);
+        update_option('wp_shopping_cart_strict_email_check', ($_POST['wp_shopping_cart_strict_email_check']!='') ? 'checked="checked"':'' );
         update_option('wp_use_aff_platform', ($_POST['wp_use_aff_platform']!='') ? 'checked="checked"':'' );
         
         update_option('wp_shopping_cart_enable_sandbox', ($_POST['wp_shopping_cart_enable_sandbox']!='') ? 'checked="checked"':'' );
@@ -157,7 +158,12 @@ function show_wp_cart_options_page ()
 
 	$wp_cart_note_to_seller_text = get_option('wp_cart_note_to_seller_text');
         $wp_cart_paypal_co_page_style = get_option('wp_cart_paypal_co_page_style');
-	
+
+    $wp_shopping_cart_strict_email_check = '';
+    if (get_option('wp_shopping_cart_strict_email_check')){
+        $wp_shopping_cart_strict_email_check = 'checked="checked"';
+    }
+        
     if (get_option('wp_use_aff_platform'))
         $wp_use_aff_platform = 'checked="checked"';
     else
@@ -303,6 +309,13 @@ echo '
 <th scope="row">'.(__("Custom Checkout Page Style Name", "WSPSC")).'</th>
 <td><input type="text" name="wp_cart_paypal_co_page_style" value="'.$wp_cart_paypal_co_page_style.'" size="40" />
 <br />'.(__("Specify the page style name here if you want to customize the paypal checkout page with custom page style otherwise leave this field empty.", "WSPSC")).'</td>
+</tr>
+</table>
+
+<table class="form-table">
+<tr valign="top">
+<th scope="row">'.(__("Use Strict PayPal Email Address Checking", "WSPSC")).'</th>
+<td><input type="checkbox" name="wp_shopping_cart_strict_email_check" value="1" '.$wp_shopping_cart_strict_email_check.' /><br />'.(__("If checked the script will check to make sure that the PayPal email address specified is the same as the account where the payment was deposited (Usage of PayPal Email Alias will fail too).", "WSPSC")).'</td>
 </tr>
 </table>
 

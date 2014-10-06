@@ -55,6 +55,7 @@ function wpspc_order_review_meta_box($wpsc_cart_orders)
     $total_amount = get_post_meta( $wpsc_cart_orders->ID, 'wpsc_total_amount', true );
     $shipping_amount = get_post_meta( $wpsc_cart_orders->ID, 'wpsc_shipping_amount', true );
     $address = get_post_meta( $wpsc_cart_orders->ID, 'wpsc_address', true );
+    $phone = get_post_meta( $wpsc_cart_orders->ID, 'wpspsc_phone', true );
     $email_sent_value = get_post_meta( $wpsc_cart_orders->ID, 'wpsc_buyer_email_sent', true );
     
     $email_sent_field_msg = "No";
@@ -99,6 +100,10 @@ function wpspc_order_review_meta_box($wpsc_cart_orders)
             <td><textarea name="wpsc_address" cols="83" rows="2"><?php echo $address;?></textarea></td>
         </tr>
         <tr>
+            <td><?php _e("Phone", "WSPSC");?></td>
+            <td><input type="text" size="40" name="wpspsc_phone" value="<?php echo $phone; ?>" /></td>
+        </tr>
+        <tr>
             <td><?php _e("Buyer Email Sent?", "WSPSC");?></td>
             <td><input type="text" size="80" name="wpsc_buyer_email_sent" value="<?php echo $email_sent_field_msg; ?>" readonly /></td>
         </tr>  
@@ -139,6 +144,9 @@ function wpspc_cart_save_orders( $order_id, $wpsc_cart_orders ) {
         }
         if ( isset( $_POST['wpsc_address'] ) && $_POST['wpsc_address'] != '' ) {
             update_post_meta( $order_id, 'wpsc_address', $_POST['wpsc_address'] );
+        }
+        if ( isset( $_POST['wpspsc_phone'] ) && $_POST['wpspsc_phone'] != '' ) {
+            update_post_meta( $order_id, 'wpspsc_phone', $_POST['wpspsc_phone'] );
         }
         if ( isset( $_POST['wpspsc_items_ordered'] ) && $_POST['wpspsc_items_ordered'] != '' ) {
             update_post_meta( $order_id, 'wpspsc_items_ordered', $_POST['wpspsc_items_ordered'] );

@@ -5,7 +5,7 @@
 - A stats addon or interface. Show graph using the orders data.
 - After processing an IPN, call a function to clear all trash orders that are older than 6 hours.
 - A new fancy cart shortcode (new icons and nice CSS styles)
-- Add more filters and hooks and document them.
+- Create github repository.
 */
 
 /* this function gets called when init is fired */

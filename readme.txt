@@ -4,7 +4,7 @@ Donate link: https://www.tipsandtricks-hq.com
 Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell, selling, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, sell service, digital downloads, paypal, paypal cart, e-shop, compact cart, coupon, discount
 Requires at least: 3.0
 Tested up to: 4.0
-Stable tag: 4.0.1
+Stable tag: 4.0.2
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -82,6 +82,7 @@ The following language translations are already available:
 * Czech
 * Hebrew
 * Swedish
+* Norwegian
 
 You can translate the plugin using [this documentation](http://www.tipsandtricks-hq.com/ecommerce/translating-the-wp-simple-shopping-cart-plugin-2627).
 
@@ -155,20 +156,36 @@ example usage: [wp_cart_button name="Test Product" price="29.95" var1="Size|smal
 7. How can I add a buy button on the sidebar widget of my site?
 Check the documentation on [how to add buy buttons to the sidebar](http://www.tipsandtricks-hq.com/ecommerce/wordpress-shopping-cart-additional-resources-322#add_button_in_sidebar)
 8. Can I use this plugin to sell digital downloads? 
-Yes. See the [digital download usage documnentation] (http://www.tipsandtricks-hq.com/ecommerce/wp-simple-cart-sell-digital-downloads-2468)
+Yes. See the [digital download usage documentation] (http://www.tipsandtricks-hq.com/ecommerce/wp-simple-cart-sell-digital-downloads-2468)
 9. Can I configure discount coupon with this shopping cart plugin?
 Yes. you can setup discount coupons from the "Coupon/Discount" interface of the plugin.
 10. Can I configure product sale notification so I get notified when a sale is made? 
 Yes. You can configure sale notification from the "Email Settings" interface of the plugin.
+11. Can I modify the product box thumbnail image?
+Yes.
+12. Can I customize the format of the price display?
+Yes.
 
 == Screenshots ==
-Visit the plugin site at https://www.tipsandtricks-hq.com/?p=768 for screenshots.
+Visit the plugin site at https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768 for screenshots.
 
 == Upgrade Notice ==
 
 None
 
 == Changelog ==
+
+= 4.0.2 =
+- Added a new option so you can store your custom language file for this plugin in a folder outside the plugin's directory.
+- Added the following two new filters to allow customization of the add to cart button:
+  wspsc_add_cart_button_form_attr
+  wspsc_add_cart_submit_button_value
+- Added Text Domain and Domain Path values to the plugin header.
+- Added Norwegian language translation to the plugin. The Swedish translation file was submitted by Reidar F. Sivertsen.
+- Added some security checks a) to make sure that the payment is deposited to the email specified in the settings  b) to block multiple payment notifications for the same transaction ID
+- Buyer's contact phone number is now also saved with each order (given you have enabled it).
+- Added the following new filter to allow customization of the product box shortcode:
+  wspsc_product_box_thumbnail_code
 
 = 4.0.1 =
 - Added a new filter to format the price in the shopping cart. Example usage: 
