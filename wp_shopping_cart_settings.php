@@ -72,8 +72,8 @@ function show_wp_cart_options_page ()
         update_option('cart_currency_symbol', (string)$_POST["cart_currency_symbol"]);
         update_option('cart_base_shipping_cost', (string)$_POST["cart_base_shipping_cost"]);
         update_option('cart_free_shipping_threshold', (string)$_POST["cart_free_shipping_threshold"]);   
-        update_option('wp_shopping_cart_collect_address', ($_POST['wp_shopping_cart_collect_address']!='') ? 'checked="checked"':'' );    
-        update_option('wp_shopping_cart_use_profile_shipping', ($_POST['wp_shopping_cart_use_profile_shipping']!='') ? 'checked="checked"':'' );
+        update_option('wp_shopping_cart_collect_address', (isset($_POST['wp_shopping_cart_collect_address']) && $_POST['wp_shopping_cart_collect_address']!='') ? 'checked="checked"':'' );    
+        update_option('wp_shopping_cart_use_profile_shipping', (isset($_POST['wp_shopping_cart_use_profile_shipping']) && $_POST['wp_shopping_cart_use_profile_shipping']!='') ? 'checked="checked"':'' );
                 
         update_option('cart_paypal_email', (string)$_POST["cart_paypal_email"]);
         update_option('addToCartButtonName', (string)$_POST["addToCartButtonName"]);
@@ -82,19 +82,19 @@ function show_wp_cart_options_page ()
         update_option('cart_return_from_paypal_url', (string)$_POST["cart_return_from_paypal_url"]);
         update_option('cart_products_page_url', (string)$_POST["cart_products_page_url"]);
                 
-        update_option('wp_shopping_cart_auto_redirect_to_checkout_page', ($_POST['wp_shopping_cart_auto_redirect_to_checkout_page']!='') ? 'checked="checked"':'' );
+        update_option('wp_shopping_cart_auto_redirect_to_checkout_page', (isset($_POST['wp_shopping_cart_auto_redirect_to_checkout_page']) && $_POST['wp_shopping_cart_auto_redirect_to_checkout_page']!='') ? 'checked="checked"':'' );
         update_option('cart_checkout_page_url', (string)$_POST["cart_checkout_page_url"]);
-        update_option('wspsc_open_pp_checkout_in_new_tab', ($_POST['wspsc_open_pp_checkout_in_new_tab']!='') ? 'checked="checked"':'' );
-        update_option('wp_shopping_cart_reset_after_redirection_to_return_page', ($_POST['wp_shopping_cart_reset_after_redirection_to_return_page']!='') ? 'checked="checked"':'' );        
+        update_option('wspsc_open_pp_checkout_in_new_tab', (isset($_POST['wspsc_open_pp_checkout_in_new_tab']) && $_POST['wspsc_open_pp_checkout_in_new_tab']!='') ? 'checked="checked"':'' );
+        update_option('wp_shopping_cart_reset_after_redirection_to_return_page', (isset($_POST['wp_shopping_cart_reset_after_redirection_to_return_page']) && $_POST['wp_shopping_cart_reset_after_redirection_to_return_page']!='') ? 'checked="checked"':'' );        
                 
-        update_option('wp_shopping_cart_image_hide', ($_POST['wp_shopping_cart_image_hide']!='') ? 'checked="checked"':'' );
+        update_option('wp_shopping_cart_image_hide', (isset($_POST['wp_shopping_cart_image_hide']) && $_POST['wp_shopping_cart_image_hide']!='') ? 'checked="checked"':'' );
         update_option('wp_cart_note_to_seller_text', (string)$_POST["wp_cart_note_to_seller_text"]);
         update_option('wp_cart_paypal_co_page_style', (string)$_POST["wp_cart_paypal_co_page_style"]);
-        update_option('wp_shopping_cart_strict_email_check', ($_POST['wp_shopping_cart_strict_email_check']!='') ? 'checked="checked"':'' );
-        update_option('wp_use_aff_platform', ($_POST['wp_use_aff_platform']!='') ? 'checked="checked"':'' );
+        update_option('wp_shopping_cart_strict_email_check', (isset($_POST['wp_shopping_cart_strict_email_check']) && $_POST['wp_shopping_cart_strict_email_check']!='') ? 'checked="checked"':'' );
+        update_option('wp_use_aff_platform', (isset($_POST['wp_use_aff_platform']) && $_POST['wp_use_aff_platform']!='') ? 'checked="checked"':'' );
         
-        update_option('wp_shopping_cart_enable_sandbox', ($_POST['wp_shopping_cart_enable_sandbox']!='') ? 'checked="checked"':'' );
-        update_option('wp_shopping_cart_enable_debug', ($_POST['wp_shopping_cart_enable_debug']!='') ? 'checked="checked"':'' );
+        update_option('wp_shopping_cart_enable_sandbox', (isset($_POST['wp_shopping_cart_enable_sandbox']) && $_POST['wp_shopping_cart_enable_sandbox']!='') ? 'checked="checked"':'' );
+        update_option('wp_shopping_cart_enable_debug', (isset($_POST['wp_shopping_cart_enable_debug']) && $_POST['wp_shopping_cart_enable_debug']!='') ? 'checked="checked"':'' );
         
         echo '<div id="message" class="updated fade">';
         echo '<p><strong>'.(__("Options Updated!", "WSPSC")).'</strong></p></div>';
@@ -375,12 +375,12 @@ function show_wp_cart_email_settings_page()
         if ( !wp_verify_nonce($nonce, 'wpspc_email_settings_update')){
                 wp_die('Error! Nonce Security Check Failed! Go back to email settings menu and save the settings again.');
         }
-        update_option('wpspc_send_buyer_email', ($_POST['wpspc_send_buyer_email']!='') ? 'checked="checked"':'' );        
+        update_option('wpspc_send_buyer_email', (isset($_POST['wpspc_send_buyer_email']) && $_POST['wpspc_send_buyer_email']!='') ? 'checked="checked"':'' );        
         update_option('wpspc_buyer_from_email', stripslashes((string)$_POST["wpspc_buyer_from_email"]));
         update_option('wpspc_buyer_email_subj', stripslashes((string)$_POST["wpspc_buyer_email_subj"]));
         update_option('wpspc_buyer_email_body', stripslashes((string)$_POST["wpspc_buyer_email_body"]));;
         
-        update_option('wpspc_send_seller_email', ($_POST['wpspc_send_seller_email']!='') ? 'checked="checked"':'' );        
+        update_option('wpspc_send_seller_email', (isset($_POST['wpspc_send_seller_email']) && $_POST['wpspc_send_seller_email']!='') ? 'checked="checked"':'' );        
         update_option('wpspc_notify_email_address', stripslashes((string)$_POST["wpspc_notify_email_address"]));
         update_option('wpspc_seller_email_subj', stripslashes((string)$_POST["wpspc_seller_email_subj"]));
         update_option('wpspc_seller_email_body', stripslashes((string)$_POST["wpspc_seller_email_body"]));;

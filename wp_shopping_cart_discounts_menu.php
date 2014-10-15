@@ -8,7 +8,7 @@ function show_wp_cart_coupon_discount_settings_page()
         if ( !wp_verify_nonce($nonce, 'wpspsc_coupon_settings')){
                 wp_die('Error! Nonce Security Check Failed! Go back to Coupon/Discount menu and save the settings again.');
         }
-        update_option('wpspsc_enable_coupon', ($_POST['wpspsc_enable_coupon']=='1') ? '1':'');
+        update_option('wpspsc_enable_coupon', (isset($_POST['wpspsc_enable_coupon']) && $_POST['wpspsc_enable_coupon']=='1') ? '1':'');
         echo '<div id="message" class="updated fade"><p><strong>';
         echo 'Coupon Settings Updated!';
         echo '</strong></p></div>';
@@ -148,6 +148,7 @@ function show_wp_cart_coupon_discount_settings_page()
         $number_of_coupons = count($coupons);
         if($number_of_coupons > 0)
         {
+            $row_count = 0;
             foreach ($coupons as $coupon)
             {
                 $output .= '<tr>';

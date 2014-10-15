@@ -2,7 +2,7 @@
 
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v4.0.2
+Version: v4.0.3
 Plugin URI: https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768
 Author: Tips and Tricks HQ, Ruhul Amin
 Author URI: https://www.tipsandtricks-hq.com/
@@ -23,7 +23,7 @@ if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
     }
 }
 
-define('WP_CART_VERSION', '4.0.1');
+define('WP_CART_VERSION', '4.0.3');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH', plugin_dir_path(__FILE__));
 define('WP_CART_URL', plugins_url('', __FILE__));
@@ -112,18 +112,21 @@ function wpspc_cart_actions_handler() {
         isset($_POST['cartLink']) ? $_POST['cartLink'] = strip_tags($_POST['cartLink']) : $_POST['cartLink'] = '';
 
         $count = 1;
-        $products = $_SESSION['simpleCart'];
-        if (is_array($products)) {
-            foreach ($products as $key => $item) {
-                if ($item['name'] == stripslashes($_POST['product'])) {
-                    $count += $item['quantity'];
-                    $item['quantity']++;
-                    unset($products[$key]);
-                    array_push($products, $item);
+        $products = array();
+        if(isset($_SESSION['simpleCart'])){
+            $products = $_SESSION['simpleCart'];
+            if (is_array($products)) {
+                foreach ($products as $key => $item) {
+                    if ($item['name'] == stripslashes($_POST['product'])) {
+                        $count += $item['quantity'];
+                        $item['quantity']++;
+                        unset($products[$key]);
+                        array_push($products, $item);
+                    }
                 }
+            }else {
+                $products = array();
             }
-        } else {
-            $products = array();
         }
 
         if ($count == 1) {
@@ -589,7 +592,7 @@ function wp_cart_add_read_form_javascript() {
 
 function wpspsc_admin_side_enqueue_scripts()
 {
-    if ($_GET['page'] == 'wordpress-paypal-shopping-cart') //simple paypal shopping cart discount page
+    if (isset($_GET['page']) && $_GET['page'] == 'wordpress-paypal-shopping-cart') //simple paypal shopping cart discount page
     {
         wp_enqueue_style('jquery-ui-style', '//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css');
         wp_register_script('wpspsc-admin', WP_CART_URL.'/lib/wpspsc_admin_side.js', array('jquery', 'jquery-ui-datepicker'));
