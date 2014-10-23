@@ -459,7 +459,10 @@ function show_wp_cart_email_settings_page()
     <br /><p class="description"><?php _e("This is the body of the email that will be sent to the buyer. Do not change the text within the braces {}. You can use the following email tags in this email body field:", "WSPSC");?>
     <br />{first_name} – <?php _e("First name of the buyer", "WSPSC");?>
     <br />{last_name} – <?php _e("Last name of the buyer", "WSPSC");?>
-    <br />{product_details} – <?php _e("The item details of the purchased product (this will include the download link for digital items).", "WSPSC");?>    
+    <br />{product_details} – <?php _e("The item details of the purchased product (this will include the download link for digital items).", "WSPSC");?>   
+    <br />{transaction_id} – <?php _e("The unique transaction ID of the purchase", "WSPSC");?> 
+    <br />{purchase_amt} – <?php _e("The amount paid for the current transaction", "WSPSC");?>
+    <br />{purchase_date} – <?php _e("The date of the purchase", "WSPSC");?>
     </p></td>
     </tr>
     
@@ -488,7 +491,10 @@ function show_wp_cart_email_settings_page()
     <br />{first_name} – <?php _e("First name of the buyer", "WSPSC");?>
     <br />{last_name} – <?php _e("Last name of the buyer", "WSPSC");?>
     <br />{payer_email} – <?php _e("Email Address of the buyer", "WSPSC");?>
-    <br />{product_details} – <?php _e("The item details of the purchased product (this will include the download link for digital items).", "WSPSC");?>    
+    <br />{product_details} – <?php _e("The item details of the purchased product (this will include the download link for digital items).", "WSPSC");?>  
+    <br />{transaction_id} – <?php _e("The unique transaction ID of the purchase", "WSPSC");?> 
+    <br />{purchase_amt} – <?php _e("The amount paid for the current transaction", "WSPSC");?>
+    <br />{purchase_date} – <?php _e("The date of the purchase", "WSPSC");?>
     </p></td>
     </tr>
 

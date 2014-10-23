@@ -1,5 +1,7 @@
 <?php
 
+status_header(200);
+
 $debug_log = "ipn_handle_debug.log"; // Debug log file name
 
 class paypal_ipn_handler {
@@ -242,6 +244,7 @@ class paypal_ipn_handler {
             $seller_email_subject = get_option('wpspc_seller_email_subj');
             $seller_email_body = get_option('wpspc_seller_email_body');
             $args['email_body'] = $seller_email_body;
+            $args['order_id'] = $post_id;
             $seller_email_body = wpspc_apply_dynamic_tags_on_email_body($this->ipn_data, $args);
             if(!empty($notify_email)){
                 if(get_option('wpspc_send_seller_email'))
@@ -321,6 +324,7 @@ class paypal_ipn_handler {
          // Post the data back to paypal
          fputs($fp, "POST $url_parsed[path] HTTP/1.1\r\n");
          fputs($fp, "Host: $url_parsed[host]\r\n");
+         fputs($fp, "User-Agent: Simple PayPal Shopping Cart Plugin\r\n" );
          fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n");
          fputs($fp, "Content-length: ".strlen($post_string)."\r\n");
          fputs($fp, "Connection: close\r\n\r\n");
