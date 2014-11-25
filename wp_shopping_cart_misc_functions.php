@@ -1,7 +1,7 @@
 <?php
 
 /* TODO
-- Add {txn_id} email tag in the email that gets sent out.
+- Add an email tag to include the coupon code used in the notification email.
 - Add a reset cart button
 - A stats addon or interface. Show graph using the orders data.
 - After processing an IPN, call a function to clear all trash orders that are older than 6 hours.
@@ -12,8 +12,9 @@
 /* this function gets called when init is fired */
 function wp_cart_init_handler()
 {
+    $orders_menu_permission = apply_filters('wspsc_orders_menu_permission', 'manage_options');
     //Add any common init hook handing code
-    if( is_admin() && current_user_can('manage_options')) //Init hook handing code for wp-admin
+    if( is_admin() && current_user_can($orders_menu_permission)) //Init hook handing code for wp-admin
     {
         wpspc_create_orders_page();
     }
@@ -39,6 +40,14 @@ function wpspsc_number_format_price($price)
 {
     $formatted_num = number_format($price,2,'.','');
     return $formatted_num;
+}
+
+function wspsc_strip_char_from_price_amount($price_amount)
+{
+    if(!is_numeric($price_amount)){
+        $price_amount = preg_replace("/[^0-9\.]/", "",$price_amount);
+    }
+    return $price_amount;
 }
 
 function wpc_append_values_to_custom_field($name,$value)

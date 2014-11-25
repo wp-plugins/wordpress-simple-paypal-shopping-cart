@@ -11,14 +11,19 @@ function wp_cart_button_handler($atts){
 		'var3' => '',
                 'thumbnail' => '',
                 'button_image' => '',
+                'file_url' => '',
+                'stamp_pdf' => '',
 	), $atts));
 
 	if(empty($name)){
-		return '<div style="color:red;">'.(__("Error! You must specify a product name in the shortcode.", "WSPSC")).'</div>';
+            return '<div style="color:red;">'.(__("Error! You must specify a product name in the shortcode.", "WSPSC")).'</div>';
 	}
 	if(empty($price)){
-		return '<div style="color:red;">'.(__("Error! You must specify a price for your product in the shortcode.", "WSPSC")).'</div>';
+            return '<div style="color:red;">'.(__("Error! You must specify a price for your product in the shortcode.", "WSPSC")).'</div>';
 	}
+        $price = wspsc_strip_char_from_price_amount($price);
+        $shipping = wspsc_strip_char_from_price_amount($shipping);
+        
 	return print_wp_cart_button_for_product($name, $price, $shipping, $var1, $var2, $var3, $atts);
 }
 
@@ -35,18 +40,22 @@ function wp_cart_display_product_handler($atts)
         'thumbnail' => '',
         'description' => '',
         'button_image' => '',
+        'file_url' => '',
+        'stamp_pdf' => '',
     ), $atts));
 
     if(empty($name)){
-            return '<div style="color:red;">'.(__("Error! You must specify a product name in the shortcode.", "WSPSC")).'</div>';
+        return '<div style="color:red;">'.(__("Error! You must specify a product name in the shortcode.", "WSPSC")).'</div>';
     }
     if(empty($price)){
-            return '<div style="color:red;">'.(__("Error! You must specify a price for your product in the shortcode.", "WSPSC")).'</div>';
+        return '<div style="color:red;">'.(__("Error! You must specify a price for your product in the shortcode.", "WSPSC")).'</div>';
     }
     if(empty($thumbnail)){
-            return '<div style="color:red;">'.(__("Error! You must specify a thumbnail image for your product in the shortcode.", "WSPSC")).'</div>';
+        return '<div style="color:red;">'.(__("Error! You must specify a thumbnail image for your product in the shortcode.", "WSPSC")).'</div>';
     }
-    
+    $price = wspsc_strip_char_from_price_amount($price);
+    $shipping = wspsc_strip_char_from_price_amount($shipping);
+        
     $thumbnail_code = apply_filters('wspsc_product_box_thumbnail_code', '<img src="'.$thumbnail.'" />', $atts);
     $currency_symbol = get_option('cart_currency_symbol');
     $formatted_price = print_payment_currency($price, $currency_symbol);

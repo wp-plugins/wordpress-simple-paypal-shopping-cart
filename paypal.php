@@ -100,12 +100,6 @@ class paypal_ipn_handler {
             array_push($cart_items, $current_item);
         }
 
-        $product_id_array = Array();
-        $product_name_array = Array();
-        $product_price_array = Array();
-        $attachments_array = Array();
-        $download_link_array = Array();
-
         $payment_currency = get_option('cart_payment_currency');
 
         foreach ($cart_items as $current_cart_item)
@@ -130,8 +124,6 @@ class paypal_ipn_handler {
             }
         }        
         
-        /*** Send notification email ***/
-        //TODO
         $post_id = $custom_values['wp_cart_id'];
         $ip_address = $custom_values['ip'];
         $applied_coupon_code = $custom_values['coupon_code'];
@@ -230,6 +222,10 @@ class paypal_ipn_handler {
             $body = get_option('wpspc_buyer_email_body');
             $args['email_body'] = $body;
             $body = wpspc_apply_dynamic_tags_on_email_body($this->ipn_data, $args);
+            
+            $this->debug_log('Applying filter - wspsc_buyer_notification_email_body', true);
+            $body = apply_filters('wspsc_buyer_notification_email_body', $body, $this->ipn_data, $cart_items);            
+            
             $headers = 'From: '.$from_email . "\r\n";
             if(!empty($buyer_email)){
                 $args['payer_email'] = $buyer_email;
@@ -246,6 +242,10 @@ class paypal_ipn_handler {
             $args['email_body'] = $seller_email_body;
             $args['order_id'] = $post_id;
             $seller_email_body = wpspc_apply_dynamic_tags_on_email_body($this->ipn_data, $args);
+            
+            $this->debug_log('Applying filter - wspsc_seller_notification_email_body', true);
+            $seller_email_body = apply_filters('wspsc_seller_notification_email_body', $seller_email_body, $this->ipn_data, $cart_items);
+            
             if(!empty($notify_email)){
                 if(get_option('wpspc_send_seller_email'))
         	{

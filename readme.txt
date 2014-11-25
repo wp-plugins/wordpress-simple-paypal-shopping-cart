@@ -4,7 +4,7 @@ Donate link: https://www.tipsandtricks-hq.com
 Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell, selling, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, sell service, digital downloads, paypal, paypal cart, e-shop, compact cart, coupon, discount
 Requires at least: 3.0
 Tested up to: 4.0
-Stable tag: 4.0.4
+Stable tag: 4.0.5
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -83,6 +83,7 @@ The following language translations are already available:
 * Hebrew
 * Swedish
 * Norwegian
+* Danish
 
 You can translate the plugin using [this documentation](http://www.tipsandtricks-hq.com/ecommerce/translating-the-wp-simple-shopping-cart-plugin-2627).
 
@@ -174,6 +175,12 @@ Visit the plugin site at https://www.tipsandtricks-hq.com/wordpress-simple-paypa
 None
 
 == Changelog ==
+
+= 4.0.5 = 
+- Added two new filters to allow dynamic modification of the buyer and seller notification email body (just before the email is sent).
+- Added a new filter so the orders menu viewing permission can be overridden by an addon.
+- Added Danish Language translation to the plugin. The Danish translation file was submitted by Steve Jorgensen.
+- Added a function to strip special characters from price parameter in the shortcode.
 
 = 4.0.4 =
 - Added some new email tags to show Transaction ID, Purchase Amount and Purchase Date (check your email settings field for details).
