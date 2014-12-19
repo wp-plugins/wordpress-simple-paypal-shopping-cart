@@ -3,8 +3,8 @@ Contributors: Tips and Tricks HQ, Ruhul Amin, wptipsntricks, mbrsolution
 Donate link: https://www.tipsandtricks-hq.com
 Tags: cart, shopping cart, WordPress shopping cart, Paypal shopping cart, sell, selling, sell products, online shop, shop, e-commerce, wordpress ecommerce, wordpress store, store, PayPal cart widget, sell digital products, sell service, digital downloads, paypal, paypal cart, e-shop, compact cart, coupon, discount
 Requires at least: 3.0
-Tested up to: 4.0
-Stable tag: 4.0.5
+Tested up to: 4.1
+Stable tag: 4.0.6
 License: GPLv2 or later
 
 Very easy to use Simple WordPress Paypal Shopping Cart Plugin. Great for selling products online in one click from your WordPress site.
@@ -175,6 +175,11 @@ Visit the plugin site at https://www.tipsandtricks-hq.com/wordpress-simple-paypa
 None
 
 == Changelog ==
+
+= 4.0.6 =
+- Added an email tag to include the coupon code used in the notification email.
+- Added an extra check to prevent a debug notice message from showing when the cart is reset.
+- WordPress 4.1 compatibility.
 
 = 4.0.5 = 
 - Added two new filters to allow dynamic modification of the buyer and seller notification email body (just before the email is sent).

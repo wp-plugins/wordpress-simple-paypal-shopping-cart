@@ -2,7 +2,7 @@
 
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v4.0.5
+Version: v4.0.6
 Plugin URI: https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768
 Author: Tips and Tricks HQ, Ruhul Amin
 Author URI: https://www.tipsandtricks-hq.com/
@@ -30,6 +30,11 @@ define('WP_CART_URL', plugins_url('', __FILE__));
 define('WP_CART_SITE_URL', site_url());
 define('WP_CART_LIVE_PAYPAL_URL', 'https://www.paypal.com/cgi-bin/webscr');
 define('WP_CART_SANDBOX_PAYPAL_URL', 'https://www.sandbox.paypal.com/cgi-bin/webscr');
+if (!defined('WP_CART_MANAGEMENT_PERMISSION')){//This will allow the user to define custom capability for this constant in wp-config file
+    define('WP_CART_MANAGEMENT_PERMISSION', 'manage_options');
+}
+define('WP_CART_MAIN_MENU_SLUG', 'wspsc-main');
+
 
 // loading language files
 //Set up localisation. First loaded overrides strings present in later loaded file
@@ -82,6 +87,9 @@ if (get_option('wp_shopping_cart_reset_after_redirection_to_return_page')) {
 }
 
 function reset_wp_cart() {
+    if (!isset($_SESSION['simpleCart'])){
+        return;
+    }
     $products = $_SESSION['simpleCart'];
     if (!is_array($products)) {
         return;
@@ -537,7 +545,14 @@ function simple_cart_total() {
 // Handle the options page display
 function wp_cart_options_page() {
     include_once('wp_shopping_cart_settings.php');
-    add_options_page(__("WP Paypal Shopping Cart", "WSPSC"), __("WP Shopping Cart", "WSPSC"), 'manage_options', 'wordpress-paypal-shopping-cart', 'wp_cart_options');
+    add_options_page(__("WP Paypal Shopping Cart", "WSPSC"), __("WP Shopping Cart", "WSPSC"), WP_CART_MANAGEMENT_PERMISSION, 'wordpress-paypal-shopping-cart', 'wp_cart_options');
+    
+    //Main menu - Complete this when the dashboard menu is ready
+    //$menu_icon_url = '';//TODO - use 
+    //add_menu_page(__('Simple Cart', 'WSPSC'), __('Simple Cart', 'WSPSC'), WP_CART_MANAGEMENT_PERMISSION, WP_CART_MAIN_MENU_SLUG , 'wp_cart_options', $menu_icon_url);
+    //add_submenu_page(WP_CART_MAIN_MENU_SLUG, __('Settings', 'WSPSC'),  __('Settings', 'WSPSC') , WP_CART_MANAGEMENT_PERMISSION, WP_CART_MAIN_MENU_SLUG, 'wp_cart_options');
+    //add_submenu_page(WP_CART_MAIN_MENU_SLUG, __('Bla', 'WSPSC'),  __('Bla', 'WSPSC') , WP_CART_MANAGEMENT_PERMISSION, 'wspsc-bla', 'wp_cart_options');
+            
 }
 
 function wp_paypal_shopping_cart_load_widgets() {

@@ -1,7 +1,7 @@
 <?php
 
 /* TODO
-- Add an email tag to include the coupon code used in the notification email.
+- Create a dashbaord menu then complete the new menu system
 - Add a reset cart button
 - A stats addon or interface. Show graph using the orders data.
 - After processing an IPN, call a function to clear all trash orders that are older than 6 hours.
@@ -156,8 +156,8 @@ function wpspc_apply_dynamic_tags_on_email_body($ipn_data, $args)
     $order_id = $args['order_id'];
     $purchase_amount = get_post_meta( $order_id, 'wpsc_total_amount', true );
     $purchase_date = date("Y-m-d");
-    $tags = array("{first_name}","{last_name}","{product_details}","{payer_email}","{transaction_id}","{purchase_amt}","{purchase_date}");
-    $vals = array($ipn_data['first_name'], $ipn_data['last_name'], $args['product_details'], $args['payer_email'], $ipn_data['txn_id'], $purchase_amount, $purchase_date);
+    $tags = array("{first_name}","{last_name}","{product_details}","{payer_email}","{transaction_id}","{purchase_amt}","{purchase_date}","{coupon_code}");
+    $vals = array($ipn_data['first_name'], $ipn_data['last_name'], $args['product_details'], $args['payer_email'], $ipn_data['txn_id'], $purchase_amount, $purchase_date, $args['coupon_code']);
 
     $body = stripslashes(str_replace($tags, $vals, $args['email_body']));
     return $body;

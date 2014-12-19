@@ -221,6 +221,7 @@ class paypal_ipn_handler {
             $subject = get_option('wpspc_buyer_email_subj');
             $body = get_option('wpspc_buyer_email_body');
             $args['email_body'] = $body;
+            $args['coupon_code'] = $applied_coupon_code;
             $body = wpspc_apply_dynamic_tags_on_email_body($this->ipn_data, $args);
             
             $this->debug_log('Applying filter - wspsc_buyer_notification_email_body', true);
@@ -241,6 +242,7 @@ class paypal_ipn_handler {
             $seller_email_body = get_option('wpspc_seller_email_body');
             $args['email_body'] = $seller_email_body;
             $args['order_id'] = $post_id;
+            $args['coupon_code'] = $applied_coupon_code;
             $seller_email_body = wpspc_apply_dynamic_tags_on_email_body($this->ipn_data, $args);
             
             $this->debug_log('Applying filter - wspsc_seller_notification_email_body', true);

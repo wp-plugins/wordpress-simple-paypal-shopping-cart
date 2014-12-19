@@ -463,6 +463,7 @@ function show_wp_cart_email_settings_page()
     <br />{transaction_id} – <?php _e("The unique transaction ID of the purchase", "WSPSC");?> 
     <br />{purchase_amt} – <?php _e("The amount paid for the current transaction", "WSPSC");?>
     <br />{purchase_date} – <?php _e("The date of the purchase", "WSPSC");?>
+    <br />{coupon_code} – <?php _e("Coupon code applied to the purchase", "WSPSC");?>
     </p></td>
     </tr>
     
@@ -495,6 +496,7 @@ function show_wp_cart_email_settings_page()
     <br />{transaction_id} – <?php _e("The unique transaction ID of the purchase", "WSPSC");?> 
     <br />{purchase_amt} – <?php _e("The amount paid for the current transaction", "WSPSC");?>
     <br />{purchase_date} – <?php _e("The date of the purchase", "WSPSC");?>
+    <br />{coupon_code} – <?php _e("Coupon code applied to the purchase", "WSPSC");?>
     </p></td>
     </tr>
 
