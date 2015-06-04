@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v4.0.8
+Version: v4.0.9
 Plugin URI: https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768
 Author: Tips and Tricks HQ, Ruhul Amin
 Author URI: https://www.tipsandtricks-hq.com/
@@ -22,7 +22,7 @@ if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
     }
 }
 
-define('WP_CART_VERSION', '4.0.8');
+define('WP_CART_VERSION', '4.0.9');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH', plugin_dir_path(__FILE__));
 define('WP_CART_URL', plugins_url('', __FILE__));
@@ -112,7 +112,7 @@ function wpspc_cart_actions_handler() {
         }
 
         //sanitize data
-        $_POST['product'] = strip_tags($_POST['product']); //for PHP5.2 use filter_var($_POST['product'], FILTER_SANITIZE_STRING);
+        $_POST['wspsc_product'] = strip_tags($_POST['wspsc_product']); //for PHP5.2 use filter_var($_POST['wspsc_product'], FILTER_SANITIZE_STRING);
         $_POST['item_number'] = strip_tags($_POST['item_number']);
         if (isset($_POST['price']))
             $_POST['price'] = strip_tags($_POST['price']);
@@ -126,7 +126,7 @@ function wpspc_cart_actions_handler() {
             $products = $_SESSION['simpleCart'];
             if (is_array($products)) {
                 foreach ($products as $key => $item) {
-                    if ($item['name'] == stripslashes($_POST['product'])) {
+                    if ($item['name'] == stripslashes($_POST['wspsc_product'])) {
                         $count += $item['quantity'];
                         $item['quantity']++;
                         unset($products[$key]);
@@ -139,8 +139,8 @@ function wpspc_cart_actions_handler() {
         }
 
         if ($count == 1) {
-            if (!empty($_POST[$_POST['product']])) {
-                $price = $_POST[$_POST['product']];
+            if (!empty($_POST[$_POST['wspsc_product']])) {
+                $price = $_POST[$_POST['wspsc_product']];
             } else {
                 $price = $_POST['price'];
             }
@@ -151,7 +151,7 @@ function wpspc_cart_actions_handler() {
             $shipping = $_POST['shipping'];
             $shipping = str_replace($default_cur_symbol, "", $shipping);
 
-            $product = array('name' => stripslashes($_POST['product']), 'price' => $price, 'price_orig' => $price, 'quantity' => $count, 'shipping' => $shipping, 'cartLink' => $_POST['cartLink'], 'item_number' => $_POST['item_number']);
+            $product = array('name' => stripslashes($_POST['wspsc_product']), 'price' => $price, 'price_orig' => $price, 'quantity' => $count, 'shipping' => $shipping, 'cartLink' => $_POST['cartLink'], 'item_number' => $_POST['item_number']);
             if (isset($_POST['file_url']) && !empty($_POST['file_url'])) {
                 $file_url = strip_tags($_POST['file_url']);
                 $product['file_url'] = $file_url;
@@ -197,11 +197,11 @@ function wpspc_cart_actions_handler() {
     } else if (isset($_POST['cquantity'])) {
         $products = $_SESSION['simpleCart'];
         foreach ($products as $key => $item) {
-            if ((stripslashes($item['name']) == stripslashes($_POST['product'])) && $_POST['quantity']) {
+            if ((stripslashes($item['name']) == stripslashes($_POST['wspsc_product'])) && $_POST['quantity']) {
                 $item['quantity'] = $_POST['quantity'];
                 unset($products[$key]);
                 array_push($products, $item);
-            } else if (($item['name'] == stripslashes($_POST['product'])) && !$_POST['quantity']) {
+            } else if (($item['name'] == stripslashes($_POST['wspsc_product'])) && !$_POST['quantity']) {
                 unset($products[$key]);
             }
         }
@@ -216,7 +216,7 @@ function wpspc_cart_actions_handler() {
     } else if (isset($_POST['delcart'])) {
         $products = $_SESSION['simpleCart'];
         foreach ($products as $key => $item) {
-            if ($item['name'] == stripslashes($_POST['product']))
+            if ($item['name'] == stripslashes($_POST['wspsc_product']))
                 unset($products[$key]);
         }
         $_SESSION['simpleCart'] = $products;
@@ -356,7 +356,7 @@ function print_wp_cart_button_new($content) {
             $replacement .= '<input type="submit" value="' . $addcart . '" />';
         }
 
-        $replacement .= '<input type="hidden" name="product" value="' . $pieces['0'] . '" /><input type="hidden" name="price" value="' . $pieces['1'] . '" />';
+        $replacement .= '<input type="hidden" name="wspsc_product" value="' . $pieces['0'] . '" /><input type="hidden" name="price" value="' . $pieces['1'] . '" />';
         $replacement .= '<input type="hidden" name="product_tmp" value="' . $pieces['0'] . '" />';
         if (sizeof($pieces) > 2) {
             //we have shipping
@@ -399,7 +399,7 @@ function wp_cart_add_read_form_javascript() {
 	    }
 		// Now summarize everything we have processed above
 		val_total = obj1.product_tmp.value + val_combo;
-		obj1.product.value = val_total;
+		obj1.wspsc_product.value = val_total;
 	}
 	//-->
 	</script>';
@@ -460,7 +460,7 @@ function print_wp_cart_button_for_product($name, $price, $shipping = 0, $var1 = 
         }
     }
 
-    $replacement .= '<input type="hidden" name="product" value="' . $name . '" /><input type="hidden" name="price" value="' . $price . '" /><input type="hidden" name="shipping" value="' . $shipping . '" /><input type="hidden" name="addcart" value="1" /><input type="hidden" name="cartLink" value="' . cart_current_page_url() . '" />';
+    $replacement .= '<input type="hidden" name="wspsc_product" value="' . $name . '" /><input type="hidden" name="price" value="' . $price . '" /><input type="hidden" name="shipping" value="' . $shipping . '" /><input type="hidden" name="addcart" value="1" /><input type="hidden" name="cartLink" value="' . cart_current_page_url() . '" />';
     $replacement .= '<input type="hidden" name="product_tmp" value="' . $name . '" />';
     isset($atts['item_number']) ? $item_num = $atts['item_number'] : $item_num = '';
     $replacement .= '<input type="hidden" name="item_number" value="' . $item_num . '" />';
