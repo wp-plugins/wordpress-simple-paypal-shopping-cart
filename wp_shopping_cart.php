@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Simple Paypal Shopping cart
-Version: v4.0.9
+Version: 4.1.0
 Plugin URI: https://www.tipsandtricks-hq.com/wordpress-simple-paypal-shopping-cart-plugin-768
 Author: Tips and Tricks HQ, Ruhul Amin
 Author URI: https://www.tipsandtricks-hq.com/
@@ -22,7 +22,7 @@ if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
     }
 }
 
-define('WP_CART_VERSION', '4.0.9');
+define('WP_CART_VERSION', '4.1.0');
 define('WP_CART_FOLDER', dirname(plugin_basename(__FILE__)));
 define('WP_CART_PATH', plugin_dir_path(__FILE__));
 define('WP_CART_URL', plugins_url('', __FILE__));
@@ -114,8 +114,16 @@ function wpspc_cart_actions_handler() {
         //sanitize data
         $_POST['wspsc_product'] = strip_tags($_POST['wspsc_product']); //for PHP5.2 use filter_var($_POST['wspsc_product'], FILTER_SANITIZE_STRING);
         $_POST['item_number'] = strip_tags($_POST['item_number']);
-        if (isset($_POST['price']))
+        if (isset($_POST['price'])){
             $_POST['price'] = strip_tags($_POST['price']);
+            //Validate price
+            $hash_once_p = strip_tags($_POST['hash_one']);
+            $p_key = get_option('wspsc_private_key_one');
+            $hash_one_cm = md5($p_key.'|'.$_POST['price']);
+            if($hash_once_p != $hash_one_cm){//Validation failed
+                wp_die('Error! The price validation failed.');
+            }
+        }
         isset($_POST['shipping']) ? $_POST['shipping'] = strip_tags($_POST['shipping']) : $_POST['shipping'] = '';
         isset($_POST['cartLink']) ? $_POST['cartLink'] = strip_tags($_POST['cartLink']) : $_POST['cartLink'] = '';
         isset($_POST['stamp_pdf']) ? $_POST['stamp_pdf'] = strip_tags($_POST['stamp_pdf']) : $_POST['stamp_pdf'] = '';
@@ -362,6 +370,15 @@ function print_wp_cart_button_new($content) {
             //we have shipping
             $replacement .= '<input type="hidden" name="shipping" value="' . $pieces['2'] . '" />';
         }
+        
+        $p_key = get_option('wspsc_private_key_one');
+        if(empty($p_key)){
+            $p_key = uniqid();
+            update_option('wspsc_private_key_one',$p_key);
+        }
+        $hash_one = md5($p_key.'|'.$pieces['1']);
+        $replacement .= '<input type="hidden" name="hash_one" value="' . $hash_one . '" />';
+    
         $replacement .= '<input type="hidden" name="cartLink" value="' . cart_current_page_url() . '" />';
         $replacement .= '<input type="hidden" name="addcart" value="1" /></form>';
         $replacement .= '</div>';
@@ -476,6 +493,15 @@ function print_wp_cart_button_for_product($name, $price, $shipping = 0, $var1 = 
     if (isset($atts['stamp_pdf'])) {
         $replacement .= '<input type="hidden" name="stamp_pdf" value="' . $atts['stamp_pdf'] . '" />';
     }
+        
+    $p_key = get_option('wspsc_private_key_one');
+    if(empty($p_key)){
+        $p_key = uniqid();
+        update_option('wspsc_private_key_one',$p_key);
+    }
+    $hash_one = md5($p_key.'|'.$price);
+    $replacement .= '<input type="hidden" name="hash_one" value="' . $hash_one . '" />';
+    
     $replacement .= '</form>';
     $replacement .= '</div>';
     return $replacement;
