@@ -1,15 +1,6 @@
 <?php
 
-/* TODO
-- Create a dashbaord menu then complete the new menu system
-- Add a reset cart button
-- A stats addon or interface. Show graph using the orders data.
-- After processing an IPN, call a function to clear all trash orders that are older than 6 hours.
-- A new fancy cart shortcode (new icons and nice CSS styles)
-- Create github repository.
-*/
-
-/* this function gets called when init is fired */
+/* This function gets called when init is executed */
 function wp_cart_init_handler()
 {
     $orders_menu_permission = apply_filters('wspsc_orders_menu_permission', 'manage_options');
@@ -18,7 +9,7 @@ function wp_cart_init_handler()
     {
         wpspc_create_orders_page();
     }
-    else//Init hook handing code for front end
+    else//Init hook handling code for front end
     {
         wpspc_cart_actions_handler();
         add_filter('ngg_render_template','wp_cart_ngg_template_handler',10,2);

@@ -3,7 +3,7 @@ class WPSPSC_Coupons_Collection
 {
     var $coupon_items = array();
     
-    function WPSPSC_Coupons_Collection()
+    function __construct()
     {
         
     }
@@ -73,7 +73,7 @@ class WPSPSC_COUPON_ITEM
     var $coupon_code;
     var $discount_rate;
     var $expiry_date;
-    function WPSPSC_COUPON_ITEM($coupon_code, $discount_rate, $expiry_date)
+    function __construct($coupon_code, $discount_rate, $expiry_date)
     {
         $this->id = uniqid();
         $this->coupon_code = $coupon_code;

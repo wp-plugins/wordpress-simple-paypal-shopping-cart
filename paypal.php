@@ -14,8 +14,8 @@ class paypal_ipn_handler {
    var $fields = array();           // array holds the fields to submit to paypal
    var $sandbox_mode = false;
 
-   	function paypal_ipn_handler()
-   	{
+    function __construct()
+    {
         $this->paypal_url = 'https://www.paypal.com/cgi-bin/webscr';
       	$this->last_error = '';
       	$this->ipn_log_file = WP_CART_PATH.'ipn_handle_debug.log';
