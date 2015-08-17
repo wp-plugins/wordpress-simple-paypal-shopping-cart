@@ -131,7 +131,7 @@ class paypal_ipn_handler {
         $ip_address = $custom_values['ip'];
         $applied_coupon_code = $custom_values['coupon_code'];
         $currency_symbol = get_option('cart_currency_symbol');
-        $this->debug_log('custom values',true);
+        $this->debug_log('Custom values',true);
         $this->debug_log_array($custom_values,true);
         $this->debug_log('Order post id: '.$post_id,true);
         
@@ -178,11 +178,12 @@ class paypal_ipn_handler {
         
         $orig_individual_item_total = round($orig_individual_item_total,2);
         $individual_paid_item_total = round($individual_paid_item_total,2);
-        if($orig_individual_item_total < $individual_paid_item_total){
+        $this->debug_log('Checking price. Original price: ' . $orig_individual_item_total . '. Paid price: '.$individual_paid_item_total, true);
+        if($individual_paid_item_total < $orig_individual_item_total){  //Paid price is less so block this transaction.      
             $this->debug_log('Error! Post payment price validation failed. The price amount may have been altered. This transaction will not be processed.', false);
             $this->debug_log('Original total price: ' . $orig_individual_item_total . '. Paid total price: '.$individual_paid_item_total, false);
             return;
-        }        
+        }
         //*** End of security check ***
 
         $updated_wpsc_order = array(

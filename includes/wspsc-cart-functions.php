@@ -56,7 +56,7 @@ function print_wp_shopping_cart($args = array()) {
     global $plugin_dir_name;
     $output .= '<div class="shopping_cart">';
     if (!get_option('wp_shopping_cart_image_hide')) {
-        $output .= "<img src='" . WP_CART_URL . "/images/shopping_cart_icon.png' value='" . (__("Cart", "WSPSC")) . "' title='" . (__("Cart", "WSPSC")) . "' />";
+        $output .= "<img src='" . WP_CART_URL . "/images/shopping_cart_icon.png' class='wspsc_cart_header_image' value='" . (__("Cart", "WSPSC")) . "' title='" . (__("Cart", "WSPSC")) . "' />";
     }
     if (!empty($title)) {
         $output .= '<h2>';
@@ -64,7 +64,7 @@ function print_wp_shopping_cart($args = array()) {
         $output .= '</h2>';
     }
 
-    $output .= '<br /><span id="pinfo" style="display: none; font-weight: bold; color: red;">' . (__("Hit enter to submit new Quantity.", "WSPSC")) . '</span>';
+    $output .= '<span id="pinfo" style="display: none; font-weight: bold; color: red;">' . (__("Hit enter to submit new Quantity.", "WSPSC")) . '</span>';
     $output .= '<table style="width: 100%;">';
 
     $count = 1;
