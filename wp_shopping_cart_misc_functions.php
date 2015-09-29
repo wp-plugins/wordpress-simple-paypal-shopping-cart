@@ -157,8 +157,8 @@ function wpspc_apply_dynamic_tags_on_email_body($ipn_data, $args)
 function wpspc_run_activation()
 {
     //General options
-    add_option('wp_cart_title', __("Your Shopping Cart", "WSPSC"));
-    add_option('wp_cart_empty_text', __("Your cart is empty", "WSPSC"));
+    add_option('wp_cart_title', __("Your Shopping Cart", "wordpress-simple-paypal-shopping-cart"));
+    add_option('wp_cart_empty_text', __("Your cart is empty", "wordpress-simple-paypal-shopping-cart"));
     add_option('cart_return_from_paypal_url', get_bloginfo('wpurl'));
 
     //Add Confirmation Email Settings
@@ -192,8 +192,8 @@ function wpspsc_settings_menu_footer()
 {
     ?>
     <div style="background: none repeat scroll 0 0 #FFF6D5;border: 1px solid #D1B655;color: #3F2502;margin: 10px 0;padding: 5px 5px 5px 10px;text-shadow: 1px 1px #FFFFFF;">	
-    <p><?php _e("Need a shopping cart plugin with a lot of features and good support? Check out our ", "WSPSC"); ?>
-    <a href="https://www.tipsandtricks-hq.com/?p=1059" target="_blank"><?php _e("WP eStore Plugin", "WSPSC"); ?></a></p>
+    <p><?php _e("Need a shopping cart plugin with a lot of features and good support? Check out our ", "wordpress-simple-paypal-shopping-cart"); ?>
+    <a href="https://www.tipsandtricks-hq.com/?p=1059" target="_blank"><?php _e("WP eStore Plugin", "wordpress-simple-paypal-shopping-cart"); ?></a></p>
     </div>
     <?php
 }
